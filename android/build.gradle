@@ -16,6 +16,9 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "http://download.dynamsoft.com/maven/dbr/aar"
+        }
     }
 }
 
@@ -27,4 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+}
+
+dependencies {
+    implementation 'com.dynamsoft:dynamsoftbarcodereader:7.0.0@aar'
 }

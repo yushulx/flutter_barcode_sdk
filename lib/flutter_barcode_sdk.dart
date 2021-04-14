@@ -11,4 +11,12 @@ class FlutterBarcodeSdk {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  Future<void> initLicense(String license) async {
+    await _channel.invokeMethod('initLicense', [license]);
+  }
+
+  Future<String> decodeFile(String filename) async {
+    return await _channel.invokeMethod('decodeFile', [filename]);
+  }
 }

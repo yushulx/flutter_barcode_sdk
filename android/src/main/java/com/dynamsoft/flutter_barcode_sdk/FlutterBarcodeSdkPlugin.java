@@ -1,7 +1,7 @@
 package com.dynamsoft.flutter_barcode_sdk;
 
 import androidx.annotation.NonNull;
-
+import java.util.ArrayList;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -23,10 +23,22 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     channel.setMethodCallHandler(this);
   }
 
+  private BarcodeManager mBarcodeManager;
+
+  public FlutterBarcodeSdkPlugin() {
+    mBarcodeManager = new BarcodeManager();
+  }
+
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+	ArrayList<String> args = (ArrayList<String>)call.arguments;
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
+    } else if (call.method.equals("initLicense")) {
+      mBarcodeManager.initLicense(args.get(0));
+    } else if (call.method.equals("decodeFile")) {
+      String results = mBarcodeManager.decodeFile(args.get(0));
+      result.success(results);
     } else {
       result.notImplemented();
     }
