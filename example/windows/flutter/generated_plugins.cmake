@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  barcode_sdk
+  flutter_barcode_sdk
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

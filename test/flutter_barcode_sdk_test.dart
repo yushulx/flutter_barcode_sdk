@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:barcode_sdk/barcode_sdk.dart';
+import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('barcode_sdk');
+  const MethodChannel channel = MethodChannel('flutter_barcode_sdk');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await BarcodeSdk.platformVersion, '42');
+    expect(await FlutterBarcodeSdk.platformVersion, '42');
   });
 }

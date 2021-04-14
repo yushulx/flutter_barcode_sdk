@@ -1,11 +1,11 @@
 {
-    "name": "barcode_sdk_example",
-    "short_name": "barcode_sdk_example",
+    "name": "flutter_barcode_sdk_example",
+    "short_name": "flutter_barcode_sdk_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Demonstrates how to use the barcode_sdk plugin.",
+    "description": "Demonstrates how to use the flutter_barcode_sdk plugin.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

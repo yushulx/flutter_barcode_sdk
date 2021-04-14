@@ -1,6 +1,6 @@
-# barcode_sdk_example
+# flutter_barcode_sdk_example
 
-Demonstrates how to use the barcode_sdk plugin.
+Demonstrates how to use the flutter_barcode_sdk plugin.
 
 ## Getting Started
 

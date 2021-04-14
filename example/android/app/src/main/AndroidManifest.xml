@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dynamsoft.barcode_sdk_example">
+    package="com.dynamsoft.flutter_barcode_sdk_example">
    <application
-        android:label="barcode_sdk_example"
+        android:label="flutter_barcode_sdk_example"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

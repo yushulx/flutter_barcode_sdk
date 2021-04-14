@@ -1,4 +1,4 @@
-package com.dynamsoft.barcode_sdk;
+package com.dynamsoft.flutter_barcode_sdk;
 
 import androidx.annotation.NonNull;
 
@@ -9,8 +9,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-/** BarcodeSdkPlugin */
-public class BarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler {
+/** FlutterBarcodeSdkPlugin */
+public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -19,7 +19,7 @@ public class BarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler {
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "barcode_sdk");
+    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_barcode_sdk");
     channel.setMethodCallHandler(this);
   }
 

@@ -1,4 +1,4 @@
-name: barcode_sdk
+name: flutter_barcode_sdk
 description: A new flutter plugin project.
 version: 0.0.1
 author:
@@ -30,15 +30,15 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.dynamsoft.barcode_sdk
-        pluginClass: BarcodeSdkPlugin
+        package: com.dynamsoft.flutter_barcode_sdk
+        pluginClass: FlutterBarcodeSdkPlugin
       ios:
-        pluginClass: BarcodeSdkPlugin
+        pluginClass: FlutterBarcodeSdkPlugin
       windows:
-        pluginClass: BarcodeSdkPlugin
+        pluginClass: FlutterBarcodeSdkPlugin
       web:
-        pluginClass: BarcodeSdkWeb
-        fileName: barcode_sdk_web.dart
+        pluginClass: FlutterBarcodeSdkWeb
+        fileName: flutter_barcode_sdk_web.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

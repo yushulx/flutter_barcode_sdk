@@ -8,16 +8,16 @@ import 'dart:html' as html show window;
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-/// A web implementation of the BarcodeSdk plugin.
-class BarcodeSdkWeb {
+/// A web implementation of the FlutterBarcodeSdk plugin.
+class FlutterBarcodeSdkWeb {
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
-      'barcode_sdk',
+      'flutter_barcode_sdk',
       const StandardMethodCodec(),
       registrar,
     );
 
-    final pluginInstance = BarcodeSdkWeb();
+    final pluginInstance = FlutterBarcodeSdkWeb();
     channel.setMethodCallHandler(pluginInstance.handleMethodCall);
   }
 
@@ -32,7 +32,7 @@ class BarcodeSdkWeb {
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details: 'barcode_sdk for web doesn\'t implement \'${call.method}\'',
+          details: 'flutter_barcode_sdk for web doesn\'t implement \'${call.method}\'',
         );
     }
   }

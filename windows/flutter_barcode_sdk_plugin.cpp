@@ -1,4 +1,4 @@
-#include "include/barcode_sdk/barcode_sdk_plugin.h"
+#include "include/flutter_barcode_sdk/flutter_barcode_sdk_plugin.h"
 
 // This must be included before many other Windows headers.
 #include <windows.h>
@@ -16,13 +16,13 @@
 
 namespace {
 
-class BarcodeSdkPlugin : public flutter::Plugin {
+class FlutterBarcodeSdkPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
-  BarcodeSdkPlugin();
+  FlutterBarcodeSdkPlugin();
 
-  virtual ~BarcodeSdkPlugin();
+  virtual ~FlutterBarcodeSdkPlugin();
 
  private:
   // Called when a method is called on this plugin's channel from Dart.
@@ -32,14 +32,14 @@ class BarcodeSdkPlugin : public flutter::Plugin {
 };
 
 // static
-void BarcodeSdkPlugin::RegisterWithRegistrar(
+void FlutterBarcodeSdkPlugin::RegisterWithRegistrar(
     flutter::PluginRegistrarWindows *registrar) {
   auto channel =
       std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-          registrar->messenger(), "barcode_sdk",
+          registrar->messenger(), "flutter_barcode_sdk",
           &flutter::StandardMethodCodec::GetInstance());
 
-  auto plugin = std::make_unique<BarcodeSdkPlugin>();
+  auto plugin = std::make_unique<FlutterBarcodeSdkPlugin>();
 
   channel->SetMethodCallHandler(
       [plugin_pointer = plugin.get()](const auto &call, auto result) {
@@ -49,11 +49,11 @@ void BarcodeSdkPlugin::RegisterWithRegistrar(
   registrar->AddPlugin(std::move(plugin));
 }
 
-BarcodeSdkPlugin::BarcodeSdkPlugin() {}
+FlutterBarcodeSdkPlugin::FlutterBarcodeSdkPlugin() {}
 
-BarcodeSdkPlugin::~BarcodeSdkPlugin() {}
+FlutterBarcodeSdkPlugin::~FlutterBarcodeSdkPlugin() {}
 
-void BarcodeSdkPlugin::HandleMethodCall(
+void FlutterBarcodeSdkPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue> &method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
   if (method_call.method_name().compare("getPlatformVersion") == 0) {
@@ -74,9 +74,9 @@ void BarcodeSdkPlugin::HandleMethodCall(
 
 }  // namespace
 
-void BarcodeSdkPluginRegisterWithRegistrar(
+void FlutterBarcodeSdkPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
-  BarcodeSdkPlugin::RegisterWithRegistrar(
+  FlutterBarcodeSdkPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarManager::GetInstance()
           ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
 }

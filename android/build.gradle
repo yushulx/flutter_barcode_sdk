@@ -1,4 +1,4 @@
-group 'com.dynamsoft.barcode_sdk'
+group 'com.dynamsoft.flutter_barcode_sdk'
 version '1.0'
 
 buildscript {
