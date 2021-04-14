@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'dart:typed_data';
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -108,8 +109,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // Attempt to take a picture and get the file `image`
             // where it was saved.
             final image = await _controller.takePicture();
-
             String results = await _barcodeReader.decodeFile(image?.path);
+            // Uint8List bytes = await image.readAsBytes();
+            // String results = await _barcodeReader.decodeBytes(bytes);
+
             // If the picture was taken, display it on a new screen.
             Navigator.push(
               context,

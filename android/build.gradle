@@ -14,11 +14,11 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
+        maven {
+            url "http://download2.dynamsoft.com/maven/dbr/aar"
+        }
         google()
         jcenter()
-        maven {
-            url "http://download.dynamsoft.com/maven/dbr/aar"
-        }
     }
 }
 
@@ -33,5 +33,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.dynamsoft:dynamsoftbarcodereader:7.0.0@aar'
+    implementation 'com.dynamsoft:dynamsoftbarcodereader:8.2.0@aar'
 }

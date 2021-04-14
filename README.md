@@ -13,8 +13,6 @@ flutter run -d <device>
 
 ## Supported Platforms
 - Android
-- iOS
-
 
 
 ## Usage

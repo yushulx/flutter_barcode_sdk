@@ -1,6 +1,5 @@
-
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class FlutterBarcodeSdk {
@@ -13,10 +12,15 @@ class FlutterBarcodeSdk {
   }
 
   Future<void> initLicense(String license) async {
-    await _channel.invokeMethod('initLicense', [license]);
+    await _channel.invokeMethod('initLicense', {'license': license});
   }
 
   Future<String> decodeFile(String filename) async {
-    return await _channel.invokeMethod('decodeFile', [filename]);
+    return await _channel.invokeMethod('decodeFile', {'filename': filename});
+  }
+
+  Future<String> decodeBytes(Uint8List bytes) async {
+    assert(bytes.isNotEmpty);
+    return await _channel.invokeMethod('decodeBytes', {'bytes': bytes});
   }
 }

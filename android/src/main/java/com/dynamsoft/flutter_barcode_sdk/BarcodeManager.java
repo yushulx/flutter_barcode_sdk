@@ -1,13 +1,14 @@
 package com.dynamsoft.flutter_barcode_sdk;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.dynamsoft.barcode.BarcodeReader;
-import com.dynamsoft.barcode.BarcodeReaderException;
-import com.dynamsoft.barcode.EnumBarcodeFormat;
-import com.dynamsoft.barcode.EnumIntermediateResultType;
-import com.dynamsoft.barcode.PublicRuntimeSettings;
-import com.dynamsoft.barcode.TextResult;
+import com.dynamsoft.dbr.EnumImagePixelFormat;
+import com.dynamsoft.dbr.IntermediateResult;
+import com.dynamsoft.dbr.LocalizationResult;
+import com.dynamsoft.dbr.TextResult;
+import com.dynamsoft.dbr.BarcodeReader;
 
 public class BarcodeManager {
     private static final String TAG = "DynamsoftBarcodeReader";
@@ -26,7 +27,7 @@ public class BarcodeManager {
             Log.i(TAG, license);
             mBarcodeReader.initLicense(license);
         }
-        catch (BarcodeReaderException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -43,9 +44,28 @@ public class BarcodeManager {
 
                 return ret;
             }
-        } catch (BarcodeReaderException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "No Barcode Detected.";
+    }
+
+    public String decodeBytes(byte[] bytes) {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes != null ? bytes.length : 0);
+        try {
+            TextResult[] results = mBarcodeReader.decodeBufferedImage(bitmap, "");
+            if (results != null) {
+                String ret = "";
+                for (TextResult result: results) {
+                    ret += "Format: " + result.barcodeFormatString + ", ";
+                    ret += "Text: " + result.barcodeText + ". ";
+                }
+
+                return ret;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "No Barcode Detected."; 
     }
 }
