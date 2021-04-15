@@ -1,6 +1,6 @@
 # flutter_barcode_sdk
 
-A flutter plugin project for Dynamsoft Barcode Reader SDK.
+A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
 
 ## Try example
 
