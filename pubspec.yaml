@@ -1,5 +1,5 @@
 name: flutter_barcode_sdk
-description: A flutter plugin project for Dynamsoft Barcode Reader.
+description: A flutter plugin project for Dynamsoft Barcode Reader. Supporting linear barcode, QR Code, DataMatrix, MaxiCode and PDF417.
 version: 0.0.1
 homepage: https://www.dynamsoft.com/barcode-reader/overview/
 

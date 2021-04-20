@@ -14,8 +14,41 @@ flutter run -d <device>
 ## Supported Platforms
 - Android
 
-## TODO
-iOS, Windows, Web
+## Supported Barcode Symbologies
+- Linear Barcodes (1D)
+  - Code 39 (including Code 39 Extended)
+  - Code 93
+  - Code 128
+  - Codabar
+  - Interleaved 2 of 5
+  - EAN-8
+  - EAN-13
+  - UPC-A
+  - UPC-E
+  - Industrial 2 of 5
+
+- 2D Barcodes
+  - QR Code (including Micro QR Code and Model 1)
+  - Data Matrix
+  - PDF417 (including Micro PDF417)
+  - Aztec Code
+  - MaxiCode (mode 2-5)
+  - DotCode
+
+- Patch Code
+- GS1 Composite Code
+- GS1 DataBar
+  - Omnidirectional,
+  - Truncated, Stacked, Stacked
+  - Omnidirectional, Limited,
+  - Expanded, Expanded Stacked
+
+- Postal Codes
+  - USPS Intelligent Mail
+  - Postnet
+  - Planet
+  - Australian Post
+  - UK Royal Mail
 
 
 ## Usage
@@ -41,3 +74,5 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 ## Contact Us
 support@dynamsoft.com
 
+## TODO
+iOS, Windows, Web
