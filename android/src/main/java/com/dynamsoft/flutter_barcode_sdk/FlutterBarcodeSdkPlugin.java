@@ -1,13 +1,19 @@
 package com.dynamsoft.flutter_barcode_sdk;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * FlutterBarcodeSdkPlugin
@@ -26,9 +32,14 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     }
 
     private BarcodeManager mBarcodeManager;
+    private HandlerThread mHandlerThread;
+    private Handler mHandler;
+    private Executor mExcuctor;
 
     public FlutterBarcodeSdkPlugin() {
         mBarcodeManager = new BarcodeManager();
+        mHandler = new Handler(Looper.getMainLooper());
+        mExcuctor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -55,8 +66,20 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 final int height = call.argument("height");
                 final int stride = call.argument("stride");
                 final int format = call.argument("format");
-                String results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
-                result.success(results);
+                final Result r = result;
+                mExcuctor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final String results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                r.success(results);
+                            }
+                        });
+
+                    }
+                });
             }
             break;
             default:

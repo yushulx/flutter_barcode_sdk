@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
@@ -6,6 +7,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:camera_platform_interface/camera_platform_interface.dart';
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -20,32 +25,39 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-      theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
+      title: 'Dynamsoft Barcode Reader',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Dynamsoft Barcode Reader"),
+        ),
+        body: HomeScreen(
+          camera: firstCamera,
+        ),
       ),
     ),
   );
 }
 
-// A screen that allows users to take a picture using a given camera.
-class TakePictureScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   final CameraDescription camera;
 
-  const TakePictureScreen({
+  const HomeScreen({
     Key key,
     @required this.camera,
   }) : super(key: key);
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class TakePictureScreenState extends State<TakePictureScreen> {
+class HomeScreenState extends State<HomeScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
   FlutterBarcodeSdk _barcodeReader;
+  bool _isScanAvailable = true;
+  bool _isScanRunning = false;
+  String _barcodeResults = '';
+  String _buttonText = 'Start Video Scan';
 
   @override
   void initState() {
@@ -61,75 +73,154 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+    _initializeControllerFuture.then((_) {
+      setState(() {});
+    });
     // Initialize Dynamsoft Barcode Reader
-    initDynamsoftBarcodeReaderState();
+    _barcodeReader = FlutterBarcodeSdk();
   }
 
-  Future<void> initDynamsoftBarcodeReaderState() async {
-    _barcodeReader = FlutterBarcodeSdk();
+  void pictureScan() async {
+    final image = await _controller.takePicture();
+    String results = await _barcodeReader.decodeFile(image?.path);
+    // Uint8List bytes = await image.readAsBytes();
+    // String results = await _barcodeReader.decodeFileBytes(bytes);
+
+    // If the picture was taken, display it on a new screen.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DisplayPictureScreen(
+            // Pass the automatically generated path to
+            // the DisplayPictureScreen widget.
+            imagePath: image?.path,
+            barcodeResults: results),
+      ),
+    );
+  }
+
+  void videoScan() async {
+    if (!_isScanRunning) {
+      setState(() {
+        _buttonText = 'Stop Video Scan';
+      });
+      _isScanRunning = true;
+      await _controller.startImageStream((CameraImage availableImage) async {
+        assert(defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+        int format = FlutterBarcodeSdk.IF_UNKNOWN;
+
+        switch (availableImage.format.group) {
+          case ImageFormatGroup.yuv420:
+            format = FlutterBarcodeSdk.IF_YUV420;
+            break;
+          case ImageFormatGroup.bgra8888:
+            format = FlutterBarcodeSdk.IF_BRGA8888;
+            break;
+          default:
+            format = FlutterBarcodeSdk.IF_UNKNOWN;
+        }
+
+        if (!_isScanAvailable) {
+          return;
+        }
+
+        _isScanAvailable = false;
+
+        _barcodeReader
+            .decodeImageBuffer(
+                availableImage.planes[0].bytes,
+                availableImage.width,
+                availableImage.height,
+                availableImage.planes[0].bytesPerRow,
+                format)
+            .then((results) {
+          setState(() {
+            _barcodeResults = results;
+          });
+          _isScanAvailable = true;
+        }).catchError((error) {
+          _isScanAvailable = false;
+        });
+      });
+    } else {
+      setState(() {
+        _buttonText = 'Start Video Scan';
+        _barcodeResults = '';
+      });
+      _isScanRunning = false;
+      await _controller.stopImageStream();
+    }
   }
 
   @override
   void dispose() {
     // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
+  }
+
+  Widget getCameraWidget() {
+    if (!_controller.value.isInitialized) {
+      return Center(child: CircularProgressIndicator());
+    } else {
+      // https://stackoverflow.com/questions/49946153/flutter-camera-appears-stretched
+      final size = MediaQuery.of(context).size;
+      var scale = size.aspectRatio * _controller.value.aspectRatio;
+
+      if (scale < 1) scale = 1 / scale;
+
+      return Transform.scale(
+        scale: scale,
+        child: Center(
+          child: CameraPreview(_controller),
+        ),
+      );
+      // return CameraPreview(_controller);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Flutter Barcode Reader')),
-      // Wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner
-      // until the controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
-          } else {
-            // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
-        // Provide an onPressed callback.
-        onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
+    return Column(children: [
+      Expanded(child: getCameraWidget()),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+        Text(
+          _barcodeResults,
+          style: TextStyle(fontSize: 20, color: Colors.white.withOpacity(1.0)),
+        )
+      ]),
+      Container(
+        height: 100,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              MaterialButton(
+                  child: Text(_buttonText),
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  onPressed: () async {
+                    try {
+                      // Ensure that the camera is initialized.
+                      await _initializeControllerFuture;
 
-            // Attempt to take a picture and get the file `image`
-            // where it was saved.
-            final image = await _controller.takePicture();
-            String results = await _barcodeReader.decodeFile(image?.path);
-            // Uint8List bytes = await image.readAsBytes();
-            // String results = await _barcodeReader.decodeFileBytes(bytes);
-
-            // If the picture was taken, display it on a new screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                    // Pass the automatically generated path to
-                    // the DisplayPictureScreen widget.
-                    imagePath: image?.path,
-                    barcodeResults: results),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
+                      videoScan();
+                      // pictureScan();
+                    } catch (e) {
+                      // If an error occurs, log the error to the console.
+                      print(e);
+                    }
+                  }),
+              MaterialButton(
+                  child: Text("Picture Scan"),
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  onPressed: () async {
+                    pictureScan();
+                  })
+            ]),
       ),
-    );
+    ]);
   }
 }
 

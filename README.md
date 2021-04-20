@@ -1,8 +1,10 @@
 # flutter_barcode_sdk
+![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
 A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
 
 ## Try example
+The example allows users to scan barcodes via the camera video stream in real-time or read barcodes by taking a picture.
 
 ```
 cd example
@@ -11,7 +13,7 @@ flutter run -d <device>
 
 ![flutter barcode reader](https://www.codepool.biz/wp-content/uploads/2019/08/flutter-barcode-plugin.png)
 
-## Supported Platforms
+## Current Supported Platforms
 - Android
 
 ## Supported Barcode Symbologies
@@ -53,20 +55,36 @@ flutter run -d <device>
 
 ## Usage
 
-Get a [30-day FREE Trial license](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr) and set it as follows:
+- Read barcodes from an image file:
 
-```dart
-Future<void> initDynamsoftBarcodeReaderState() async {
-    FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
-    await _barcodeReader.initLicense('LICENSE-KEY');
+  ```dart
+  String results = await _barcodeReader.decodeFile(image-path);
+  ```
+
+- Read barcodes from video stream [CameraImage](https://pub.dev/documentation/camera/latest/camera/CameraImage-class.html):
+
+  ```dart
+  CameraImage availableImage;
+  int format = FlutterBarcodeSdk.IF_UNKNOWN;
+
+  switch (availableImage.format.group) {
+    case ImageFormatGroup.yuv420:
+      format = FlutterBarcodeSdk.IF_YUV420;
+      break;
+    case ImageFormatGroup.bgra8888:
+      format = FlutterBarcodeSdk.IF_BRGA8888;
+      break;
+    default:
+      format = FlutterBarcodeSdk.IF_UNKNOWN;
   }
-```
 
-Read barcodes from an image file:
-
-```dart
-String results = await _barcodeReader.decodeFile(image-path);
-```
+  String results = _barcodeReader.decodeImageBuffer(
+                availableImage.planes[0].bytes,
+                availableImage.width,
+                availableImage.height,
+                availableImage.planes[0].bytesPerRow,
+                format);
+  ```
 
 ## License Agreement
 https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx

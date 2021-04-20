@@ -1,3 +1,6 @@
+## 0.0.2
+* Added decodeImageBuffer() method for scanning barcodes from video stream
+
 ## 0.0.1
 
 * Added decodeFile() method for Android.

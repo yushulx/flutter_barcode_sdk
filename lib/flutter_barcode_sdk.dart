@@ -3,6 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class FlutterBarcodeSdk {
+  static const int IF_UNKNOWN = -1;
+  static const int IF_YUV420 = 0;
+  static const int IF_BRGA8888 = 1;
+
   static const MethodChannel _channel =
       const MethodChannel('flutter_barcode_sdk');
 

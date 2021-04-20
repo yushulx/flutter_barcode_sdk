@@ -59,6 +59,8 @@ public class BarcodeManager {
                     ret += "Text: " + result.barcodeText + ". ";
                 }
 
+                if (ret.equals(""))
+                    return "No Barcode Detected";
                 return ret;
             }
         } catch (Exception e) {
@@ -78,6 +80,8 @@ public class BarcodeManager {
                     ret += "Text: " + result.barcodeText + ". ";
                 }
 
+                if (ret.equals(""))
+                    return "No Barcode Detected";
                 return ret;
             }
         } catch (Exception e) {
@@ -89,10 +93,10 @@ public class BarcodeManager {
     public String decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
         int pixelFormat = EnumImagePixelFormat.IPF_BGR_888;
         switch(format) {
-            case 1:
+            case 0:
                 pixelFormat = EnumImagePixelFormat.IPF_GRAYSCALED;
                 break;
-            case 2:
+            case 1:
                 pixelFormat = EnumImagePixelFormat.IPF_ARGB_8888;
                 break;
         }
@@ -106,6 +110,8 @@ public class BarcodeManager {
                     ret += "Text: " + result.barcodeText + ". ";
                 }
 
+                if (ret.equals(""))
+                    return "No Barcode Detected";
                 return ret;
             }
         } catch (Exception e) {
