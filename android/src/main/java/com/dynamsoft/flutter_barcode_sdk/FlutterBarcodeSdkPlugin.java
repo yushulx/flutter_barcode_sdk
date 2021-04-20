@@ -37,44 +37,31 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
                 break;
-            case "initLicense":
-                final String license = call.argument("license");
-                mBarcodeManager.initLicense(license);
-                break;
             case "decodeFile": {
                 final String filename = call.argument("filename");
                 String results = mBarcodeManager.decodeFile(filename);
                 result.success(results);
             }
-
             break;
-            case "decodeBytes": {
+            case "decodeFileBytes": {
                 final byte[] bytes = call.argument("bytes");
-                String results = mBarcodeManager.decodeBytes(bytes);
+                String results = mBarcodeManager.decodeFileBytes(bytes);
                 result.success(results);
             }
-
+            break;
+            case "decodeImageBuffer": {
+                final byte[] bytes = call.argument("bytes");
+                final int width = call.argument("width");
+                final int height = call.argument("height");
+                final int stride = call.argument("stride");
+                final int format = call.argument("format");
+                String results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
+                result.success(results);
+            }
             break;
             default:
                 result.notImplemented();
         }
-
-        // if (call.method.equals("getPlatformVersion")) {
-        //   result.success("Android " + android.os.Build.VERSION.RELEASE);
-        // } else if (call.method.equals("initLicense")) {
-        //   final String license = call.argument("license");
-        //   mBarcodeManager.initLicense(license);
-        // } else if (call.method.equals("decodeFile")) {
-        //   final String filename = call.argument("filename")
-        //   String results = mBarcodeManager.decodeFile(filename);
-        //   result.success(results);
-        // } else if (call.method.equals("decodeBytes")) {
-        //   final byte[] bytes = call.argument("bytes");
-        //   String results = mBarcodeManager.decodeBytes(bytes);
-        //   result.success(results);
-        // } else {
-        //   result.notImplemented();
-        // }
     }
 
     @Override

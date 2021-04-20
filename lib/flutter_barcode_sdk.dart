@@ -11,16 +11,23 @@ class FlutterBarcodeSdk {
     return version;
   }
 
-  Future<void> initLicense(String license) async {
-    await _channel.invokeMethod('initLicense', {'license': license});
-  }
-
   Future<String> decodeFile(String filename) async {
     return await _channel.invokeMethod('decodeFile', {'filename': filename});
   }
 
-  Future<String> decodeBytes(Uint8List bytes) async {
+  Future<String> decodeFileBytes(Uint8List bytes) async {
     assert(bytes.isNotEmpty);
-    return await _channel.invokeMethod('decodeBytes', {'bytes': bytes});
+    return await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes});
+  }
+
+  Future<String> decodeImageBuffer(
+      Uint8List bytes, int width, int height, int stride, int format) async {
+    return await _channel.invokeMethod('decodeImageBuffer', {
+      'bytes': bytes,
+      'width': width,
+      'height': height,
+      'stride': stride,
+      'format': format
+    });
   }
 }

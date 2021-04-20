@@ -67,7 +67,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   Future<void> initDynamsoftBarcodeReaderState() async {
     _barcodeReader = FlutterBarcodeSdk();
-    await _barcodeReader.initLicense('LICENSE-KEY');
   }
 
   @override
@@ -111,7 +110,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             final image = await _controller.takePicture();
             String results = await _barcodeReader.decodeFile(image?.path);
             // Uint8List bytes = await image.readAsBytes();
-            // String results = await _barcodeReader.decodeBytes(bytes);
+            // String results = await _barcodeReader.decodeFileBytes(bytes);
 
             // If the picture was taken, display it on a new screen.
             Navigator.push(
