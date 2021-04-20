@@ -14,6 +14,9 @@ flutter run -d <device>
 ## Supported Platforms
 - Android
 
+## TODO
+iOS, Windows, Web
+
 
 ## Usage
 
