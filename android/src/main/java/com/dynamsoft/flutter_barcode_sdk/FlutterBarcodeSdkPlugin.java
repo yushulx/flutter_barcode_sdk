@@ -6,6 +6,8 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -34,12 +36,12 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     private BarcodeManager mBarcodeManager;
     private HandlerThread mHandlerThread;
     private Handler mHandler;
-    private Executor mExcuctor;
+    private final Executor mExecutor;
 
     public FlutterBarcodeSdkPlugin() {
         mBarcodeManager = new BarcodeManager();
         mHandler = new Handler(Looper.getMainLooper());
-        mExcuctor = Executors.newSingleThreadExecutor();
+        mExecutor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -50,13 +52,13 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 break;
             case "decodeFile": {
                 final String filename = call.argument("filename");
-                String results = mBarcodeManager.decodeFile(filename);
+                List<Map<String, Object>> results = mBarcodeManager.decodeFile(filename);
                 result.success(results);
             }
             break;
             case "decodeFileBytes": {
                 final byte[] bytes = call.argument("bytes");
-                String results = mBarcodeManager.decodeFileBytes(bytes);
+                List<Map<String, Object>> results = mBarcodeManager.decodeFileBytes(bytes);
                 result.success(results);
             }
             break;
@@ -67,10 +69,10 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 final int stride = call.argument("stride");
                 final int format = call.argument("format");
                 final Result r = result;
-                mExcuctor.execute(new Runnable() {
+                mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final String results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
+                        final List<Map<String, Object>> results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {

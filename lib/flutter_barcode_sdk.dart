@@ -15,23 +15,26 @@ class FlutterBarcodeSdk {
     return version;
   }
 
-  Future<String> decodeFile(String filename) async {
-    return await _channel.invokeMethod('decodeFile', {'filename': filename});
+  Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
+    return List<Map<dynamic, dynamic>>.from(
+        await _channel.invokeMethod('decodeFile', {'filename': filename}));
   }
 
-  Future<String> decodeFileBytes(Uint8List bytes) async {
+  Future<List<Map<dynamic, dynamic>>> decodeFileBytes(Uint8List bytes) async {
     assert(bytes.isNotEmpty);
-    return await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes});
+    return List<Map<dynamic, dynamic>>.from(
+        await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes}));
   }
 
-  Future<String> decodeImageBuffer(
+  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
       Uint8List bytes, int width, int height, int stride, int format) async {
-    return await _channel.invokeMethod('decodeImageBuffer', {
+    return List<Map<dynamic, dynamic>>.from(
+        await _channel.invokeMethod('decodeImageBuffer', {
       'bytes': bytes,
       'width': width,
       'height': height,
       'stride': stride,
       'format': format
-    });
+    }));
   }
 }

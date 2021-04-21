@@ -2,7 +2,6 @@ package com.dynamsoft.flutter_barcode_sdk;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.dynamsoft.dbr.DBRLTSLicenseVerificationListener;
 import com.dynamsoft.dbr.DMLTSConnectionParameters;
@@ -15,6 +14,11 @@ import com.dynamsoft.dbr.LocalizationResult;
 import com.dynamsoft.dbr.PublicRuntimeSettings;
 import com.dynamsoft.dbr.TextResult;
 import com.dynamsoft.dbr.BarcodeReader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BarcodeManager {
     private static final String TAG = "DynamsoftBarcodeReader";
@@ -49,48 +53,52 @@ public class BarcodeManager {
         }
     }
 
-    public String decodeFile(String filename) {
+    private void wrapResults(TextResult[] results, List<Map<String, Object>> out) {
+        if (results != null) {
+
+            for (TextResult result: results) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("format", result.barcodeFormatString);
+                data.put("text", result.barcodeText);
+                data.put("x1", result.localizationResult.resultPoints[0].x);
+                data.put("y1", result.localizationResult.resultPoints[0].y);
+                data.put("x2", result.localizationResult.resultPoints[1].x);
+                data.put("y2", result.localizationResult.resultPoints[1].y);
+                data.put("x3", result.localizationResult.resultPoints[2].x);
+                data.put("y3", result.localizationResult.resultPoints[2].y);
+                data.put("x4", result.localizationResult.resultPoints[3].x);
+                data.put("y4", result.localizationResult.resultPoints[3].y);
+                out.add(data);
+            }
+        }
+    }
+
+    public List<Map<String, Object>> decodeFile(String filename) {
+        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         try {
             TextResult[] results = mBarcodeReader.decodeFile(filename, "");
-            if (results != null) {
-                String ret = "";
-                for (TextResult result: results) {
-                    ret += "Format: " + result.barcodeFormatString + ", ";
-                    ret += "Text: " + result.barcodeText + ". ";
-                }
-
-                if (ret.equals(""))
-                    return "No Barcode Detected";
-                return ret;
-            }
+            wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "No Barcode Detected.";
+
+        return ret;
     }
 
-    public String decodeFileBytes(byte[] bytes) {
+    public List<Map<String, Object>> decodeFileBytes(byte[] bytes) {
+        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes != null ? bytes.length : 0);
         try {
             TextResult[] results = mBarcodeReader.decodeBufferedImage(bitmap, "");
-            if (results != null) {
-                String ret = "";
-                for (TextResult result: results) {
-                    ret += "Format: " + result.barcodeFormatString + ", ";
-                    ret += "Text: " + result.barcodeText + ". ";
-                }
-
-                if (ret.equals(""))
-                    return "No Barcode Detected";
-                return ret;
-            }
+            wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "No Barcode Detected."; 
+        return ret;
     }
 
-    public String decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
+    public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
+        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         int pixelFormat = EnumImagePixelFormat.IPF_BGR_888;
         switch(format) {
             case 0:
@@ -103,20 +111,10 @@ public class BarcodeManager {
 
         try {
             TextResult[] results = mBarcodeReader.decodeBuffer(bytes, width, height, stride, pixelFormat, "");
-            if (results != null) {
-                String ret = "";
-                for (TextResult result: results) {
-                    ret += "Format: " + result.barcodeFormatString + ", ";
-                    ret += "Text: " + result.barcodeText + ". ";
-                }
-
-                if (ret.equals(""))
-                    return "No Barcode Detected";
-                return ret;
-            }
+            wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "No Barcode Detected.";
+        return ret;
     }
 }

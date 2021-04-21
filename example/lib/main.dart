@@ -1,15 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
-import 'dart:typed_data';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 
 Future<void> main() async {
@@ -80,11 +77,27 @@ class HomeScreenState extends State<HomeScreen> {
     _barcodeReader = FlutterBarcodeSdk();
   }
 
+  String getBarcodeResults(List<Map<dynamic, dynamic>> results) {
+    StringBuffer sb = new StringBuffer();
+    for (Map<dynamic, dynamic> data in results) {
+      sb.write(data['format']);
+      sb.write("\n");
+      sb.write(data['text']);
+      sb.write("\n\n");
+    }
+    if (results.length == 0) sb.write("No Barcode Detected");
+
+    return sb.toString();
+  }
+
   void pictureScan() async {
     final image = await _controller.takePicture();
-    String results = await _barcodeReader.decodeFile(image?.path);
+    List<Map<dynamic, dynamic>> results =
+        await _barcodeReader.decodeFile(image?.path);
+
     // Uint8List bytes = await image.readAsBytes();
-    // String results = await _barcodeReader.decodeFileBytes(bytes);
+    // List<Map<dynamic, dynamic>> results =
+    //     await _barcodeReader.decodeFileBytes(bytes);
 
     // If the picture was taken, display it on a new screen.
     Navigator.push(
@@ -94,7 +107,7 @@ class HomeScreenState extends State<HomeScreen> {
             // Pass the automatically generated path to
             // the DisplayPictureScreen widget.
             imagePath: image?.path,
-            barcodeResults: results),
+            barcodeResults: getBarcodeResults(results)),
       ),
     );
   }
@@ -135,9 +148,12 @@ class HomeScreenState extends State<HomeScreen> {
                 availableImage.planes[0].bytesPerRow,
                 format)
             .then((results) {
-          setState(() {
-            _barcodeResults = results;
-          });
+          if (_isScanRunning) {
+            setState(() {
+              _barcodeResults = getBarcodeResults(results);
+            });
+          }
+
           _isScanAvailable = true;
         }).catchError((error) {
           _isScanAvailable = false;
@@ -184,12 +200,15 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Column(children: [
       Expanded(child: getCameraWidget()),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text(
-          _barcodeResults,
-          style: TextStyle(fontSize: 20, color: Colors.white.withOpacity(1.0)),
-        )
-      ]),
+      Container(
+        height: 100,
+        child: Row(children: <Widget>[
+          Text(
+            _barcodeResults,
+            style: TextStyle(fontSize: 14, color: Colors.white),
+          )
+        ]),
+      ),
       Container(
         height: 100,
         child: Row(
@@ -257,8 +276,7 @@ class DisplayPictureScreen extends StatelessWidget {
               // 'Dynamsoft Barcode Reader',
               barcodeResults,
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontSize: 14,
                 color: Colors.white,
               ),
             ),
