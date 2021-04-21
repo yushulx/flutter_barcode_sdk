@@ -11,6 +11,12 @@ cd example
 flutter run -d <device>
 ```
 
+Video Scan
+
+![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-barcode-scanner-camera.gif)
+
+Picture Scan
+
 ![flutter barcode reader](https://www.codepool.biz/wp-content/uploads/2019/08/flutter-barcode-plugin.png)
 
 ## Current Supported Platforms
