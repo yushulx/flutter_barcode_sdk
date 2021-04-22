@@ -1,3 +1,6 @@
+## 0.0.4
+* Added a BarcodeResult class.
+
 ## 0.0.3
 * Return barcode results as objects instead of strings.
 
