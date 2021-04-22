@@ -77,12 +77,12 @@ class HomeScreenState extends State<HomeScreen> {
     _barcodeReader = FlutterBarcodeSdk();
   }
 
-  String getBarcodeResults(List<Map<dynamic, dynamic>> results) {
+  String getBarcodeResults(List<BarcodeResult> results) {
     StringBuffer sb = new StringBuffer();
-    for (Map<dynamic, dynamic> data in results) {
-      sb.write(data['format']);
+    for (BarcodeResult result in results) {
+      sb.write(result.format);
       sb.write("\n");
-      sb.write(data['text']);
+      sb.write(result.text);
       sb.write("\n\n");
     }
     if (results.length == 0) sb.write("No Barcode Detected");
@@ -92,11 +92,10 @@ class HomeScreenState extends State<HomeScreen> {
 
   void pictureScan() async {
     final image = await _controller.takePicture();
-    List<Map<dynamic, dynamic>> results =
-        await _barcodeReader.decodeFile(image?.path);
+    List<BarcodeResult> results = await _barcodeReader.decodeFile(image?.path);
 
     // Uint8List bytes = await image.readAsBytes();
-    // List<Map<dynamic, dynamic>> results =
+    // List<BarcodeResult> results =
     //     await _barcodeReader.decodeFileBytes(bytes);
 
     // If the picture was taken, display it on a new screen.
