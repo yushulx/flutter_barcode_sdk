@@ -64,7 +64,7 @@ Picture Scan
 - Read barcodes from an image file:
 
   ```dart
-  String results = await _barcodeReader.decodeFile(image-path);
+  List<BarcodeResult> results = await _barcodeReader.decodeFile(image-path);
   ```
 
 - Read barcodes from video stream [CameraImage](https://pub.dev/documentation/camera/latest/camera/CameraImage-class.html):
@@ -84,7 +84,7 @@ Picture Scan
       format = FlutterBarcodeSdk.IF_UNKNOWN;
   }
 
-  String results = _barcodeReader.decodeImageBuffer(
+  List<BarcodeResult> results = _barcodeReader.decodeImageBuffer(
                 availableImage.planes[0].bytes,
                 availableImage.width,
                 availableImage.height,
