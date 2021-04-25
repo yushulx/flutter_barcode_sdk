@@ -11,6 +11,19 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+String getBarcodeResults(List<BarcodeResult> results) {
+  StringBuffer sb = new StringBuffer();
+  for (BarcodeResult result in results) {
+    sb.write(result.format);
+    sb.write("\n");
+    sb.write(result.text);
+    sb.write("\n\n");
+  }
+  if (results.length == 0) sb.write("No Barcode Detected");
+
+  return sb.toString();
+}
+
 Future<void> main() async {
   if (kIsWeb) {
     runApp(MyApp());
@@ -50,11 +63,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  final _controller = TextEditingController();
+  String _barcodeResults = '';
+  FlutterBarcodeSdk _barcodeReader;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    _barcodeReader = FlutterBarcodeSdk();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -81,13 +99,49 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Dynamsoft Barcode Reader'),
+          ),
+          body: Column(children: [
+            Container(
+              height: 100,
+              child: Row(children: <Widget>[
+                Text(
+                  _platformVersion,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                )
+              ]),
+            ),
+            TextField(
+              controller: _controller,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  _barcodeResults,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
+              ),
+            ),
+            Container(
+              height: 100,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    MaterialButton(
+                        child: Text('Decode Barcode'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          List<BarcodeResult> results =
+                              await _barcodeReader.decodeFile(_controller.text);
+                          setState(() {
+                            _barcodeResults = getBarcodeResults(results);
+                          });
+                        }),
+                  ]),
+            ),
+          ])),
     );
   }
 }
@@ -132,19 +186,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
     // Initialize Dynamsoft Barcode Reader
     _barcodeReader = FlutterBarcodeSdk();
-  }
-
-  String getBarcodeResults(List<BarcodeResult> results) {
-    StringBuffer sb = new StringBuffer();
-    for (BarcodeResult result in results) {
-      sb.write(result.format);
-      sb.write("\n");
-      sb.write(result.text);
-      sb.write("\n\n");
-    }
-    if (results.length == 0) sb.write("No Barcode Detected");
-
-    return sb.toString();
   }
 
   void pictureScan() async {
