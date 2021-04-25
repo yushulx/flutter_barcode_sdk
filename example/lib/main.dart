@@ -6,33 +6,90 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 Future<void> main() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    runApp(MyApp());
+  } else if (Platform.isAndroid) {
+    // Ensure that plugin services are initialized so that `availableCameras()`
+    // can be called before `runApp()`
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
+    // Obtain a list of the available cameras on the device.
+    final cameras = await availableCameras();
 
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
+    // Get a specific camera from the list of available cameras.
+    final firstCamera = cameras.first;
 
-  runApp(
-    MaterialApp(
-      title: 'Dynamsoft Barcode Reader',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Dynamsoft Barcode Reader"),
-        ),
-        body: HomeScreen(
-          camera: firstCamera,
+    runApp(
+      MaterialApp(
+        title: 'Dynamsoft Barcode Reader',
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text("Dynamsoft Barcode Reader"),
+          ),
+          body: HomeScreen(
+            camera: firstCamera,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  } else {
+    runApp(MyApp());
+  }
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String _platformVersion = 'Unknown';
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      platformVersion = await FlutterBarcodeSdk.platformVersion;
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: Center(
+          child: Text('Running on: $_platformVersion\n'),
+        ),
+      ),
+    );
+  }
 }
 
 class HomeScreen extends StatefulWidget {
