@@ -1,4 +1,5 @@
 #include "include/flutter_barcode_sdk/flutter_barcode_sdk_plugin.h"
+#include "include/DynamsoftBarcodeReader.h"
 
 // This must be included before many other Windows headers.
 #include <windows.h>
@@ -14,6 +15,9 @@
 #include <memory>
 #include <sstream>
 
+using namespace std;
+using namespace dynamsoft::dbr;
+
 namespace {
 
 class FlutterBarcodeSdkPlugin : public flutter::Plugin {
@@ -25,6 +29,7 @@ class FlutterBarcodeSdkPlugin : public flutter::Plugin {
   virtual ~FlutterBarcodeSdkPlugin();
 
  private:
+  CBarcodeReader reader;
   // Called when a method is called on this plugin's channel from Dart.
   void HandleMethodCall(
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
@@ -66,6 +71,8 @@ void FlutterBarcodeSdkPlugin::HandleMethodCall(
     } else if (IsWindows7OrGreater()) {
       version_stream << "7";
     }
+    version_stream << ". Dynamsoft Barcode Reader version: ";
+    version_stream << CBarcodeReader::GetVersion();
     result->Success(flutter::EncodableValue(version_stream.str()));
   } else {
     result->NotImplemented();
