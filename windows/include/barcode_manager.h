@@ -21,7 +21,7 @@ class BarcodeManager {
      BarcodeManager() 
      {
          reader = new CBarcodeReader();
-         reader->InitLicense("");
+         reader->InitLicense(""); // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
      };
 
     ~BarcodeManager() 
@@ -34,17 +34,9 @@ class BarcodeManager {
         return reader->GetVersion();
     }
 
-    EncodableList DecodeFile(const char * filename) 
+    EncodableList WrapResults() 
     {
         EncodableList out;
-        int ret = reader->DecodeFile(filename, "");
-
-        if (ret == DBRERR_FILE_NOT_FOUND)
-        {
-            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
-            return out;
-        }
-
         TextResultArray *results = NULL;
         reader->GetAllTextResults(&results);
             
@@ -63,8 +55,49 @@ class BarcodeManager {
         }
 
         CBarcodeReader::FreeTextResults(&results);
-
         return out;
+    }
+
+    void SetLicense(const char * license) 
+    {
+        reader->InitLicense(license);
+    }
+
+    EncodableList DecodeFile(const char * filename) 
+    {
+        EncodableList out;   
+        int ret = reader->DecodeFile(filename, "");
+
+        if (ret == DBRERR_FILE_NOT_FOUND)
+        {
+            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
+            return out;
+        }
+
+        return WrapResults();
+    }
+
+    EncodableList DecodeFileBytes(const unsigned char * bytes, int size) 
+    {
+        reader->DecodeFileInMemory(bytes, size, "");
+        return WrapResults();
+    }
+
+    EncodableList DecodeImageBuffer(const unsigned char * buffer, int width, int height, int stride, int format) 
+    {
+        ImagePixelFormat pixelFormat = IPF_BGR_888;
+        switch(format) {
+            case 0:
+                pixelFormat = IPF_GRAYSCALED;
+                break;
+            case 1:
+                pixelFormat = IPF_ARGB_8888;
+                break;
+        }
+
+        reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
+
+        return WrapResults();
     }
 
     private:

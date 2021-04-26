@@ -50,6 +50,10 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
                 break;
+            case "setLicense": {
+                final String license = call.argument("license");
+                mBarcodeManager.setLicense(license);
+            }
             case "decodeFile": {
                 final String filename = call.argument("filename");
                 List<Map<String, Object>> results = mBarcodeManager.decodeFile(filename);

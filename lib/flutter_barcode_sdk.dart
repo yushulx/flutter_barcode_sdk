@@ -20,6 +20,12 @@ class FlutterBarcodeSdk {
     return ret.map((data) => BarcodeResult.fromJson(data)).toList();
   }
 
+  /// Set Dynamsoft Barcode Reader License Key
+  /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense
+  Future<void> setLicense(String license) async {
+    await _channel.invokeMethod('setLicense', {'license': license});
+  }
+
   /// Decodes barcodes from an image file.
   Future<List<BarcodeResult>> decodeFile(String filename) async {
     List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(

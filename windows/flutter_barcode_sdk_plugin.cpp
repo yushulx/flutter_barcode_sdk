@@ -18,9 +18,9 @@
 namespace
 {
 
+  using flutter::EncodableList;
   using flutter::EncodableMap;
   using flutter::EncodableValue;
-  using flutter::EncodableList;
 
   class FlutterBarcodeSdkPlugin : public flutter::Plugin
   {
@@ -72,7 +72,7 @@ namespace
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
   {
-    const auto* arguments = std::get_if<EncodableMap>(method_call.arguments());
+    const auto *arguments = std::get_if<EncodableMap>(method_call.arguments());
 
     if (method_call.method_name().compare("getPlatformVersion") == 0)
     {
@@ -94,28 +94,96 @@ namespace
       version_stream << manager->GetVersion();
       result->Success(EncodableValue(version_stream.str()));
     }
+    else if (method_call.method_name().compare("setLicense") == 0)
+    {
+      std::string license;
+
+      if (arguments)
+      {
+        auto license_it = arguments->find(EncodableValue("license"));
+        if (license_it != arguments->end())
+        {
+          license = std::get<std::string>(license_it->second);
+        }
+        manager->SetLicense(license.c_str());
+      }
+    }
     else if (method_call.method_name().compare("decodeFile") == 0)
     {
       std::string filename;
       EncodableList results;
 
-      if (arguments) {
+      if (arguments)
+      {
         auto filename_it = arguments->find(EncodableValue("filename"));
-        if (filename_it != arguments->end()) {
+        if (filename_it != arguments->end())
+        {
           filename = std::get<std::string>(filename_it->second);
-          results = manager->DecodeFile(filename.c_str());
-          result->Success(results);
-          return;
         }
+        results = manager->DecodeFile(filename.c_str());
       }
 
       result->Success(results);
     }
     else if (method_call.method_name().compare("decodeFileBytes") == 0)
     {
+      std::vector<unsigned char> bytes;
+      EncodableList results;
+
+      if (arguments)
+      {
+        auto bytes_it = arguments->find(EncodableValue("bytes"));
+        if (bytes_it != arguments->end())
+        {
+          bytes = std::get<vector<unsigned char>>(bytes_it->second);
+        }
+
+        results = manager->DecodeFileBytes(reinterpret_cast<unsigned char*>(bytes.data()), (int)bytes.size());
+      }
+
+      result->Success(results);
     }
     else if (method_call.method_name().compare("decodeImageBuffer") == 0)
     {
+      std::vector<unsigned char> bytes;
+      EncodableList results;
+      int width = 0, height = 0, stride = 0, format = 0;
+
+      if (arguments)
+      {
+        auto bytes_it = arguments->find(EncodableValue("bytes"));
+        if (bytes_it != arguments->end())
+        {
+          bytes = std::get<vector<unsigned char>>(bytes_it->second);
+        }
+
+        auto width_it = arguments->find(EncodableValue("width"));
+        if (width_it != arguments->end())
+        {
+          width = std::get<int>(width_it->second);
+        }
+
+        auto height_it = arguments->find(EncodableValue("height"));
+        if (height_it != arguments->end())
+        {
+          height = std::get<int>(height_it->second);
+        }
+
+        auto stride_it = arguments->find(EncodableValue("stride"));
+        if (stride_it != arguments->end())
+        {
+          stride = std::get<int>(stride_it->second);
+        }
+
+        auto format_it = arguments->find(EncodableValue("format"));
+        if (format_it != arguments->end())
+        {
+          format = std::get<int>(format_it->second);
+        }
+        results = manager->DecodeImageBuffer(reinterpret_cast<unsigned char*>(bytes.data()), width, height, stride, format);
+      }
+
+      result->Success(results);
     }
     else
     {

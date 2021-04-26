@@ -3,6 +3,7 @@ package com.dynamsoft.flutter_barcode_sdk;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.dynamsoft.dbr.BarcodeReaderException;
 import com.dynamsoft.dbr.DBRLTSLicenseVerificationListener;
 import com.dynamsoft.dbr.DMLTSConnectionParameters;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
@@ -70,6 +71,14 @@ public class BarcodeManager {
                 data.put("y4", result.localizationResult.resultPoints[3].y);
                 out.add(data);
             }
+        }
+    }
+
+    public void setLicense(String license) {
+        try {
+            mBarcodeReader.initLicense(license);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

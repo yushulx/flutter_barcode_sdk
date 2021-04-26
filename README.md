@@ -3,7 +3,9 @@
 
 A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
 
-## Try example
+## Try Example
+
+### Mobile(Android)
 The example allows users to scan barcodes via the camera video stream in real-time or read barcodes by taking a picture.
 
 ```
@@ -17,10 +19,25 @@ Video Scan
 
 Picture Scan
 
-![flutter barcode reader](https://www.codepool.biz/wp-content/uploads/2019/08/flutter-barcode-plugin.png)
+![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
-## Current Supported Platforms
-- Android
+### Windows Desktop
+Input a valid image path for barcode decoding.
+
+```
+cd example
+flutter run -d windows
+```
+
+![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
+
+## Currently Supported Platforms
+- **Android**, **Windows**
+
+### Methods
+- Future<List<BarcodeResult>> decodeFile(String filename) async
+- Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async
+- Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async
 
 ## Supported Barcode Symbologies
 - Linear Barcodes (1D)
@@ -66,6 +83,12 @@ Picture Scan
   ```dart
   List<BarcodeResult> results = await _barcodeReader.decodeFile(image-path);
   ```
+- Read barcodes from image file bytes:
+
+  ```dart
+  Uint8List bytes = await File(image-path).readAsBytes();
+  List<BarcodeResult> results = await _barcodeReader.decodeFileBytes(bytes);
+  ```
 
 - Read barcodes from video stream [CameraImage](https://pub.dev/documentation/camera/latest/camera/CameraImage-class.html):
 
@@ -92,6 +115,9 @@ Picture Scan
                 format);
   ```
 
+## Trial License
+Apply for a [30-day FREE trial license](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr) to unlock all Dynamsoft Barcode Reader APIs.
+
 ## License Agreement
 https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 
@@ -99,4 +125,4 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 support@dynamsoft.com
 
 ## TODO
-iOS, Windows, Web
+iOS, Web

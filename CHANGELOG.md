@@ -1,3 +1,6 @@
+## 0.0.6
+* Added Windows platform support.
+
 ## 0.0.5
 * Updated README.md.
 
