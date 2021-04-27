@@ -3,6 +3,10 @@
 
 A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
 
+## What You Should Know
+- [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
+- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
+
 ## Try Example
 
 ### Mobile(Android)
@@ -114,9 +118,6 @@ flutter run -d windows
                 availableImage.planes[0].bytesPerRow,
                 format);
   ```
-
-## Trial License
-Apply for a [30-day FREE trial license](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr) to unlock all Dynamsoft Barcode Reader APIs.
 
 ## License Agreement
 https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
