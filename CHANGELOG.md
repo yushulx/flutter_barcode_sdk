@@ -1,3 +1,6 @@
+## 0.0.8
+* Fixed coordinate values in Windows plugin.
+
 ## 0.0.7
 * Added assets.
 * Optimized sample code for Windows desktop.
