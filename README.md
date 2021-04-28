@@ -39,9 +39,9 @@ flutter run -d windows
 - **Android**, **Windows**
 
 ### Methods
-- Future<List<BarcodeResult>> decodeFile(String filename) async
-- Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async
-- Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async
+- `Future<List<BarcodeResult>> decodeFile(String filename) async`
+- `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`
+- `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`
 
 ## Supported Barcode Symbologies
 - Linear Barcodes (1D)
@@ -123,7 +123,7 @@ flutter run -d windows
 https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 
 ## Contact Us
-support@dynamsoft.com
+<support@dynamsoft.com>
 
 ## TODO
 iOS, Web
