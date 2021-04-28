@@ -1,3 +1,7 @@
+## 0.0.7
+* Added assets.
+* Optimized sample code for Windows desktop.
+
 ## 0.0.6
 * Added Windows platform support.
 

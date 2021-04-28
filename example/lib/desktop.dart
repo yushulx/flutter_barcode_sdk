@@ -16,7 +16,8 @@ class _DesktopState extends State<Desktop> {
   final _controller = TextEditingController();
   String _barcodeResults = '';
   FlutterBarcodeSdk _barcodeReader;
-  bool _validate = false;
+  bool _isValid = false;
+  String _file = '';
 
   @override
   void initState() {
@@ -51,6 +52,14 @@ class _DesktopState extends State<Desktop> {
     });
   }
 
+  Widget getDefaultImage() {
+    if (_controller.text.isEmpty || !_isValid) {
+      return Image.asset('images/default.png');
+    } else {
+      return Image.file(File(_file));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -72,14 +81,19 @@ class _DesktopState extends State<Desktop> {
               controller: _controller,
               decoration: InputDecoration(
                 labelText: 'Input an image path',
-                errorText: _validate ? 'File not exists' : null,
+                errorText: _isValid ? null : 'File not exists',
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(
-                  _barcodeResults,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                child: Column(
+                  children: [
+                    getDefaultImage(),
+                    Text(
+                      _barcodeResults,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -95,7 +109,9 @@ class _DesktopState extends State<Desktop> {
                         onPressed: () async {
                           if (_controller.text.isEmpty) {
                             setState(() {
-                              _validate = true;
+                              _isValid = false;
+                              _barcodeResults = '';
+                              _file = '';
                             });
                             return;
                           }
@@ -106,9 +122,16 @@ class _DesktopState extends State<Desktop> {
                           File file = File(_controller.text);
                           if (!file.existsSync()) {
                             setState(() {
-                              _validate = true;
+                              _isValid = false;
+                              _barcodeResults = '';
+                              _file = '';
                             });
                             return;
+                          } else {
+                            setState(() {
+                              _isValid = true;
+                              _file = _controller.text;
+                            });
                           }
                           Uint8List bytes = await file.readAsBytes();
                           List<BarcodeResult> results =
