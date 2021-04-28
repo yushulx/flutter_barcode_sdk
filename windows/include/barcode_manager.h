@@ -51,6 +51,14 @@ class BarcodeManager {
             EncodableMap map;
             map[EncodableValue("format")] = results->results[index]->barcodeFormatString;
             map[EncodableValue("text")] = results->results[index]->barcodeText;
+            map[EncodableValue("x1")] = results->results[index]->localizationResult->x1;
+            map[EncodableValue("y1")] = results->results[index]->localizationResult->y1;
+            map[EncodableValue("x2")] = results->results[index]->localizationResult->x2;
+            map[EncodableValue("y2")] = results->results[index]->localizationResult->y2;
+            map[EncodableValue("x3")] = results->results[index]->localizationResult->x3;
+            map[EncodableValue("y3")] = results->results[index]->localizationResult->y3;
+            map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
+            map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
             out.push_back(map);
         }
 
