@@ -59,6 +59,7 @@ class BarcodeManager {
             map[EncodableValue("y3")] = results->results[index]->localizationResult->y3;
             map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
             map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
+            map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
             out.push_back(map);
         }
 

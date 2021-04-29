@@ -1,3 +1,6 @@
+## 0.0.9
+* Added barcode angle value.
+
 ## 0.0.8
 * Fixed coordinate values in Windows plugin.
 

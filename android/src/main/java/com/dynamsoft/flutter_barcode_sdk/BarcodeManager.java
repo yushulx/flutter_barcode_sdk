@@ -69,6 +69,7 @@ public class BarcodeManager {
                 data.put("y3", result.localizationResult.resultPoints[2].y);
                 data.put("x4", result.localizationResult.resultPoints[3].x);
                 data.put("y4", result.localizationResult.resultPoints[3].y);
+                data.put("angle", result.localizationResult.angle);
                 out.add(data);
             }
         }
