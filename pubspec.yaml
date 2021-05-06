@@ -5,7 +5,7 @@ homepage: https://www.dynamsoft.com/barcode-reader/overview/
 repository: https://github.com/yushulx/flutter_barcode_sdk
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.3 <3.0.0"
   flutter: ">=1.20.0"
 
 dependencies:

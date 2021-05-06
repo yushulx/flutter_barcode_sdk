@@ -56,6 +56,12 @@ class FlutterBarcodeSdk {
     }));
     return _convertResults(ret);
   }
+
+  /// Decodes barcodes from webcam stream.
+  /// Web only!
+  Future<void> decodeVideo() async {
+    await _channel.invokeMethod('decodeVideo');
+  }
 }
 
 /// Barcode result contains barcode format, result, and coordinate points

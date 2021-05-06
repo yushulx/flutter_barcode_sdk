@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
@@ -9,6 +12,10 @@ class Web extends StatefulWidget {
 
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
+  FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
+  final _controller = TextEditingController();
+  bool _isValid = false;
+  String _file = '';
 
   @override
   void initState() {
@@ -36,17 +43,37 @@ class _WebState extends State<Web> {
     });
   }
 
+  Widget getDefaultImage() {
+    if (_controller.text.isEmpty || !_isValid) {
+      return Image.asset('images/default.png');
+    } else {
+      return Image.file(File(_file));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Dynamsoft Barcode Reader'),
+          ),
+          body: Column(children: [
+            Container(
+              height: 100,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    MaterialButton(
+                        child: Text('Barcode Scanner'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          _barcodeReader.decodeVideo();
+                        }),
+                  ]),
+            ),
+          ])),
     );
   }
 }
