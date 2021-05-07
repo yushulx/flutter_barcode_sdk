@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_sdk/barcode_result.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk_example/utils.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Web extends StatefulWidget {
   @override
@@ -9,6 +12,10 @@ class Web extends StatefulWidget {
 
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
+  FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
+  String _file;
+  String _barcodeResults = '';
+  final picker = ImagePicker();
 
   @override
   void initState() {
@@ -36,17 +43,84 @@ class _WebState extends State<Web> {
     });
   }
 
+  void updateResults(List<BarcodeResult> results) {
+    setState(() {
+      _barcodeResults = getBarcodeResults(results);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Dynamsoft Barcode Reader'),
+          ),
+          body: Column(children: [
+            Container(
+              height: 100,
+              child: Row(children: <Widget>[
+                Text(
+                  _platformVersion,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                )
+              ]),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _file == null
+                        ? Image.asset('images/default.png')
+                        : Image.network(_file),
+                    Text(
+                      _barcodeResults,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 100,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    MaterialButton(
+                        child: Text('Barcode Reader'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          final pickedFile =
+                              await picker.getImage(source: ImageSource.camera);
+
+                          setState(() {
+                            if (pickedFile != null) {
+                              _file = pickedFile.path;
+                            } else {
+                              print('No image selected.');
+                            }
+
+                            _barcodeResults = '';
+                          });
+
+                          if (_file != null) {
+                            List<BarcodeResult> results =
+                                await _barcodeReader.decodeFile(_file);
+                            updateResults(results);
+                          }
+                        }),
+                    MaterialButton(
+                        child: Text('Barcode Scanner'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          _barcodeReader.decodeVideo(
+                              (results) => {updateResults(results)});
+                        }),
+                  ]),
+            ),
+          ])),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk/barcode_result.dart';
 
 String getBarcodeResults(List<BarcodeResult> results) {
   StringBuffer sb = new StringBuffer();
