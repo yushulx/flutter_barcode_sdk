@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Web extends StatefulWidget {
@@ -14,11 +15,9 @@ class Web extends StatefulWidget {
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
   FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
-  bool _isValid = false;
-  String _file = '';
+  String _file;
   String _barcodeResults = '';
   final picker = ImagePicker();
-  Image _image;
 
   @override
   void initState() {
@@ -46,20 +45,6 @@ class _WebState extends State<Web> {
     });
   }
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = Image.network(pickedFile.path);
-        print(pickedFile.path);
-        print(_image);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -81,7 +66,9 @@ class _WebState extends State<Web> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _image == null ? Image.asset('images/default.png') : _image,
+                    _file == null
+                        ? Image.asset('images/default.png')
+                        : Image.network(_file),
                     Text(
                       _barcodeResults,
                       style: TextStyle(fontSize: 14, color: Colors.black),
@@ -100,7 +87,26 @@ class _WebState extends State<Web> {
                         textColor: Colors.white,
                         color: Colors.blue,
                         onPressed: () async {
-                          getImage();
+                          final pickedFile =
+                              await picker.getImage(source: ImageSource.camera);
+
+                          setState(() {
+                            if (pickedFile != null) {
+                              _file = pickedFile.path;
+                            } else {
+                              print('No image selected.');
+                            }
+
+                            _barcodeResults = '';
+                          });
+
+                          if (_file != null) {
+                            List<BarcodeResult> results =
+                                await _barcodeReader.decodeFile(_file);
+                            setState(() {
+                              _barcodeResults = getBarcodeResults(results);
+                            });
+                          }
                         }),
                     MaterialButton(
                         child: Text('Barcode Scanner'),
