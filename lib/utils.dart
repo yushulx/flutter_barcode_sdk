@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 import 'dart:js_util';
 import 'package:js/js.dart';
 

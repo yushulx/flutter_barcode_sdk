@@ -2,6 +2,7 @@
 library dynamsoft;
 
 import 'dart:convert';
+import 'dart:js';
 import 'package:js/js.dart';
 import 'utils.dart';
 
@@ -14,12 +15,13 @@ class DBR {
 class BarcodeScanner {
   external static PromiseJsImpl<BarcodeScanner> createInstance();
   external void show();
+  external set onFrameRead(Function func);
 }
 
 @JS('DBR.BarcodeReader')
 class BarcodeReader {
   external static PromiseJsImpl<BarcodeReader> createInstance();
-  external PromiseJsImpl<List<dynamic>> decode(String file);
+  external PromiseJsImpl<List<dynamic>> decode(dynamic file);
 }
 
 class BarcodeManager {
@@ -28,6 +30,8 @@ class BarcodeManager {
 
   void initBarcodeScanner(BarcodeScanner scanner) {
     _barcodeScanner = scanner;
+    _barcodeScanner.onFrameRead =
+        allowInterop((results) => {print(_resultWrapper(results))});
   }
 
   void initBarcodeReader(BarcodeReader reader) {
@@ -46,11 +50,8 @@ class BarcodeManager {
     _barcodeScanner.show();
   }
 
-  Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
+  List<Map<dynamic, dynamic>> _resultWrapper(List<dynamic> barcodeResults) {
     List<Map<dynamic, dynamic>> results = [];
-
-    List<dynamic> barcodeResults =
-        await handleThenable(_barcodeReader.decode(filename));
 
     for (dynamic result in barcodeResults) {
       Map value = json.decode(stringify(result));
@@ -71,5 +72,12 @@ class BarcodeManager {
     }
 
     return results;
+  }
+
+  Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
+    List<dynamic> barcodeResults =
+        await handleThenable(_barcodeReader.decode(filename));
+
+    return _resultWrapper(barcodeResults);
   }
 }
