@@ -43,6 +43,12 @@ class _WebState extends State<Web> {
     });
   }
 
+  void updateResults(List<BarcodeResult> results) {
+    setState(() {
+      _barcodeResults = getBarcodeResults(results);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -101,9 +107,7 @@ class _WebState extends State<Web> {
                           if (_file != null) {
                             List<BarcodeResult> results =
                                 await _barcodeReader.decodeFile(_file);
-                            setState(() {
-                              _barcodeResults = getBarcodeResults(results);
-                            });
+                            updateResults(results);
                           }
                         }),
                     MaterialButton(
@@ -111,7 +115,8 @@ class _WebState extends State<Web> {
                         textColor: Colors.white,
                         color: Colors.blue,
                         onPressed: () async {
-                          _barcodeReader.decodeVideo();
+                          _barcodeReader.decodeVideo(
+                              (results) => {updateResults(results)});
                         }),
                   ]),
             ),
