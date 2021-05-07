@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Web extends StatefulWidget {
   @override
@@ -13,9 +14,11 @@ class Web extends StatefulWidget {
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
   FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
-  final _controller = TextEditingController();
   bool _isValid = false;
   String _file = '';
+  String _barcodeResults = '';
+  final picker = ImagePicker();
+  Image _image;
 
   @override
   void initState() {
@@ -43,12 +46,18 @@ class _WebState extends State<Web> {
     });
   }
 
-  Widget getDefaultImage() {
-    if (_controller.text.isEmpty || !_isValid) {
-      return Image.asset('images/default.png');
-    } else {
-      return Image.file(File(_file));
-    }
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = Image.network(pickedFile.path);
+        print(pickedFile.path);
+        print(_image);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
@@ -61,9 +70,38 @@ class _WebState extends State<Web> {
           body: Column(children: [
             Container(
               height: 100,
+              child: Row(children: <Widget>[
+                Text(
+                  _platformVersion,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                )
+              ]),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _image == null ? Image.asset('images/default.png') : _image,
+                    Text(
+                      _barcodeResults,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 100,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    MaterialButton(
+                        child: Text('Barcode Reader'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          getImage();
+                        }),
                     MaterialButton(
                         child: Text('Barcode Scanner'),
                         textColor: Colors.white,
