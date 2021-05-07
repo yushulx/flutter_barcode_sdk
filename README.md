@@ -7,6 +7,21 @@ A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsof
 - [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
 - [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
+## Configuration
+
+### Android
+Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
+
+```
+minSdkVersion 21
+```
+
+### Desktop
+Install `CMake` and `platform-specific C++ compiler`.
+
+### Web
+Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
+
 ## Try Example
 
 ### Mobile(Android)
@@ -35,13 +50,35 @@ flutter run -d windows
 
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
 
-## Currently Supported Platforms
-- **Android**, **Windows**
+### Web Browser
 
-### Methods
-- `Future<List<BarcodeResult>> decodeFile(String filename) async`
-- `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`
-- `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`
+```
+cd example
+flutter run -d chrome
+```
+
+Barcode Reader
+
+![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-sdk.png)
+
+Barcode Scanner
+
+![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-scanner.png)
+
+## Currently Supported Platforms
+- **Android**
+- **Windows**
+- **Web**
+
+## API Table
+| Methods      | Android |    iOS | Windows | Web|
+| ----------- | ----------- | ----------- | ----------- |----------- |
+| `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :x:     |
+| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :heavy_check_mark:     |
+
 
 ## Supported Barcode Symbologies
 - Linear Barcodes (1D)
@@ -81,6 +118,11 @@ flutter run -d windows
 
 
 ## Usage
+- Set a license key:
+
+  ```dart
+  _barcodeReader.setLicense('LICENSE-KEY');
+  ```
 
 - Read barcodes from an image file:
 
@@ -119,6 +161,38 @@ flutter run -d windows
                 format);
   ```
 
+- Read barcodes from web browser video stream:
+
+  ```dart
+  _barcodeReader.decodeVideo(
+                              (results) => {updateResults(results)});
+  ```
+
+## How to Use the License Key
+
+### Mobile
+No license required. Instead, you need to get an private organization ID and update the plugin code:
+
+```java
+parameters.organizationID = "200001";
+```
+
+By default, the public organization ID `200001` authorize developers to use the SDK for 7 days.
+
+### Desktop
+Invoke the `setLicense()` method:
+
+```dart
+_barcodeReader.setLicense('LICENSE-KEY');
+```
+
+### Web
+Update the `PRODUCT-KEYS` :
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
+```
+
 ## License Agreement
 https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 
@@ -126,4 +200,4 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 <support@dynamsoft.com>
 
 ## TODO
-iOS, Web
+iOS

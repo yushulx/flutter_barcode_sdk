@@ -1,3 +1,6 @@
+## 0.1.0
+* Added web plugin support.
+
 ## 0.0.9
 * Added barcode angle value.
 
