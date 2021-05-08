@@ -43,16 +43,21 @@ Picture Scan
 ### Windows & Linux Desktop
 Input a valid image path for barcode decoding.
 
+#### Windows
+
 ```
 cd example
 flutter run -d windows
 ```
 
-Windows
-
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
 
-Linux 
+#### Linux 
+
+```
+cd example
+flutter run -d linux
+```
 
 ![flutter Linux barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-linux-desktop-barcode.png)
 
@@ -80,7 +85,7 @@ Barcode Scanner
 
 ## API Table
 | Methods      | Android |    iOS | Windows | Linux | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |
+| ----------- | ----------- | ----------- | ----------- |----------- |----------- |
 | `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
 | `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
