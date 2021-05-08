@@ -40,7 +40,7 @@ Picture Scan
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
-### Windows Desktop
+### Windows & Linux Desktop
 Input a valid image path for barcode decoding.
 
 ```
@@ -48,7 +48,14 @@ cd example
 flutter run -d windows
 ```
 
+Windows
+
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
+
+Linux 
+
+![flutter Linux barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-linux-desktop-barcode.png)
+
 
 ### Web Browser
 
@@ -68,16 +75,17 @@ Barcode Scanner
 ## Currently Supported Platforms
 - **Android**
 - **Windows**
+- **Linux**
 - **Web**
 
 ## API Table
-| Methods      | Android |    iOS | Windows | Web|
+| Methods      | Android |    iOS | Windows | Linux | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :x:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :heavy_check_mark:     |
+| `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
+| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies

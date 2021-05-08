@@ -1,3 +1,6 @@
+## 0.1.2
+* Added Linux platform support.
+
 ## 0.1.1
 * Fixed build issue caused by JS callback.
 

@@ -13,6 +13,7 @@ import 'utils.dart';
 //   external static Object get EnumBarcodeFormat;
 // }
 
+/// BarcodeScanner class
 @JS('DBR.BarcodeScanner')
 class BarcodeScanner {
   external static PromiseJsImpl<BarcodeScanner> createInstance();
@@ -20,6 +21,7 @@ class BarcodeScanner {
   external set onFrameRead(Function func);
 }
 
+/// BarcodeReader class
 @JS('DBR.BarcodeReader')
 class BarcodeReader {
   external static PromiseJsImpl<BarcodeReader> createInstance();
@@ -30,16 +32,19 @@ class BarcodeManager {
   late BarcodeScanner _barcodeScanner;
   late BarcodeReader _barcodeReader;
 
+  /// Wrap callback results.
   List<BarcodeResult> callbackResults(List<Map<dynamic, dynamic>> results) {
     return convertResults(results);
   }
 
+  /// Initialize Barcode Scanner.
   void initBarcodeScanner(BarcodeScanner scanner) {
     _barcodeScanner = scanner;
     _barcodeScanner.onFrameRead = allowInterop((results) =>
         {globalCallback(callbackResults(_resultWrapper(results)))});
   }
 
+  /// Initialize Barcode Reader.
   void initBarcodeReader(BarcodeReader reader) {
     _barcodeReader = reader;
   }
@@ -52,10 +57,12 @@ class BarcodeManager {
         .then((reader) => {initBarcodeReader(reader)});
   }
 
+  /// Show camera view.
   void decodeVideo() {
     _barcodeScanner.show();
   }
 
+  /// Convert List<dynamic> to List<Map<dynamic, dynamic>>.
   List<Map<dynamic, dynamic>> _resultWrapper(List<dynamic> barcodeResults) {
     List<Map<dynamic, dynamic>> results = [];
 
@@ -80,6 +87,7 @@ class BarcodeManager {
     return results;
   }
 
+  /// Decode barcodes from an image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
     List<dynamic> barcodeResults =
         await handleThenable(_barcodeReader.decode(filename));
