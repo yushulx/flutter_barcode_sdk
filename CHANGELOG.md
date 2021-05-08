@@ -1,3 +1,6 @@
+## 0.1.1
+* Fixed build issue caused by JS callback.
+
 ## 0.1.0
 * Added web plugin support.
 

@@ -1,7 +1,3 @@
-List<BarcodeResult> convertResults(List<Map<dynamic, dynamic>> ret) {
-  return ret.map((data) => BarcodeResult.fromJson(data)).toList();
-}
-
 /// Barcode result contains barcode format, result, and coordinate points
 ///
 /// https://flutter.dev/docs/development/data-and-backend/json
@@ -47,4 +43,9 @@ class BarcodeResult {
         'y4': y4,
         'angle': angle,
       };
+}
+
+/// Convert List<Map<dynamic, dynamic>> to List<BarcodeResult>
+List<BarcodeResult> convertResults(List<Map<dynamic, dynamic>> ret) {
+  return ret.map((data) => BarcodeResult.fromJson(data)).toList();
 }

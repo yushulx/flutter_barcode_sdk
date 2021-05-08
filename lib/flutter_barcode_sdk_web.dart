@@ -51,10 +51,12 @@ class FlutterBarcodeSdkWeb {
     return Future.value(version);
   }
 
+  /// Decode barcodes from an image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String file) async {
     return _barcodeManager.decodeFile(file);
   }
 
+  /// Decode barcodes from real-time video stream.
   Future<void> decodeVideo() async {
     _barcodeManager.decodeVideo();
   }

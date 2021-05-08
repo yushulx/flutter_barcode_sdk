@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/barcode_result.dart';
-
-import 'barcode_manager.dart';
+import 'package:flutter_barcode_sdk/global.dart';
 
 class FlutterBarcodeSdk {
   static const int IF_UNKNOWN = -1;
@@ -59,7 +58,7 @@ class FlutterBarcodeSdk {
   /// Decodes barcodes from webcam stream.
   /// Web only!
   Future<void> decodeVideo(Function callback) async {
-    GlobalCallback = callback;
+    globalCallback = callback;
     await _channel.invokeMethod('decodeVideo');
   }
 }

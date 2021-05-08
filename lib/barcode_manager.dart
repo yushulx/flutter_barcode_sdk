@@ -4,13 +4,14 @@ library dynamsoft;
 import 'dart:convert';
 import 'dart:js';
 import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/global.dart';
 import 'package:js/js.dart';
 import 'utils.dart';
 
-@JS('DBR')
-class DBR {
-  external static Object get EnumBarcodeFormat;
-}
+// @JS('DBR')
+// class DBR {
+//   external static Object get EnumBarcodeFormat;
+// }
 
 @JS('DBR.BarcodeScanner')
 class BarcodeScanner {
@@ -25,8 +26,6 @@ class BarcodeReader {
   external PromiseJsImpl<List<dynamic>> decode(dynamic file);
 }
 
-Function GlobalCallback = () => {};
-
 class BarcodeManager {
   late BarcodeScanner _barcodeScanner;
   late BarcodeReader _barcodeReader;
@@ -38,7 +37,7 @@ class BarcodeManager {
   void initBarcodeScanner(BarcodeScanner scanner) {
     _barcodeScanner = scanner;
     _barcodeScanner.onFrameRead = allowInterop((results) =>
-        {GlobalCallback(callbackResults(_resultWrapper(results)))});
+        {globalCallback(callbackResults(_resultWrapper(results)))});
   }
 
   void initBarcodeReader(BarcodeReader reader) {
