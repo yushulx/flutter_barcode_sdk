@@ -36,7 +36,7 @@ Future<void> main() async {
         ),
       ),
     );
-  } else if (Platform.isWindows) {
+  } else if (Platform.isWindows || Platform.isLinux) {
     runApp(Desktop());
   }
 }

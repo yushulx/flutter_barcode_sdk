@@ -29,6 +29,8 @@ flutter:
         pluginClass: FlutterBarcodeSdkPlugin
       windows:
         pluginClass: FlutterBarcodeSdkPlugin
+      linux:
+        pluginClass: FlutterBarcodeSdkPlugin
       web:
         pluginClass: FlutterBarcodeSdkWeb
         fileName: flutter_barcode_sdk_web.dart
