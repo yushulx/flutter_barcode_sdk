@@ -1,13 +1,13 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-A flutter plugin project for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
+A Flutter plugin of [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
 
 ## What You Should Know
 - [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
 - [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
-## Configuration
+## Build Configuration
 
 ### Android
 Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
@@ -22,7 +22,7 @@ Install `CMake` and `platform-specific C++ compiler`.
 ### Web
 Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
 
-## Try Example
+## Try Barcode Decoding Example
 
 ### Mobile(Android)
 The example allows users to scan barcodes via the camera video stream in real-time or read barcodes by taking a picture.
@@ -83,7 +83,7 @@ Barcode Scanner
 - **Linux**
 - **Web**
 
-## API Table
+## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |
 | `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
