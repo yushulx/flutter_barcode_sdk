@@ -1,17 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_barcode_sdk/barcode_result.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter_barcode_sdk_example/desktop.dart';
-import 'package:flutter_barcode_sdk_example/web.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 
 class Mobile extends StatefulWidget {

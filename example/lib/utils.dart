@@ -1,5 +1,6 @@
-import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk/barcode_result.dart';
 
+/// Convert List<BarcodeResult> to string for display.
 String getBarcodeResults(List<BarcodeResult> results) {
   StringBuffer sb = new StringBuffer();
   for (BarcodeResult result in results) {
@@ -9,6 +10,5 @@ String getBarcodeResults(List<BarcodeResult> results) {
     sb.write("\n\n");
   }
   if (results.length == 0) sb.write("No Barcode Detected");
-
   return sb.toString();
 }

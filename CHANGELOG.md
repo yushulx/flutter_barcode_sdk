@@ -1,3 +1,18 @@
+## 0.1.2
+* Added Linux platform support.
+
+## 0.1.1
+* Fixed build issue caused by JS callback.
+
+## 0.1.0
+* Added web plugin support.
+
+## 0.0.9
+* Added barcode angle value.
+
+## 0.0.8
+* Fixed coordinate values in Windows plugin.
+
 ## 0.0.7
 * Added assets.
 * Optimized sample code for Windows desktop.

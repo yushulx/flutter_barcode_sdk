@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/global.dart';
 
 class FlutterBarcodeSdk {
   static const int IF_UNKNOWN = -1;
@@ -16,10 +18,6 @@ class FlutterBarcodeSdk {
     return version;
   }
 
-  List<BarcodeResult> _convertResults(List<Map<dynamic, dynamic>> ret) {
-    return ret.map((data) => BarcodeResult.fromJson(data)).toList();
-  }
-
   /// Set Dynamsoft Barcode Reader License Key
   /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense
   Future<void> setLicense(String license) async {
@@ -30,7 +28,7 @@ class FlutterBarcodeSdk {
   Future<List<BarcodeResult>> decodeFile(String filename) async {
     List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
         await _channel.invokeMethod('decodeFile', {'filename': filename}));
-    return _convertResults(ret);
+    return convertResults(ret);
   }
 
   /// Decodes barcodes from bytes of an image file.
@@ -38,7 +36,7 @@ class FlutterBarcodeSdk {
     assert(bytes.isNotEmpty);
     List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
         await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes}));
-    return _convertResults(ret);
+    return convertResults(ret);
   }
 
   /// Decodes barcodes from an image buffer.
@@ -54,50 +52,13 @@ class FlutterBarcodeSdk {
       'stride': stride,
       'format': format
     }));
-    return _convertResults(ret);
+    return convertResults(ret);
   }
-}
 
-/// Barcode result contains barcode format, result, and coordinate points
-///
-/// https://flutter.dev/docs/development/data-and-backend/json
-class BarcodeResult {
-  final String format;
-  final String text;
-  final int x1;
-  final int y1;
-  final int x2;
-  final int y2;
-  final int x3;
-  final int y3;
-  final int x4;
-  final int y4;
-
-  BarcodeResult(this.format, this.text, this.x1, this.y1, this.x2, this.y2,
-      this.x3, this.y3, this.x4, this.y4);
-
-  BarcodeResult.fromJson(Map<dynamic, dynamic> json)
-      : format = json['format'],
-        text = json['text'],
-        x1 = json['x1'],
-        y1 = json['y1'],
-        x2 = json['x2'],
-        y2 = json['y2'],
-        x3 = json['x3'],
-        y3 = json['y3'],
-        x4 = json['x4'],
-        y4 = json['y4'];
-
-  Map<String, dynamic> toJson() => {
-        'format': format,
-        'text': text,
-        'x1': x1,
-        'y1': y1,
-        'x2': x2,
-        'y2': y2,
-        'x3': x3,
-        'y3': y3,
-        'x4': x4,
-        'y4': y4,
-      };
+  /// Decodes barcodes from webcam stream.
+  /// Web only!
+  Future<void> decodeVideo(Function callback) async {
+    globalCallback = callback;
+    await _channel.invokeMethod('decodeVideo');
+  }
 }
