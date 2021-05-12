@@ -28,7 +28,7 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
     
     public override init() {
         super.init()
-        reader = DynamsoftBarcodeReader(license: "t0068MgAAAC4m3vBqmGZTtroTtWT8STe3QFyOlwiLqwtB7ghY+8pU01rgU3JedgtcsxyRHnys1N3qjCMZ2AprRCavlIpLbAk=")
+        reader = DynamsoftBarcodeReader()
 
         //Best Coverage settings
         //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)

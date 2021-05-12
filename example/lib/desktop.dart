@@ -116,10 +116,7 @@ class _DesktopState extends State<Desktop> {
                             });
                             return;
                           }
-                          // List<BarcodeResult> results =
-                          //     await _barcodeReader.decodeFile(_controller.text);
-                          //
-                          //
+                          
                           File file = File(_controller.text);
                           if (!file.existsSync()) {
                             setState(() {
@@ -134,9 +131,13 @@ class _DesktopState extends State<Desktop> {
                               _file = _controller.text;
                             });
                           }
-                          Uint8List bytes = await file.readAsBytes();
+                          // Uint8List bytes = await file.readAsBytes();
+                          // List<BarcodeResult> results =
+                          //     await _barcodeReader.decodeFileBytes(bytes);
+
                           List<BarcodeResult> results =
-                              await _barcodeReader.decodeFileBytes(bytes);
+                              await _barcodeReader.decodeFile(_controller.text);
+                          
                           setState(() {
                             _barcodeResults = getBarcodeResults(results);
                           });
