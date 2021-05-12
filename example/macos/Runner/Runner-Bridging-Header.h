@@ -1,0 +1,1 @@
+#import "DynamsoftBarcodeReader.h"
