@@ -35,7 +35,8 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
     
     public func ltsLicenseVerificationCallback(_ isSuccess: Bool, error: Error?) {
         if (error != nil) {
-            print(error!)
+            let err: NSError = error! as NSError
+            print(err.userInfo)
         }
     }
 
@@ -64,8 +65,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         let w:Int = arguments.value(forKey: "width") as! Int
         let h:Int = arguments.value(forKey: "height") as! Int
         let stride:Int = arguments.value(forKey: "stride") as! Int
-        let format:NSNumber = arguments.value(forKey: "format") as! NSNumber
-        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, withWidth: w, height: h, stride: stride, format: EnumImagePixelFormat(rawValue:Int(format))!, templateName: "")
+        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, withWidth: w, height: h, stride: stride, format:.ARGB_8888, templateName: "")
         return self.wrapResults(results: ret)
     }
 
