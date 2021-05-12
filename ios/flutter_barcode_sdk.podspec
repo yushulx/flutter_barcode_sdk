@@ -5,19 +5,17 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_barcode_sdk'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'A flutter plugin of Dynamsoft Barcode Reader.'
   s.description      = <<-DESC
-A new flutter plugin project.
+  A flutter plugin of Dynamsoft Barcode Reader.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://www.dynamsoft.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Dynamsoft' => 'support@dynamsoft.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '8.0'
-
-  # Flutter.framework does not contain a i386 slice.
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
-  s.swift_version = '5.0'
+  s.vendored_frameworks = 'DynamsoftBarcodeReader.framework'
+  
+  s.platform = :ios, '9.0'
 end

@@ -12,7 +12,7 @@ import 'package:flutter_barcode_sdk_example/web.dart';
 Future<void> main() async {
   if (kIsWeb) {
     runApp(Web());
-  } else if (Platform.isAndroid) {
+  } else if (Platform.isAndroid || Platform.isIOS) {
     // Ensure that plugin services are initialized so that `availableCameras()`
     // can be called before `runApp()`
     WidgetsFlutterBinding.ensureInitialized();
