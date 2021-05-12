@@ -16,8 +16,20 @@ Change the minimum Android sdk version to 21 (or higher) in your `android/app/bu
 minSdkVersion 21
 ```
 
+### iOS
+Add the keys to `ios/Runner/Info.plist` to make camera work:
+
+```
+<key>NSCameraUsageDescription</key>
+<string>Can I use the camera please?</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Can I use the mic please?</string>
+```
+
 ### Desktop
 Install `CMake` and `platform-specific C++ compiler`.
+
+Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
 
 ### Web
 Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
@@ -61,8 +73,6 @@ Input a valid image path for barcode decoding.
   ```
 
 - macOS
-
-  To make demo app work, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
 
   ```
   cd example
