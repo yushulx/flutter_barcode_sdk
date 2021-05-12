@@ -1,3 +1,6 @@
+## 1.0.0
+* Added iOS platform support.
+
 ## 0.1.2
 * Added Linux platform support.
 
