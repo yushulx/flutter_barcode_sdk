@@ -40,26 +40,34 @@ Picture Scan
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
-### Windows & Linux Desktop
+### Windows, Linux and macOS Desktop
 Input a valid image path for barcode decoding.
-
-#### Windows
-
-```
-cd example
-flutter run -d windows
-```
 
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
 
-#### Linux 
+- Windows
 
-```
-cd example
-flutter run -d linux
-```
+  ```
+  cd example
+  flutter run -d windows
+  ```
 
-![flutter Linux barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-linux-desktop-barcode.png)
+
+- Linux 
+
+  ```
+  cd example
+  flutter run -d linux
+  ```
+
+- macOS
+
+  To make demo app work, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
+
+  ```
+  cd example
+  flutter run -d macos
+  ```
 
 
 ### Web Browser
@@ -82,16 +90,17 @@ Barcode Scanner
 - **iOS**
 - **Windows**
 - **Linux**
+- **macOS**
 - **Web**
 
 ## API Compatibility
-| Methods      | Android |    iOS | Windows | Linux | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       | :heavy_check_mark:     |
+| Methods      | Android |    iOS | Windows | Linux | macOS | Web|
+| ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
+| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:      |
+| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |:x:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
+| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies
@@ -212,6 +221,3 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 
 ## Contact Us
 <support@dynamsoft.com>
-
-## TODO
-macOS

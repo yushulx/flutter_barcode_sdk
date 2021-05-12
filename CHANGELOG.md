@@ -1,3 +1,6 @@
+## 1.0.1
+* Added macOS platform support.
+
 ## 1.0.0
 * Added iOS platform support.
 
