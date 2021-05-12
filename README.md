@@ -24,7 +24,7 @@ Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/
 
 ## Try Barcode Decoding Example
 
-### Mobile(Android)
+### Mobile
 The example allows users to scan barcodes via the camera video stream in real-time or read barcodes by taking a picture.
 
 ```
@@ -79,6 +79,7 @@ Barcode Scanner
 
 ## Currently Supported Platforms
 - **Android**
+- **iOS**
 - **Windows**
 - **Linux**
 - **Web**
@@ -86,10 +87,10 @@ Barcode Scanner
 ## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :x:       | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       | :heavy_check_mark:     |
 
 
@@ -213,4 +214,4 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 <support@dynamsoft.com>
 
 ## TODO
-iOS
+macOS
