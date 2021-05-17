@@ -1,4 +1,4 @@
-import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
 /// Convert List<BarcodeResult> to string for display.
 String getBarcodeResults(List<BarcodeResult> results) {

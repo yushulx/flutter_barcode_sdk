@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 
@@ -31,6 +30,7 @@ class _DesktopState extends State<Desktop> {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
     await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
