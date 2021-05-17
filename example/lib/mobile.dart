@@ -48,7 +48,14 @@ class MobileState extends State<Mobile> {
       setState(() {});
     });
     // Initialize Dynamsoft Barcode Reader
+    initBarcodeSDK();
+  }
+
+  Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
+    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
+    // await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   }
 
   void pictureScan() async {

@@ -53,6 +53,7 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
             case "setLicense": {
                 final String license = call.argument("license");
                 mBarcodeManager.setLicense(license);
+                result.success("");
             }
             case "decodeFile": {
                 final String filename = call.argument("filename");
@@ -88,6 +89,11 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 });
             }
             break;
+            case "setBarcodeFormats": {
+                final int formats = call.argument("formats");
+                int ret = mBarcodeManager.setBarcodeFormats(formats);
+                result.success(ret);
+            }
             default:
                 result.notImplemented();
         }
