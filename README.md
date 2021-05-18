@@ -111,6 +111,7 @@ Barcode Scanner
 | `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |:x:     |
 | `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
+| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :x:   | :heavy_check_mark:       | :x:       |:x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies
@@ -199,6 +200,12 @@ Barcode Scanner
   ```dart
   _barcodeReader.decodeVideo(
                               (results) => {updateResults(results)});
+  ```
+
+- Set barcode formats:
+
+  ```dart
+  await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   ```
 
 ## How to Use the License Key
