@@ -18,6 +18,9 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         case "setLicense":
             self.setLicense(arg: call.arguments as! NSDictionary)
             result(.none)
+        case "setBarcodeFormats":
+            self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
+            result(.none)
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
@@ -46,17 +49,20 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
 
     func decodeFile(arg:NSDictionary) -> NSArray {
         let path:String = arg.value(forKey: "filename") as! String
-        do {
-            let ret:[iTextResult] = try! self.reader!.decodeFile(withName: path, templateName: "")
-            return self.wrapResults(results: ret)
-        } catch {
-            print(error)
-        }
+        let ret:[iTextResult] = try! self.reader!.decodeFile(withName: path, templateName: "")
+        return self.wrapResults(results: ret)
     }
 
     func setLicense(arg:NSDictionary) {
         let lic:String = arg.value(forKey: "license") as! String
         reader = DynamsoftBarcodeReader(license: lic)
+    }
+    
+    func setBarcodeFormats(arg:NSDictionary) {
+        let formats:Int = arg.value(forKey: "formats") as! Int
+        let settings = try! reader!.getRuntimeSettings()
+        settings.barcodeFormatIds = formats
+        reader!.update(settings, error: nil)
     }
 
     func wrapResults(results:[iTextResult]) -> NSArray {

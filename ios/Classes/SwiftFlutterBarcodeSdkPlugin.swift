@@ -47,6 +47,9 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         case "setLicense":
             self.setLicense(arg: call.arguments as! NSDictionary)
             result(.none)
+        case "setBarcodeFormats":
+            self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
+            result(.none)
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
@@ -69,6 +72,13 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         return self.wrapResults(results: ret)
     }
 
+    func setBarcodeFormats(arg:NSDictionary) {
+        let formats:Int = arg.value(forKey: "formats") as! Int
+        let settings = try! reader!.getRuntimeSettings()
+        settings.barcodeFormatIds = formats
+        reader!.update(settings, error: nil)
+    }
+    
     func decodeFile(arg:NSDictionary) -> NSArray {
         let path:String = arg.value(forKey: "filename") as! String
         let ret:[iTextResult] = try! self.reader!.decodeFile(withName: path, templateName: "")
