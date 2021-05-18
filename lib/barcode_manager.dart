@@ -1,6 +1,7 @@
 @JS('Dynamsoft')
 library dynamsoft;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
@@ -13,7 +14,7 @@ import 'utils.dart';
 //   external static Object get EnumBarcodeFormat;
 // }
 
-/// BarcodeScanner class
+/// BarcodeScanner class.
 @JS('DBR.BarcodeScanner')
 class BarcodeScanner {
   external static PromiseJsImpl<BarcodeScanner> createInstance();
@@ -21,16 +22,19 @@ class BarcodeScanner {
   external set onFrameRead(Function func);
 }
 
-/// BarcodeReader class
+/// BarcodeReader class.
 @JS('DBR.BarcodeReader')
 class BarcodeReader {
   external static PromiseJsImpl<BarcodeReader> createInstance();
   external PromiseJsImpl<List<dynamic>> decode(dynamic file);
+  external PromiseJsImpl<dynamic> getRuntimeSettings();
+  external PromiseJsImpl<void> updateRuntimeSettings(String settings);
 }
 
+/// BarcodeManager class.
 class BarcodeManager {
-  late BarcodeScanner _barcodeScanner;
-  late BarcodeReader _barcodeReader;
+  BarcodeScanner? _barcodeScanner;
+  BarcodeReader? _barcodeReader;
 
   /// Wrap callback results.
   List<BarcodeResult> callbackResults(List<Map<dynamic, dynamic>> results) {
@@ -40,7 +44,7 @@ class BarcodeManager {
   /// Initialize Barcode Scanner.
   void initBarcodeScanner(BarcodeScanner scanner) {
     _barcodeScanner = scanner;
-    _barcodeScanner.onFrameRead = allowInterop((results) =>
+    _barcodeScanner!.onFrameRead = allowInterop((results) =>
         {globalCallback(callbackResults(_resultWrapper(results)))});
   }
 
@@ -49,17 +53,53 @@ class BarcodeManager {
     _barcodeReader = reader;
   }
 
+  /// BarcodManager constuctor.
   BarcodeManager() {
-    handleThenable(BarcodeScanner.createInstance())
-        .then((scanner) => {initBarcodeScanner(scanner)});
+    initBarcodeSDK();
+  }
 
-    handleThenable(BarcodeReader.createInstance())
-        .then((reader) => {initBarcodeReader(reader)});
+  /// Initialize barcode reader and scanner.
+  Future<void> initBarcodeSDK() async {
+    BarcodeReader reader = await handleThenable(BarcodeReader.createInstance());
+    initBarcodeReader(reader);
+
+    BarcodeScanner scanner =
+        await handleThenable(BarcodeScanner.createInstance());
+    initBarcodeScanner(scanner);
   }
 
   /// Show camera view.
-  void decodeVideo() {
-    _barcodeScanner.show();
+  Future<void> decodeVideo() async {
+    await _waitForReady();
+    _barcodeScanner!.show();
+  }
+
+  /// Set barcode formats.
+  /// https://www.dynamsoft.com/barcode-reader/parameters/enum/format-enums.html?ver=latest#barcodeformat
+  Future<int> setBarcodeFormats(int formats) async {
+    await _waitForReady();
+    updateSettings(formats);
+    return 0;
+  }
+
+  /// Initialize runtime settings.
+  Future<void> updateSettings(int formats) async {
+    dynamic settings =
+        await handleThenable(_barcodeReader!.getRuntimeSettings());
+    Map obj = json.decode(stringify(settings));
+    obj['barcodeFormatIds'] = formats;
+    await handleThenable(
+        _barcodeReader!.updateRuntimeSettings(json.encode(obj)));
+  }
+
+  /// Wait until instances are initializad.
+  Future<void> _waitForReady() async {
+    if (_barcodeReader == null) {
+      Timer(Duration(milliseconds: 30), () async {
+        await _waitForReady();
+      });
+    } else
+      return;
   }
 
   /// Convert List<dynamic> to List<Map<dynamic, dynamic>>.
@@ -89,8 +129,9 @@ class BarcodeManager {
 
   /// Decode barcodes from an image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
+    await _waitForReady();
     List<dynamic> barcodeResults =
-        await handleThenable(_barcodeReader.decode(filename));
+        await handleThenable(_barcodeReader!.decode(filename));
 
     return _resultWrapper(barcodeResults);
   }

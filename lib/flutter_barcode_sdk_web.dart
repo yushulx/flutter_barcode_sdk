@@ -36,6 +36,8 @@ class FlutterBarcodeSdkWeb {
       case 'decodeVideo':
         decodeVideo();
         break;
+      case 'setBarcodeFormats':
+        return setBarcodeFormats(call.arguments['formats']);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -59,5 +61,10 @@ class FlutterBarcodeSdkWeb {
   /// Decode barcodes from real-time video stream.
   Future<void> decodeVideo() async {
     _barcodeManager.decodeVideo();
+  }
+
+  /// Decode barcodes from real-time video stream.
+  Future<int> setBarcodeFormats(int formats) async {
+    return _barcodeManager.setBarcodeFormats(formats);
   }
 }

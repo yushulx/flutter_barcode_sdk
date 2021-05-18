@@ -34,6 +34,14 @@ Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` i
 ### Web
 Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
 
+There are two editions: [compact edition and full edtion](https://www.npmjs.com/package/dynamsoft-javascript-barcode). The compact edition is used as the default. To enable the full edition, you need to add the following line to `index.html` after including the JS library.
+
+```html
+<script>
+  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
+</script>
+```
+
 ## Try Barcode Decoding Example
 
 ### Mobile
@@ -231,6 +239,9 @@ Update the `PRODUCT-KEYS` :
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
+<script>
+  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
+</script>
 ```
 
 ## License Agreement
