@@ -116,6 +116,21 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
 
     g_autoptr(FlValue) results = self->manager->DecodeImageBuffer(bytes, width, height, stride, format);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(results));
+  } 
+  else if (strcmp(method, "setBarcodeFormats") == 0) {
+    if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
+      return;
+    }
+
+    FlValue* value = fl_value_lookup_string(args, "formats");
+    if (value == nullptr) {
+      return;
+    }
+  
+    int formats = fl_value_get_int(value);
+    int ret = self->manager->SetFormats(formats);
+    g_autoptr(FlValue) result = fl_value_new_int(ret);
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
