@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/global.dart';
 
 class FlutterBarcodeSdk {
@@ -60,5 +60,12 @@ class FlutterBarcodeSdk {
   Future<void> decodeVideo(Function callback) async {
     globalCallback = callback;
     await _channel.invokeMethod('decodeVideo');
+  }
+
+  /// Set barcode formats.
+  /// https://www.dynamsoft.com/barcode-reader/parameters/enum/format-enums.html?ver=latest#barcodeformat
+  Future<int> setBarcodeFormats(int formats) async {
+    return await _channel
+        .invokeMethod('setBarcodeFormats', {'formats': formats});
   }
 }

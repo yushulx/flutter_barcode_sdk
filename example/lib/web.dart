@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +12,7 @@ class Web extends StatefulWidget {
 
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
-  FlutterBarcodeSdk _barcodeReader = FlutterBarcodeSdk();
+  FlutterBarcodeSdk _barcodeReader;
   String _file;
   String _barcodeResults = '';
   final picker = ImagePicker();
@@ -21,6 +21,12 @@ class _WebState extends State<Web> {
   void initState() {
     super.initState();
     initPlatformState();
+    initBarcodeSDK();
+  }
+
+  Future<void> initBarcodeSDK() async {
+    _barcodeReader = FlutterBarcodeSdk();
+    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

@@ -127,4 +127,17 @@ public class BarcodeManager {
         }
         return ret;
     }
+
+    public int setBarcodeFormats(int formats) {
+        int ret = 0;
+        try {
+            PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
+            settings.barcodeFormatIds = formats;
+            mBarcodeReader.updateRuntimeSettings(settings);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
 }

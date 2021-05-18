@@ -40,27 +40,28 @@ class BarcodeManager {
         TextResultArray *results = NULL;
         reader->GetAllTextResults(&results);
             
-        if (results->resultsCount == 0)
+        if (results == NULL || results->resultsCount == 0)
         {
             printf("No barcode found.\n");
-            CBarcodeReader::FreeTextResults(&results);
         }
-        
-        for (int index = 0; index < results->resultsCount; index++)
+        else 
         {
-            EncodableMap map;
-            map[EncodableValue("format")] = results->results[index]->barcodeFormatString;
-            map[EncodableValue("text")] = results->results[index]->barcodeText;
-            map[EncodableValue("x1")] = results->results[index]->localizationResult->x1;
-            map[EncodableValue("y1")] = results->results[index]->localizationResult->y1;
-            map[EncodableValue("x2")] = results->results[index]->localizationResult->x2;
-            map[EncodableValue("y2")] = results->results[index]->localizationResult->y2;
-            map[EncodableValue("x3")] = results->results[index]->localizationResult->x3;
-            map[EncodableValue("y3")] = results->results[index]->localizationResult->y3;
-            map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
-            map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
-            map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
-            out.push_back(map);
+            for (int index = 0; index < results->resultsCount; index++)
+            {
+                EncodableMap map;
+                map[EncodableValue("format")] = results->results[index]->barcodeFormatString;
+                map[EncodableValue("text")] = results->results[index]->barcodeText;
+                map[EncodableValue("x1")] = results->results[index]->localizationResult->x1;
+                map[EncodableValue("y1")] = results->results[index]->localizationResult->y1;
+                map[EncodableValue("x2")] = results->results[index]->localizationResult->x2;
+                map[EncodableValue("y2")] = results->results[index]->localizationResult->y2;
+                map[EncodableValue("x3")] = results->results[index]->localizationResult->x3;
+                map[EncodableValue("y3")] = results->results[index]->localizationResult->y3;
+                map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
+                map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
+                map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
+                out.push_back(map);
+            }
         }
 
         CBarcodeReader::FreeTextResults(&results);
@@ -107,6 +108,19 @@ class BarcodeManager {
         reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
 
         return WrapResults();
+    }
+
+    int SetFormats(int formats) 
+    {
+        int ret = 0;
+        char sError[512];
+        PublicRuntimeSettings* runtimeSettings = new PublicRuntimeSettings();
+        reader->GetRuntimeSettings(runtimeSettings);
+        runtimeSettings->barcodeFormatIds = formats; 
+        reader->UpdateRuntimeSettings(runtimeSettings, sError, 512);
+        delete runtimeSettings;
+
+        return ret;
     }
 
     private:

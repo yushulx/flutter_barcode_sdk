@@ -36,7 +36,7 @@ Future<void> main() async {
         ),
       ),
     );
-  } else if (Platform.isWindows || Platform.isLinux) {
+  } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     runApp(Desktop());
   }
 }

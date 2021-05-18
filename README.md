@@ -16,11 +16,31 @@ Change the minimum Android sdk version to 21 (or higher) in your `android/app/bu
 minSdkVersion 21
 ```
 
+### iOS
+Add the keys to `ios/Runner/Info.plist` to make camera work:
+
+```
+<key>NSCameraUsageDescription</key>
+<string>Can I use the camera please?</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Can I use the mic please?</string>
+```
+
 ### Desktop
 Install `CMake` and `platform-specific C++ compiler`.
 
+Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
+
 ### Web
 Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
+
+There are two editions: [compact edition and full edtion](https://www.npmjs.com/package/dynamsoft-javascript-barcode). The compact edition is used as the default. To enable the full edition, you need to add the following line to `index.html` after including the JS library.
+
+```html
+<script>
+  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
+</script>
+```
 
 ## Try Barcode Decoding Example
 
@@ -40,26 +60,32 @@ Picture Scan
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
-### Windows & Linux Desktop
+### Windows, Linux and macOS Desktop
 Input a valid image path for barcode decoding.
-
-#### Windows
-
-```
-cd example
-flutter run -d windows
-```
 
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
 
-#### Linux 
+- Windows
 
-```
-cd example
-flutter run -d linux
-```
+  ```
+  cd example
+  flutter run -d windows
+  ```
 
-![flutter Linux barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-linux-desktop-barcode.png)
+
+- Linux 
+
+  ```
+  cd example
+  flutter run -d linux
+  ```
+
+- macOS
+
+  ```
+  cd example
+  flutter run -d macos
+  ```
 
 
 ### Web Browser
@@ -82,16 +108,18 @@ Barcode Scanner
 - **iOS**
 - **Windows**
 - **Linux**
+- **macOS**
 - **Web**
 
 ## API Compatibility
-| Methods      | Android |    iOS | Windows | Linux | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       | :heavy_check_mark:     |
+| Methods      | Android |    iOS | Windows | Linux | macOS | Web|
+| ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
+| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:      |
+| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |:x:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
+| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
+| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :x:   | :heavy_check_mark:       | :x:       |:x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies
@@ -182,6 +210,12 @@ Barcode Scanner
                               (results) => {updateResults(results)});
   ```
 
+- Set barcode formats:
+
+  ```dart
+  await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+  ```
+
 ## How to Use the License Key
 
 ### Mobile
@@ -205,6 +239,9 @@ Update the `PRODUCT-KEYS` :
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
+<script>
+  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
+</script>
 ```
 
 ## License Agreement
@@ -212,6 +249,3 @@ https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
 
 ## Contact Us
 <support@dynamsoft.com>
-
-## TODO
-macOS

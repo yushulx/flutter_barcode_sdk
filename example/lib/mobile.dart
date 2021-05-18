@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter_barcode_sdk/barcode_result.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
@@ -48,7 +48,14 @@ class MobileState extends State<Mobile> {
       setState(() {});
     });
     // Initialize Dynamsoft Barcode Reader
+    initBarcodeSDK();
+  }
+
+  Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
+    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
+    // await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   }
 
   void pictureScan() async {

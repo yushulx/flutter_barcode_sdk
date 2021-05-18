@@ -39,27 +39,28 @@ class BarcodeManager {
         TextResultArray *results = NULL;
         reader->GetAllTextResults(&results);
             
-        if (results->resultsCount == 0)
+        if (results == NULL || results->resultsCount == 0)
         {
             printf("No barcode found.\n");
-            CBarcodeReader::FreeTextResults(&results);
         }
-        
-        for (int index = 0; index < results->resultsCount; index++)
+        else
         {
-            FlValue* map = fl_value_new_map ();
-            fl_value_set_string_take (map, "format", fl_value_new_string(results->results[index]->barcodeFormatString));
-            fl_value_set_string_take (map, "text", fl_value_new_string(results->results[index]->barcodeText));
-            fl_value_set_string_take (map, "x1", fl_value_new_int(results->results[index]->localizationResult->x1));
-            fl_value_set_string_take (map, "y1", fl_value_new_int(results->results[index]->localizationResult->y1));
-            fl_value_set_string_take (map, "x2", fl_value_new_int(results->results[index]->localizationResult->x2));
-            fl_value_set_string_take (map, "y2", fl_value_new_int(results->results[index]->localizationResult->y2));
-            fl_value_set_string_take (map, "x3", fl_value_new_int(results->results[index]->localizationResult->x3));
-            fl_value_set_string_take (map, "y3", fl_value_new_int(results->results[index]->localizationResult->y3));
-            fl_value_set_string_take (map, "x4", fl_value_new_int(results->results[index]->localizationResult->x4));
-            fl_value_set_string_take (map, "y4", fl_value_new_int(results->results[index]->localizationResult->y4));
-            fl_value_set_string_take (map, "angle", fl_value_new_int(results->results[index]->localizationResult->angle));
-            fl_value_append_take (out, map);
+            for (int index = 0; index < results->resultsCount; index++)
+            {
+                FlValue* map = fl_value_new_map ();
+                fl_value_set_string_take (map, "format", fl_value_new_string(results->results[index]->barcodeFormatString));
+                fl_value_set_string_take (map, "text", fl_value_new_string(results->results[index]->barcodeText));
+                fl_value_set_string_take (map, "x1", fl_value_new_int(results->results[index]->localizationResult->x1));
+                fl_value_set_string_take (map, "y1", fl_value_new_int(results->results[index]->localizationResult->y1));
+                fl_value_set_string_take (map, "x2", fl_value_new_int(results->results[index]->localizationResult->x2));
+                fl_value_set_string_take (map, "y2", fl_value_new_int(results->results[index]->localizationResult->y2));
+                fl_value_set_string_take (map, "x3", fl_value_new_int(results->results[index]->localizationResult->x3));
+                fl_value_set_string_take (map, "y3", fl_value_new_int(results->results[index]->localizationResult->y3));
+                fl_value_set_string_take (map, "x4", fl_value_new_int(results->results[index]->localizationResult->x4));
+                fl_value_set_string_take (map, "y4", fl_value_new_int(results->results[index]->localizationResult->y4));
+                fl_value_set_string_take (map, "angle", fl_value_new_int(results->results[index]->localizationResult->angle));
+                fl_value_append_take (out, map);
+            }
         }
 
         CBarcodeReader::FreeTextResults(&results);

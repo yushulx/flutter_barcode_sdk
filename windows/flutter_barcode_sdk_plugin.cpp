@@ -107,6 +107,8 @@ namespace
         }
         manager->SetLicense(license.c_str());
       }
+
+      result->Success(EncodableValue(""));
     }
     else if (method_call.method_name().compare("decodeFile") == 0)
     {
@@ -184,6 +186,23 @@ namespace
       }
 
       result->Success(results);
+    }
+    else if (method_call.method_name().compare("setBarcodeFormats") == 0)
+    {
+      int formats = 0;
+      int ret = 0;
+      if (arguments)
+      {
+        auto formts_it = arguments->find(EncodableValue("formats"));
+        if (formts_it != arguments->end())
+        {
+          formats = std::get<int>(formts_it->second);
+        }
+
+        ret = manager->SetFormats(formats);
+      }
+
+      result->Success(EncodableValue(ret));
     }
     else
     {
