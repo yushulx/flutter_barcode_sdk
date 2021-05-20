@@ -61,15 +61,25 @@ Picture Scan
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
 
-For building Android release app, disable `minifyEnabled` and `shrinkResources` to avoid app crash:
+For building Android release app, configure `build.gradle` and corresponding proguard file:
 
-```gradle
+**build.gradle**
+```
 buildTypes {
-    release {
-        minifyEnabled false
-        shrinkResources false
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
-}
+
+```
+
+**proguard-rules.pro**
+
+```
+-keep class com.dynamsoft.dbr.** { *; }
 ```
 
 ### Windows, Linux and macOS Desktop
