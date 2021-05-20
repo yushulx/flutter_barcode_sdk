@@ -94,6 +94,7 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 int ret = mBarcodeManager.setBarcodeFormats(formats);
                 result.success(ret);
             }
+            break;
             default:
                 result.notImplemented();
         }
