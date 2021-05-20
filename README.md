@@ -60,6 +60,18 @@ Picture Scan
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
+
+For building Android release app, disable `minifyEnabled` and `shrinkResources` to avoid app crash:
+
+```gradle
+buildTypes {
+    release {
+        minifyEnabled false
+        shrinkResources false
+    }
+}
+```
+
 ### Windows, Linux and macOS Desktop
 Input a valid image path for barcode decoding.
 

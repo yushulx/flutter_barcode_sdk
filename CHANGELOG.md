@@ -1,3 +1,6 @@
+## 1.1.1
+* Fixed the crash issue caused by building release app for Android.
+
 ## 1.1.0
 * Added setBarcodeFormats() method.
 
