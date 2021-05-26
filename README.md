@@ -1,9 +1,9 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-A Flutter plugin of [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
+The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
 
-## What You Should Know
+## What You Should Know About Dynamsoft Barcode SDK
 - [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
 - [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
@@ -32,7 +32,7 @@ Install `CMake` and `platform-specific C++ compiler`.
 Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
 
 ### Web
-Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
+Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
 
 There are two editions: [compact edition and full edtion](https://www.npmjs.com/package/dynamsoft-javascript-barcode). The compact edition is used as the default. To enable the full edition, you need to add the following line to `index.html` after including the JS library.
 
@@ -260,7 +260,7 @@ _barcodeReader.setLicense('LICENSE-KEY');
 Update the `PRODUCT-KEYS` :
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
 <script>
   Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
 </script>
