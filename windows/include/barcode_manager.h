@@ -123,6 +123,22 @@ class BarcodeManager {
         return ret;
     }
 
+    EncodableValue GetParameters()
+    {
+        char* content = NULL;
+        reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
+        EncodableValue params = EncodableValue((const char*)content);
+        reader->FreeSettingsString(&content);
+        return EncodableValue(params);
+    }
+
+    int SetParameters(const char *params)
+    {
+        char errorMessage[256];
+        int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
+        return ret;
+    }
+
     private:
         CBarcodeReader *reader; 
 };

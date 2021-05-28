@@ -204,6 +204,27 @@ namespace
 
       result->Success(EncodableValue(ret));
     }
+    else if (method_call.method_name().compare("getParameters") == 0)
+    {
+      result->Success(manager->GetParameters());
+    }
+    else if (method_call.method_name().compare("setParameters") == 0)
+    {
+      std::string params;
+      int ret = 0;
+
+      if (arguments)
+      {
+        auto params_it = arguments->find(EncodableValue("params"));
+        if (params_it != arguments->end())
+        {
+          params = std::get<std::string>(params_it->second);
+        }
+        ret = manager->SetParameters(params.c_str());
+      }
+
+      result->Success(EncodableValue(ret));
+    }
     else
     {
       result->NotImplemented();
