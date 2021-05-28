@@ -169,8 +169,8 @@ Barcode Scanner
 | `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 | `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<String> getParameters() async`     | :x:        | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :x:      |
-| `Future<int> setParameters(String params)`     | :x:        | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :x:      |
+| `Future<String> getParameters() async`     | :heavy_check_mark:         | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :heavy_check_mark:     |
+| `Future<int> setParameters(String params)`     | :heavy_check_mark:         | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies
@@ -274,7 +274,10 @@ Barcode Scanner
   // Convert parameters to a JSON object.
   dynamic obj = jsonDecode(params);
   // Modify parameters.
-  obj['ImageParameter']['DeblurLevel'] = 5;
+  if (obj['ImageParameter'] != null) {
+    obj['ImageParameter']['DeblurLevel'] = 5;
+  } else
+    obj['deblurLevel'] = 5;
   ```
 
 - Set barcode detection parameters:
