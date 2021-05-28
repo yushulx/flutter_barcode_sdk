@@ -129,15 +129,35 @@ public class BarcodeManager {
     }
 
     public int setBarcodeFormats(int formats) {
-        int ret = 0;
         try {
             PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
             settings.barcodeFormatIds = formats;
             mBarcodeReader.updateRuntimeSettings(settings);
+            return 0;
         }
         catch(Exception e) {
             e.printStackTrace();
+            return -1;
         }
-        return ret;
+    }
+
+    public String getParameters() {
+        try {
+            return mBarcodeReader.outputSettingsToString("currentRuntimeSettings");
+        }
+        catch(Exception e) {
+            return e.toString();
+        }
+    }
+
+    public int setParameters(String params) {
+        try {
+            PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
+            mBarcodeReader.initRuntimeSettingsWithString(params, EnumConflictMode.CM_OVERWRITE);
+            return 0;
+        }
+        catch(Exception e) {
+            return -1;
+        }
     }
 }

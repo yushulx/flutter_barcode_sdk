@@ -54,7 +54,7 @@ To make the demo app work on macOS:
   </plist>
   ```    
 
-- Import `DynamsoftBarcodeReader.h` in the bridging header file.
+- Import `DynamsoftBarcodeReader.h` to the bridging header file.
     
   ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
 
@@ -169,8 +169,8 @@ Barcode Scanner
 | `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 | `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<String> getParameters() async`     | :x:        | :x:   | :heavy_check_mark:       | :x:        |:x:       | :x:      |
-| `Future<int> setParameters(String params)`     | :x:        | :x:   | :heavy_check_mark:       | :x:        |:x:       | :x:      |
+| `Future<String> getParameters() async`     | :x:        | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :x:      |
+| `Future<int> setParameters(String params)`     | :x:        | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :x:      |
 
 
 ## Supported Barcode Symbologies
@@ -267,7 +267,7 @@ Barcode Scanner
   await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   ```
 
-- Get current barcode detection parameters:
+- Get current barcode detection [parameters](https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest):
     
   ```dart
   String params = await _barcodeReader.getParameters();

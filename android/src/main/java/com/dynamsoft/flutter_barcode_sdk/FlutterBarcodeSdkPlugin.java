@@ -95,6 +95,16 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 result.success(ret);
             }
             break;
+            case "getParameters": {
+                result.success(mBarcodeManager.getParameters());
+            }
+            break;
+            case "setParameters": {
+                final String params = call.argument("params");
+                int ret = mBarcodeManager.setParameters(params);
+                result.success(ret);
+            }
+            break;
             default:
                 result.notImplemented();
         }
