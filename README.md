@@ -5,7 +5,7 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 
 ## What You Should Know About Dynamsoft Barcode SDK
 - [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
-- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
+- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
 ## Build Configuration
 
@@ -27,9 +27,36 @@ Add the keys to `ios/Runner/Info.plist` to make camera work:
 ```
 
 ### Desktop
+
+**Windows & Linux**
+
 Install `CMake` and `platform-specific C++ compiler`.
 
-Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
+**macOS**
+
+Install `Xcode`.
+
+To make the demo app work on macOS:
+- Disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`:
+    
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+  </dict>
+  </plist>
+  ```    
+
+- Import `DynamsoftBarcodeReader.h` in the bridging header file.
+    
+  ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
 
 ### Web
 Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
