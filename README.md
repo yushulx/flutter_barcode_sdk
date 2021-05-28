@@ -169,6 +169,8 @@ Barcode Scanner
 | `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 | `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<String> getParameters() async`     | :x:        | :x:   | :heavy_check_mark:       | :x:        |:x:       | :x:      |
+| `Future<int> setParameters(String params)`     | :x:        | :x:   | :heavy_check_mark:       | :x:        |:x:       | :x:      |
 
 
 ## Supported Barcode Symbologies
@@ -263,6 +265,22 @@ Barcode Scanner
 
   ```dart
   await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+  ```
+
+- Get current barcode detection parameters:
+    
+  ```dart
+  String params = await _barcodeReader.getParameters();
+  // Convert parameters to a JSON object.
+  dynamic obj = jsonDecode(params);
+  // Modify parameters.
+  obj['ImageParameter']['DeblurLevel'] = 5;
+  ```
+
+- Set barcode detection parameters:
+    
+  ```dart
+  int ret = await _barcodeReader.setParameters(json.encode(obj));
   ```
 
 ## How to Use the License Key
