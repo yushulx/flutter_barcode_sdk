@@ -42,6 +42,8 @@ class FlutterBarcodeSdkWeb {
         return getParameters();
       case 'setParameters':
         return setParameters(call.arguments['params']);
+      case 'init':
+        return initBarcodeSDK();
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -81,5 +83,10 @@ class FlutterBarcodeSdkWeb {
   /// Set parameters to adjust barcode detection algorithm.
   Future<int> setParameters(String params) async {
     return _barcodeManager.setParameters(params);
+  }
+
+  /// Initialize barcode reader and scanner.
+  Future<void> initBarcodeSDK() async {
+    await _barcodeManager.initBarcodeSDK();
   }
 }

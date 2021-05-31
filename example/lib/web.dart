@@ -28,17 +28,15 @@ class _WebState extends State<Web> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
+    await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
     // Get all current parameters.
     // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
     String params = await _barcodeReader.getParameters();
     // Convert parameters to a JSON object.
-    dynamic obj = json.decode(params);
+    dynamic obj = json.decode(json.decode(params));
     // Modify parameters.
-    if (obj['ImageParameter'] != null) {
-      obj['ImageParameter']['DeblurLevel'] = 5;
-    } else
-      obj['deblurLevel'] = 5;
+    obj['ImageParameter']['DeblurLevel'] = 5;
     // Update the parameters.
     int ret = await _barcodeReader.setParameters(json.encode(obj));
     print('Parameter update: $ret');
