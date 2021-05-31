@@ -122,6 +122,22 @@ class BarcodeManager {
         return ret;
     }
 
+    FlValue* GetParameters()
+    {
+        char* content = NULL;
+        reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
+        FlValue* params = fl_value_new_string((const char*)content);
+        reader->FreeSettingsString(&content);
+        return params;
+    }
+
+    FlValue* SetParameters(const char *params)
+    {
+        char errorMessage[256];
+        int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
+        return fl_value_new_int(ret);
+    }
+
     private:
         CBarcodeReader *reader; 
 };

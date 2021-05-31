@@ -131,6 +131,24 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     int ret = self->manager->SetFormats(formats);
     g_autoptr(FlValue) result = fl_value_new_int(ret);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
+  } 
+  else if (strcmp(method, "getParameters") == 0) {
+    g_autoptr(FlValue) result = self->manager->GetParameters();
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
+  } 
+  else if (strcmp(method, "setParameters") == 0) {
+    if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
+      return;
+    }
+
+    FlValue* value = fl_value_lookup_string(args, "params");
+    if (value == nullptr) {
+      return;
+    }
+  
+    const char* params  = fl_value_get_string(value);
+    g_autoptr(FlValue) result = self->manager->SetParameters(params);
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
