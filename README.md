@@ -1,11 +1,11 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-A Flutter plugin of [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
+The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
 
-## What You Should Know
+## What You Should Know About Dynamsoft Barcode SDK
 - [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
-- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial%20License-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
+- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
 ## Build Configuration
 
@@ -27,12 +27,39 @@ Add the keys to `ios/Runner/Info.plist` to make camera work:
 ```
 
 ### Desktop
+
+**Windows & Linux**
+
 Install `CMake` and `platform-specific C++ compiler`.
 
-Note: To make demo app work on macOS, disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`.
+**macOS**
+
+Install `Xcode`.
+
+To make the demo app work on macOS:
+- Disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`:
+    
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+  </dict>
+  </plist>
+  ```    
+
+- Import `DynamsoftBarcodeReader.h` to the bridging header file.
+    
+  ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
 
 ### Web
-Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
+Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
 
 There are two editions: [compact edition and full edtion](https://www.npmjs.com/package/dynamsoft-javascript-barcode). The compact edition is used as the default. To enable the full edition, you need to add the following line to `index.html` after including the JS library.
 
@@ -59,6 +86,28 @@ Video Scan
 Picture Scan
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
+
+
+For building Android release app, configure `build.gradle` and corresponding proguard file:
+
+**build.gradle**
+```
+buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+```
+
+**proguard-rules.pro**
+
+```
+-keep class com.dynamsoft.dbr.** { *; }
+```
 
 ### Windows, Linux and macOS Desktop
 Input a valid image path for barcode decoding.
@@ -119,7 +168,9 @@ Barcode Scanner
 | `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |:x:     |
 | `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
 | `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
-| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :x:   | :heavy_check_mark:       | :x:       |:x:       | :heavy_check_mark:     |
+| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<String> getParameters() async`     | :heavy_check_mark:         | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :heavy_check_mark:     |
+| `Future<int> setParameters(String params)`     | :heavy_check_mark:         | :x:   | :heavy_check_mark:       | :heavy_check_mark:        |:x:       | :heavy_check_mark:     |
 
 
 ## Supported Barcode Symbologies
@@ -216,6 +267,25 @@ Barcode Scanner
   await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   ```
 
+- Get current barcode detection [parameters](https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest):
+    
+  ```dart
+  String params = await _barcodeReader.getParameters();
+  // Convert parameters to a JSON object.
+  dynamic obj = jsonDecode(params);
+  // Modify parameters.
+  if (obj['ImageParameter'] != null) {
+    obj['ImageParameter']['DeblurLevel'] = 5;
+  } else
+    obj['deblurLevel'] = 5;
+  ```
+
+- Set barcode detection parameters:
+    
+  ```dart
+  int ret = await _barcodeReader.setParameters(json.encode(obj));
+  ```
+
 ## How to Use the License Key
 
 ### Mobile
@@ -238,7 +308,7 @@ _barcodeReader.setLicense('LICENSE-KEY');
 Update the `PRODUCT-KEYS` :
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
 <script>
   Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
 </script>

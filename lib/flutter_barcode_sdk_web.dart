@@ -38,6 +38,10 @@ class FlutterBarcodeSdkWeb {
         break;
       case 'setBarcodeFormats':
         return setBarcodeFormats(call.arguments['formats']);
+      case 'getParameters':
+        return getParameters();
+      case 'setParameters':
+        return setParameters(call.arguments['params']);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -66,5 +70,16 @@ class FlutterBarcodeSdkWeb {
   /// Decode barcodes from real-time video stream.
   Future<int> setBarcodeFormats(int formats) async {
     return _barcodeManager.setBarcodeFormats(formats);
+  }
+
+  /// Get all current parameters configured for barcode detection algorithm.
+  /// https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+  Future<String> getParameters() async {
+    return _barcodeManager.getParameters();
+  }
+
+  /// Set parameters to adjust barcode detection algorithm.
+  Future<int> setParameters(String params) async {
+    return _barcodeManager.setParameters(params);
   }
 }

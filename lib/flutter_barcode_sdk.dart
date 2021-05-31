@@ -68,4 +68,15 @@ class FlutterBarcodeSdk {
     return await _channel
         .invokeMethod('setBarcodeFormats', {'formats': formats});
   }
+
+  /// Get all current parameters configured for barcode detection algorithm.
+  /// https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+  Future<String> getParameters() async {
+    return await _channel.invokeMethod('getParameters');
+  }
+
+  /// Set parameters to adjust barcode detection algorithm.
+  Future<int> setParameters(String params) async {
+    return await _channel.invokeMethod('setParameters', {'params': params});
+  }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -31,6 +32,20 @@ class _DesktopState extends State<Desktop> {
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
     await _barcodeReader.setLicense('LICENSE-KEY');
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+
+    // Get all current parameters.
+    // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+    String params = await _barcodeReader.getParameters();
+    // Convert parameters to a JSON object.
+    dynamic obj = json.decode(params);
+    // Modify parameters.
+    if (obj['ImageParameter'] != null) {
+      obj['ImageParameter']['DeblurLevel'] = 5;
+    } else
+      obj['deblurLevel'] = 5;
+    // Update the parameters.
+    int ret = await _barcodeReader.setParameters(json.encode(obj));
+    print('Parameter update: $ret');
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -116,7 +131,7 @@ class _DesktopState extends State<Desktop> {
                             });
                             return;
                           }
-                          
+
                           File file = File(_controller.text);
                           if (!file.existsSync()) {
                             setState(() {
@@ -137,7 +152,7 @@ class _DesktopState extends State<Desktop> {
 
                           List<BarcodeResult> results =
                               await _barcodeReader.decodeFile(_controller.text);
-                          
+
                           setState(() {
                             _barcodeResults = getBarcodeResults(results);
                           });

@@ -20,6 +20,8 @@ class BarcodeScanner {
   external static PromiseJsImpl<BarcodeScanner> createInstance();
   external void show();
   external set onFrameRead(Function func);
+  external PromiseJsImpl<dynamic> getRuntimeSettings();
+  external PromiseJsImpl<void> updateRuntimeSettings(String settings);
 }
 
 /// BarcodeReader class.
@@ -90,11 +92,17 @@ class BarcodeManager {
     obj['barcodeFormatIds'] = formats;
     await handleThenable(
         _barcodeReader!.updateRuntimeSettings(json.encode(obj)));
+
+    settings = await handleThenable(_barcodeScanner!.getRuntimeSettings());
+    obj = json.decode(stringify(settings));
+    obj['barcodeFormatIds'] = formats;
+    await handleThenable(
+        _barcodeScanner!.updateRuntimeSettings(json.encode(obj)));
   }
 
   /// Wait until instances are initializad.
   Future<void> _waitForReady() async {
-    if (_barcodeReader == null) {
+    if (_barcodeReader == null || _barcodeScanner == null) {
       Timer(Duration(milliseconds: 30), () async {
         await _waitForReady();
       });
@@ -134,5 +142,20 @@ class BarcodeManager {
         await handleThenable(_barcodeReader!.decode(filename));
 
     return _resultWrapper(barcodeResults);
+  }
+
+  /// Get all current parameters configured for barcode detection algorithm.
+  /// https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+  Future<String> getParameters() async {
+    dynamic settings =
+        await handleThenable(_barcodeReader!.getRuntimeSettings());
+    return stringify(settings);
+  }
+
+  /// Set parameters to adjust barcode detection algorithm.
+  Future<int> setParameters(String params) async {
+    await handleThenable(_barcodeReader!.updateRuntimeSettings(params));
+    await handleThenable(_barcodeScanner!.updateRuntimeSettings(params));
+    return 0;
   }
 }

@@ -109,6 +109,19 @@ class BarcodeManager {
         return WrapResults();
     }
 
+    int SetFormats(int formats) 
+    {
+        int ret = 0;
+        char sError[512];
+        PublicRuntimeSettings* runtimeSettings = new PublicRuntimeSettings();
+        reader->GetRuntimeSettings(runtimeSettings);
+        runtimeSettings->barcodeFormatIds = formats; 
+        reader->UpdateRuntimeSettings(runtimeSettings, sError, 512);
+        delete runtimeSettings;
+
+        return ret;
+    }
+
     private:
         CBarcodeReader *reader; 
 };

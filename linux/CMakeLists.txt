@@ -6,7 +6,7 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 # not be changed
 set(PLUGIN_NAME "flutter_barcode_sdk_plugin")
 
-link_directories("${PROJECT_SOURCE_DIR}/bin/") 
+link_directories("${PROJECT_SOURCE_DIR}/lib/") 
 
 add_library(${PLUGIN_NAME} SHARED
   "flutter_barcode_sdk_plugin.cc"
@@ -23,6 +23,6 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
 
 # List of absolute paths to libraries that should be bundled with the plugin
 set(flutter_barcode_sdk_bundled_libraries
-  "${PROJECT_SOURCE_DIR}/bin/"
+  "${PROJECT_SOURCE_DIR}/lib/"
   PARENT_SCOPE
 )

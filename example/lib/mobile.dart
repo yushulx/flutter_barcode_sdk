@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -56,6 +58,19 @@ class MobileState extends State<Mobile> {
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
     // await _barcodeReader.setLicense('LICENSE-KEY');
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+    // Get all current parameters.
+    // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+    String params = await _barcodeReader.getParameters();
+    // Convert parameters to a JSON object.
+    dynamic obj = json.decode(params);
+    // Modify parameters.
+    if (obj['ImageParameter'] != null) {
+      obj['ImageParameter']['DeblurLevel'] = 5;
+    } else
+      obj['deblurLevel'] = 5;
+    // Update the parameters.
+    int ret = await _barcodeReader.setParameters(json.encode(obj));
+    print('Parameter update: $ret');
   }
 
   void pictureScan() async {
