@@ -21,6 +21,11 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         case "setBarcodeFormats":
             self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
             result(.none)
+        case "getParameters":
+            result(self.getParameters())
+        case "setParameters":
+            self.setParameters(arg: call.arguments as! NSDictionary)
+            result(.none)
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
@@ -32,7 +37,7 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
     public override init() {
         super.init()
         reader = DynamsoftBarcodeReader()
-
+        
         //Best Coverage settings
         //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
         //Best Speed settings
@@ -63,6 +68,16 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         let settings = try! reader!.getRuntimeSettings()
         settings.barcodeFormatIds = formats
         reader!.update(settings, error: nil)
+    }
+    
+    func getParameters() -> String {
+        let ret = try! reader!.outputSettings(to: "currentRuntimeSettings")
+        return ret
+    }
+    
+    func setParameters(arg:NSDictionary) {
+        let params:String = arg.value(forKey: "params") as! String
+        reader!.initRuntimeSettings(with: params, conflictMode: .overwrite, error: nil)
     }
 
     func wrapResults(results:[iTextResult]) -> NSArray {
