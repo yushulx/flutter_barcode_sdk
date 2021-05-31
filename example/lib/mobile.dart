@@ -64,10 +64,7 @@ class MobileState extends State<Mobile> {
     // Convert parameters to a JSON object.
     dynamic obj = json.decode(params);
     // Modify parameters.
-    if (obj['ImageParameter'] != null) {
-      obj['ImageParameter']['DeblurLevel'] = 5;
-    } else
-      obj['deblurLevel'] = 5;
+    obj['ImageParameter']['DeblurLevel'] = 5;
     // Update the parameters.
     int ret = await _barcodeReader.setParameters(json.encode(obj));
     print('Parameter update: $ret');

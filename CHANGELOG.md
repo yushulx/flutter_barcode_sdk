@@ -1,5 +1,6 @@
 ## 1.2.0
 * Added two methods: getParameters() and setParameters().
+* Optimized code for web plugin.
 
 ## 1.1.1
 * Fixed the crash issue caused by building release app for Android.
