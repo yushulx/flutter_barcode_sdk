@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
+import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 
 class Desktop extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class _DesktopState extends State<Desktop> {
   String _barcodeResults = '';
   FlutterBarcodeSdk _barcodeReader;
   bool _isValid = false;
-  String _file = '';
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _DesktopState extends State<Desktop> {
     if (_controller.text.isEmpty || !_isValid) {
       return Image.asset('images/default.png');
     } else {
-      return Image.file(File(_file));
+      return Image.file(File(_controller.text));
     }
   }
 
@@ -116,32 +116,52 @@ class _DesktopState extends State<Desktop> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     MaterialButton(
+                        child: Text('Open an Image'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          final typeGroup = XTypeGroup(
+                            label: 'images',
+                            extensions: ['jpg', 'png'],
+                          );
+                          try {
+                            final files = await FileSelectorPlatform.instance
+                                .openFiles(acceptedTypeGroups: [typeGroup]);
+                            final file = files[0];
+                            List<BarcodeResult> results =
+                                await _barcodeReader.decodeFile(file.path);
+
+                            _isValid = true;
+                            setState(() {
+                              _controller.text = file.path;
+                              _barcodeResults = getBarcodeResults(results);
+                            });
+                          } catch (err) {
+                            print('Error: $err');
+                          }
+                        }),
+                    MaterialButton(
                         child: Text('Decode Barcode'),
                         textColor: Colors.white,
                         color: Colors.blue,
                         onPressed: () async {
                           if (_controller.text.isEmpty) {
+                            _isValid = false;
                             setState(() {
-                              _isValid = false;
                               _barcodeResults = '';
-                              _file = '';
                             });
                             return;
                           }
 
                           File file = File(_controller.text);
                           if (!file.existsSync()) {
+                            _isValid = false;
                             setState(() {
-                              _isValid = false;
                               _barcodeResults = '';
-                              _file = '';
                             });
                             return;
                           } else {
-                            setState(() {
-                              _isValid = true;
-                              _file = _controller.text;
-                            });
+                            _isValid = true;
                           }
                           // Uint8List bytes = await file.readAsBytes();
                           // List<BarcodeResult> results =

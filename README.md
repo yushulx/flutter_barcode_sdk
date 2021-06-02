@@ -37,7 +37,7 @@ Install `CMake` and `platform-specific C++ compiler`.
 Install `Xcode`.
 
 To make the demo app work on macOS:
-- Disable `com.apple.security.app-sandbox` in `example/macos/Runner/DebugProfile.entitlements`:
+- Disable `com.apple.security.app-sandbox` and enable `com.apple.security.files.user-selected.read-write` in `example/macos/Runner/DebugProfile.entitlements`:
     
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
@@ -49,6 +49,8 @@ To make the demo app work on macOS:
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
     <key>com.apple.security.network.server</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
     <true/>
   </dict>
   </plist>
