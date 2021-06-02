@@ -1,3 +1,6 @@
+## 1.2.1
+* Added file selector to desktop example.
+
 ## 1.2.0
 * Added two methods: getParameters() and setParameters().
 * Optimized code for web plugin.
