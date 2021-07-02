@@ -1,3 +1,6 @@
+## 1.2.2
+* Added closeVideo() method for web.
+
 ## 1.2.1
 * Added file selector to desktop example.
 

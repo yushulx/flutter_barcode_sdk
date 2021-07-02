@@ -62,6 +62,12 @@ class FlutterBarcodeSdk {
     await _channel.invokeMethod('decodeVideo');
   }
 
+  /// Close webcam stream.
+  /// Web only!
+  Future<void> closeVideo() async {
+    await _channel.invokeMethod('closeVideo');
+  }
+
   /// Set barcode formats.
   /// https://www.dynamsoft.com/barcode-reader/parameters/enum/format-enums.html?ver=latest#barcodeformat
   Future<int> setBarcodeFormats(int formats) async {

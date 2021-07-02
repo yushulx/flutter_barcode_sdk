@@ -63,6 +63,8 @@ class _WebState extends State<Web> {
   }
 
   void updateResults(List<BarcodeResult> results) {
+    if (results.length > 0) _barcodeReader.closeVideo();
+
     setState(() {
       _barcodeResults = getBarcodeResults(results);
     });

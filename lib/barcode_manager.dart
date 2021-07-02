@@ -19,6 +19,7 @@ import 'utils.dart';
 class BarcodeScanner {
   external static PromiseJsImpl<BarcodeScanner> createInstance();
   external void show();
+  external void hide();
   external set onFrameRead(Function func);
   external PromiseJsImpl<dynamic> getRuntimeSettings();
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
@@ -72,6 +73,11 @@ class BarcodeManager {
   /// Show camera view.
   Future<void> decodeVideo() async {
     _barcodeScanner!.show();
+  }
+
+  /// Close camera view.
+  Future<void> closeVideo() async {
+    _barcodeScanner!.hide();
   }
 
   /// Set barcode formats.

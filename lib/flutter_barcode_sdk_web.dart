@@ -36,6 +36,9 @@ class FlutterBarcodeSdkWeb {
       case 'decodeVideo':
         decodeVideo();
         break;
+      case 'closeVideo':
+        closeVideo();
+        break;
       case 'setBarcodeFormats':
         return setBarcodeFormats(call.arguments['formats']);
       case 'getParameters':
@@ -67,6 +70,11 @@ class FlutterBarcodeSdkWeb {
   /// Decode barcodes from real-time video stream.
   Future<void> decodeVideo() async {
     _barcodeManager.decodeVideo();
+  }
+
+  /// Close video window.
+  Future<void> closeVideo() async {
+    _barcodeManager.closeVideo();
   }
 
   /// Decode barcodes from real-time video stream.
