@@ -117,13 +117,13 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
             subDic.setObject(item.barcodeText ?? "", forKey: "text" as NSCopying)
             let points = item.localizationResult?.resultPoints as! [CGPoint]
             subDic.setObject(Int(points[0].x), forKey: "x1" as NSCopying)
-            subDic.setObject(Int(points[0].x), forKey: "y1" as NSCopying)
+            subDic.setObject(Int(points[0].y), forKey: "y1" as NSCopying)
             subDic.setObject(Int(points[1].x), forKey: "x2" as NSCopying)
-            subDic.setObject(Int(points[1].x), forKey: "y2" as NSCopying)
+            subDic.setObject(Int(points[1].y), forKey: "y2" as NSCopying)
             subDic.setObject(Int(points[2].x), forKey: "x3" as NSCopying)
-            subDic.setObject(Int(points[2].x), forKey: "y3" as NSCopying)
+            subDic.setObject(Int(points[2].y), forKey: "y3" as NSCopying)
             subDic.setObject(Int(points[3].x), forKey: "x4" as NSCopying)
-            subDic.setObject(Int(points[3].x), forKey: "y4" as NSCopying)
+            subDic.setObject(Int(points[3].y), forKey: "y4" as NSCopying)
             subDic.setObject(item.localizationResult?.angle ?? 0, forKey: "angle" as NSCopying)
             outResults.add(subDic)
         }
