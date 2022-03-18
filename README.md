@@ -164,7 +164,7 @@ Barcode Scanner
 ## SDK Version
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 8.2       | 8.2   | 9.0      | 8.2    |8.2      | 8.2     |
+| Version    | 8.2       | 8.2   | 9.0      | 9.0    |8.2      | 8.2     |
 
 
 ## API Compatibility

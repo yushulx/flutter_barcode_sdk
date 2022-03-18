@@ -16,25 +16,24 @@ using namespace dynamsoft::dbr;
 
 class BarcodeManager {
     public:
-     BarcodeManager() 
-     {
-         reader = new CBarcodeReader();
-         reader->InitLicense(""); // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
-     };
-
     ~BarcodeManager() 
     {
-        delete reader;
+        if (reader != NULL)
+        {
+            delete reader;
+            reader = NULL;
+        }
     };
 
     const char* GetVersion() 
     {
-        return reader->GetVersion();
+        return DBR_GetVersion();
     }
 
     FlValue* WrapResults() 
     {
         FlValue* out = fl_value_new_list();
+        if (reader == NULL) return out;
 
         TextResultArray *results = NULL;
         reader->GetAllTextResults(&results);
@@ -67,14 +66,21 @@ class BarcodeManager {
         return out;
     }
 
+    void Init() 
+    {
+        reader = new CBarcodeReader();
+    }
+
     void SetLicense(const char * license) 
     {
-        reader->InitLicense(license);
+        CBarcodeReader::InitLicense(license);
     }
 
     FlValue* DecodeFile(const char * filename) 
     {
         FlValue* out = fl_value_new_list();
+        if (reader == NULL) return out;
+
         int ret = reader->DecodeFile(filename, "");
 
         if (ret == DBRERR_FILE_NOT_FOUND)
@@ -88,12 +94,18 @@ class BarcodeManager {
 
     FlValue* DecodeFileBytes(const unsigned char * bytes, int size) 
     {
+        FlValue* out = fl_value_new_list();
+        if (reader == NULL) return out;
+
         reader->DecodeFileInMemory(bytes, size, "");
         return WrapResults();
     }
 
     FlValue* DecodeImageBuffer(const unsigned char * buffer, int width, int height, int stride, int format) 
     {
+        FlValue* out = fl_value_new_list();
+        if (reader == NULL) return out;
+
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch(format) {
             case 0:
@@ -111,6 +123,8 @@ class BarcodeManager {
 
     int SetFormats(int formats) 
     {
+        if (reader == NULL) return -1;
+
         int ret = 0;
         char sError[512];
         PublicRuntimeSettings* runtimeSettings = new PublicRuntimeSettings();
@@ -124,6 +138,8 @@ class BarcodeManager {
 
     FlValue* GetParameters()
     {
+        if (reader == NULL) return fl_value_new_string("");
+
         char* content = NULL;
         reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
         FlValue* params = fl_value_new_string((const char*)content);
@@ -133,6 +149,8 @@ class BarcodeManager {
 
     FlValue* SetParameters(const char *params)
     {
+        if (reader == NULL) return -1;
+        
         char errorMessage[256];
         int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
         return fl_value_new_int(ret);

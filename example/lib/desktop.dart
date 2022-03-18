@@ -30,7 +30,7 @@ class _DesktopState extends State<Desktop> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
-    if (Platform.isWindows) {
+    if (Platform.isWindows || Platform.isLinux) {
       await _barcodeReader.setLicense('LICENSE-KEY');
       await _barcodeReader.init();
     } else {

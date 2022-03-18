@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_barcode_sdk'
-  s.version          = '0.0.1'
+  s.version          = '1.2.2'
   s.summary          = 'A flutter plugin of Dynamsoft Barcode Reader.'
   s.description      = <<-DESC
   A flutter plugin of Dynamsoft Barcode Reader.
                        DESC
-  s.homepage         = 'https://www.dynamsoft.com'
+  s.homepage         = 'https://github.com/yushulx/flutter_barcode_sdk'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Dynamsoft' => 'support@dynamsoft.com' }
+  s.author           = { 'yushulx' => 'lingxiao1002@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
