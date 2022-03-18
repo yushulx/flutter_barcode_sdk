@@ -4,7 +4,7 @@ version '1.0'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -14,11 +14,11 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
-        maven {
-            url "http://download2.dynamsoft.com/maven/dbr/aar"
-        }
         google()
-        jcenter()
+        mavenCentral()
+        maven {
+            url "https://download2.dynamsoft.com/maven/dbr/aar"
+        }
     }
 }
 
@@ -27,11 +27,16 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 30
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
     }
 }
 
 dependencies {
-    implementation 'com.dynamsoft:dynamsoftbarcodereader:8.2.0@aar'
+    implementation 'com.dynamsoft:dynamsoftbarcodereader:8.9.3@aar'
 }

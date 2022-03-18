@@ -56,7 +56,8 @@ class MobileState extends State<Mobile> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
-    // await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
     // Get all current parameters.
     // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
@@ -177,47 +178,52 @@ class MobileState extends State<Mobile> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Expanded(child: getCameraWidget()),
-      Container(
-        height: 100,
-        child: SingleChildScrollView(
-          child: Text(
-            _barcodeResults,
-            style: TextStyle(fontSize: 14, color: Colors.black),
+    return Stack(children: [
+      getCameraWidget(),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            height: 100,
+            child: SingleChildScrollView(
+              child: Text(
+                _barcodeResults,
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            ),
           ),
-        ),
-      ),
-      Container(
-        height: 100,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              MaterialButton(
-                  child: Text(_buttonText),
-                  textColor: Colors.white,
-                  color: Colors.blue,
-                  onPressed: () async {
-                    try {
-                      // Ensure that the camera is initialized.
-                      await _initializeControllerFuture;
+          Container(
+            height: 100,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  MaterialButton(
+                      child: Text(_buttonText),
+                      textColor: Colors.white,
+                      color: Colors.blue,
+                      onPressed: () async {
+                        try {
+                          // Ensure that the camera is initialized.
+                          await _initializeControllerFuture;
 
-                      videoScan();
-                      // pictureScan();
-                    } catch (e) {
-                      // If an error occurs, log the error to the console.
-                      print(e);
-                    }
-                  }),
-              MaterialButton(
-                  child: Text("Picture Scan"),
-                  textColor: Colors.white,
-                  color: Colors.blue,
-                  onPressed: () async {
-                    pictureScan();
-                  })
-            ]),
-      ),
+                          videoScan();
+                          // pictureScan();
+                        } catch (e) {
+                          // If an error occurs, log the error to the console.
+                          print(e);
+                        }
+                      }),
+                  MaterialButton(
+                      child: Text("Picture Scan"),
+                      textColor: Colors.white,
+                      color: Colors.blue,
+                      onPressed: () async {
+                        pictureScan();
+                      })
+                ]),
+          ),
+        ],
+      )
     ]);
   }
 }

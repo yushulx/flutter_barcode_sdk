@@ -1,3 +1,7 @@
+## 1.3.0
+* Updated Windows, Linux SDK to v9.0.0
+* Updated Android and iOS SDK to v8.9.3
+
 ## 1.2.2
 * Added closeVideo() method for web.
 

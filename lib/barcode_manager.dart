@@ -3,7 +3,7 @@ library dynamsoft;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js';
+// import 'dart:js';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/global.dart';
 import 'package:js/js.dart';

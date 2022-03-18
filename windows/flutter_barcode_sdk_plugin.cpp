@@ -94,6 +94,12 @@ namespace
       version_stream << manager->GetVersion();
       result->Success(EncodableValue(version_stream.str()));
     }
+    else if (method_call.method_name().compare("init") == 0)
+    {
+      manager->Init();
+
+      result->Success(EncodableValue(""));
+    }
     else if (method_call.method_name().compare("setLicense") == 0)
     {
       std::string license;

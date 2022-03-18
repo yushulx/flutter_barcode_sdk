@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import DynamsoftBarcodeReader
 
-public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicenseVerificationDelegate{
+public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
     
     var reader: DynamsoftBarcodeReader? = DynamsoftBarcodeReader()
     
@@ -14,10 +14,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
     
     public override init() {
         super.init()
-        let lts = iDMLTSConnectionParameters()
-        // The organization id 200001 here will grant you a public trial license good for 7 days. After that, you can send an email to trial@dynamsoft.com (make sure to include the keyword privateTrial in the email title) to obtain a 30-day free private trial license which will also come in the form of an organization id.
-        lts.organizationID = "200001"
-        reader = DynamsoftBarcodeReader(licenseFromLTS: lts, verificationDelegate: self)
+        reader = DynamsoftBarcodeReader()
         
         //Best Coverage settings
         //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
@@ -32,11 +29,10 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeX", argumentValue: "81", error: nil)
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
     }
-    
-    public func ltsLicenseVerificationCallback(_ isSuccess: Bool, error: Error?) {
-        if (error != nil) {
-            let err: NSError = error! as NSError
-            print(err.userInfo)
+
+    func initObj() {
+        if (reader == nil) {
+            reader = DynamsoftBarcodeReader()
         }
     }
 
@@ -44,6 +40,9 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         switch call.method {
         case "getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
+        case "init":
+            self.initObj()
+            result(.none)
         case "setLicense":
             self.setLicense(arg: call.arguments as! NSDictionary)
             result(.none)
