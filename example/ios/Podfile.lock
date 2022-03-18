@@ -1,8 +1,12 @@
 PODS:
   - camera (0.0.1):
     - Flutter
+  - DynamsoftBarcodeReader (8.9.3)
   - Flutter (1.0.0)
-  - flutter_barcode_sdk (0.0.1):
+  - flutter_barcode_sdk (1.3.0):
+    - DynamsoftBarcodeReader (= 8.9.3)
+    - Flutter
+  - image_picker (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -11,7 +15,12 @@ DEPENDENCIES:
   - camera (from `.symlinks/plugins/camera/ios`)
   - Flutter (from `Flutter`)
   - flutter_barcode_sdk (from `.symlinks/plugins/flutter_barcode_sdk/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+
+SPEC REPOS:
+  trunk:
+    - DynamsoftBarcodeReader
 
 EXTERNAL SOURCES:
   camera:
@@ -20,15 +29,19 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_barcode_sdk:
     :path: ".symlinks/plugins/flutter_barcode_sdk/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
-  camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  flutter_barcode_sdk: 7f44a2ff3387e5d74c3971888834ebd61f89c3c5
+  camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
+  DynamsoftBarcodeReader: a9b09b565cbe68464d6994f4be9687f369d76ce7
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_barcode_sdk: 4d9b34f49ab750ba8844526548cdbf4c724f1d5f
+  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

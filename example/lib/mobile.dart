@@ -179,7 +179,7 @@ class MobileState extends State<Mobile> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Expanded(child: getCameraWidget()),
+      getCameraWidget(),
       Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
