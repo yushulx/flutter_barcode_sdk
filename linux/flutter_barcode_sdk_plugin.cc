@@ -34,6 +34,12 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     g_autoptr(FlValue) result = fl_value_new_string(version);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } 
+  else if (strcmp(method, "init") == 0) {
+    self->manager->Init();
+
+    g_autoptr(FlValue) result = fl_value_new_string("");
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
+  }
   else if (strcmp(method, "setLicense") == 0) {
     if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
       return;
