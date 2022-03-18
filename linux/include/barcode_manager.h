@@ -149,7 +149,7 @@ class BarcodeManager {
 
     FlValue* SetParameters(const char *params)
     {
-        if (reader == NULL) return -1;
+        if (reader == NULL) return fl_value_new_int(-1);
         
         char errorMessage[256];
         int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
