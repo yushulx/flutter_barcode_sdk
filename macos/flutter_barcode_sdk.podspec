@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_barcode_sdk'
-  s.version          = '1.2.2'
+  s.version          = '1.3.0'
   s.summary          = 'A flutter plugin of Dynamsoft Barcode Reader.'
   s.description      = <<-DESC
   A flutter plugin of Dynamsoft Barcode Reader.
