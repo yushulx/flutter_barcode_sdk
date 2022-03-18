@@ -40,10 +40,19 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
         }
     }
 
+    func initObj() {
+        if (reader == nil) {
+            reader = DynamsoftBarcodeReader()
+        }
+    }
+
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
+        case "init":
+            self.initObj()
+            result(.none)
         case "setLicense":
             self.setLicense(arg: call.arguments as! NSDictionary)
             result(.none)
@@ -107,7 +116,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DMLTSLicense
 
     func wrapResults(results:[iTextResult]) -> NSArray {
         let outResults = NSMutableArray(capacity: 8)
-        for item in results {
+        for item in results! {
             let subDic = NSMutableDictionary(capacity: 8)
             if item.barcodeFormat_2 != EnumBarcodeFormat2.Null {
                 subDic.setObject(item.barcodeFormatString_2 ?? "", forKey: "format" as NSCopying)

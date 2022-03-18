@@ -15,6 +15,9 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "getPlatformVersion":
             result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
+        case "init":
+            self.initObj()
+            result(.none)
         case "setLicense":
             self.setLicense(arg: call.arguments as! NSDictionary)
             result(.none)
@@ -50,6 +53,12 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "EnableFillBinaryVacancy", argumentValue: "0", error: nil)
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeX", argumentValue: "81", error: nil)
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
+    }
+
+    func initObj() {
+        if (reader == nil) {
+            reader = DynamsoftBarcodeReader()
+        }
     }
 
     func decodeFile(arg:NSDictionary) -> NSArray {
@@ -92,13 +101,13 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
             subDic.setObject(item.barcodeText ?? "", forKey: "text" as NSCopying)
             let points = item.localizationResult?.resultPoints as! [CGPoint]
             subDic.setObject(Int(points[0].x), forKey: "x1" as NSCopying)
-            subDic.setObject(Int(points[0].x), forKey: "y1" as NSCopying)
+            subDic.setObject(Int(points[0].y), forKey: "y1" as NSCopying)
             subDic.setObject(Int(points[1].x), forKey: "x2" as NSCopying)
-            subDic.setObject(Int(points[1].x), forKey: "y2" as NSCopying)
+            subDic.setObject(Int(points[1].y), forKey: "y2" as NSCopying)
             subDic.setObject(Int(points[2].x), forKey: "x3" as NSCopying)
-            subDic.setObject(Int(points[2].x), forKey: "y3" as NSCopying)
+            subDic.setObject(Int(points[2].y), forKey: "y3" as NSCopying)
             subDic.setObject(Int(points[3].x), forKey: "x4" as NSCopying)
-            subDic.setObject(Int(points[3].x), forKey: "y4" as NSCopying)
+            subDic.setObject(Int(points[3].y), forKey: "y4" as NSCopying)
             subDic.setObject(item.localizationResult?.angle ?? 0, forKey: "angle" as NSCopying)
             outResults.add(subDic)
         }
