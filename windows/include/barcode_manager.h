@@ -18,25 +18,25 @@ using flutter::EncodableList;
 
 class BarcodeManager {
     public:
-     BarcodeManager() 
-     {
-         reader = new CBarcodeReader();
-         reader->InitLicense(""); // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
-     };
 
     ~BarcodeManager() 
     {
-        delete reader;
+        if (reader != NULL)
+        {
+            delete reader;
+            reader = NULL;
+        }
     };
 
     const char* GetVersion() 
     {
-        return reader->GetVersion();
+        return DBR_GetVersion();
     }
 
     EncodableList WrapResults() 
     {
         EncodableList out;
+        if (reader == NULL) return out;
         TextResultArray *results = NULL;
         reader->GetAllTextResults(&results);
             
@@ -68,14 +68,20 @@ class BarcodeManager {
         return out;
     }
 
+    void Init() 
+    {
+        reader = new CBarcodeReader();
+    }
+
     void SetLicense(const char * license) 
     {
-        reader->InitLicense(license);
+        CBarcodeReader::InitLicense(license);
     }
 
     EncodableList DecodeFile(const char * filename) 
     {
         EncodableList out;   
+        if (reader == NULL) return out;
         int ret = reader->DecodeFile(filename, "");
 
         if (ret == DBRERR_FILE_NOT_FOUND)
@@ -89,12 +95,17 @@ class BarcodeManager {
 
     EncodableList DecodeFileBytes(const unsigned char * bytes, int size) 
     {
+        EncodableList out;
+        if (reader == NULL) return out;
         reader->DecodeFileInMemory(bytes, size, "");
         return WrapResults();
     }
 
     EncodableList DecodeImageBuffer(const unsigned char * buffer, int width, int height, int stride, int format) 
     {
+        EncodableList out;
+        if (reader == NULL) return out;
+
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch(format) {
             case 0:
@@ -112,6 +123,8 @@ class BarcodeManager {
 
     int SetFormats(int formats) 
     {
+        if (reader == NULL) return -1;
+
         int ret = 0;
         char sError[512];
         PublicRuntimeSettings* runtimeSettings = new PublicRuntimeSettings();
@@ -125,6 +138,9 @@ class BarcodeManager {
 
     EncodableValue GetParameters()
     {
+        EncodableValue out;
+        if (reader == NULL) return out;
+
         char* content = NULL;
         reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
         EncodableValue params = EncodableValue((const char*)content);
@@ -134,6 +150,7 @@ class BarcodeManager {
 
     int SetParameters(const char *params)
     {
+        if (reader == NULL) return -1;
         char errorMessage[256];
         int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
         return ret;

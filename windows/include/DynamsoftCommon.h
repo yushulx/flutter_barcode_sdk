@@ -1,17 +1,8 @@
 #ifndef __DYNAMSOFT_COMMON_H__
 #define __DYNAMSOFT_COMMON_H__
 
-#ifndef DBR_API
-#if !defined(_WIN32) && !defined(_WIN64)
-#define DBR_API __attribute__((visibility("default")))
-#else
-#ifdef DBR_EXPORTS
-#define DBR_API __declspec(dllexport)
-#else
-#define DBR_API 
-#endif
-#endif
-#endif
+#ifndef _COMMON_PART1_
+#define _COMMON_PART1_
 
 /**No license.*/
 #define DMERR_NO_LICENSE -20000
@@ -22,7 +13,7 @@
 /**Failed to read or write license buffer. */
 #define DMERR_LICENSE_BUFFER_FAILED	-20002
 
-/**Failed to synchronize license info with license tracking server. */
+/**Failed to synchronize license info with license server. */
 #define DMERR_LICENSE_SYNC_FAILED	-20003
 
 /**Device dose not match with buffer. */
@@ -31,7 +22,7 @@
 /**Failed to bind device. */
 #define DMERR_BIND_DEVICE_FAILED	-20005
 
-/**Interface InitLicenseFromLTS can not be used together with other license initiation interfaces. */
+/**Interface InitLicenseFromDLS can not be used together with other license initiation interfaces. */
 #define DMERR_LICENSE_INTERFACE_CONFLICT -20006
 
 /**License Client dll is missing.*/
@@ -40,14 +31,17 @@
 /**Instance count is over limit.*/
 #define DMERR_INSTANCE_COUNT_OVER_LIMIT -20008
 
-/**Interface InitLicenseFromLTS has to be called before creating any SDK objects.*/
+/**Interface InitLicenseFromDLS has to be called before creating any SDK objects.*/
 #define DMERR_LICENSE_INIT_SEQUENCE_FAILED -20009
 
 /**Trial License*/
 #define DMERR_TRIAL_LICENSE -20010
 
-/**Failed to reach License Tracking Server.*/
+/**Failed to reach License Server.*/
 #define DMERR_FAILED_TO_REACH_LTS -20200
+
+/**Failed to reach License Server.*/
+#define DMERR_FAILED_TO_REACH_DLS -20200
 
 
 /**
@@ -67,7 +61,9 @@ typedef enum DM_DeploymentType
 	DM_DT_EMBEDDED_DEVICE = 6,
 
 	/**OEM deployment type*/
-	DM_DT_OEM = 7
+	DM_DT_OEM = 7,
+	/**Mobile deployment type*/
+	DM_DT_MOBILE = 9
 }DM_DeploymentType;
 
 /**
@@ -145,7 +141,7 @@ typedef enum DM_ChargeWay
 	DM_CW_AUTO = 0,
 
 	/**Charges by the count of devices.*/
-	DM_CW_DEVICE_COUNT = 1 ,
+	DM_CW_DEVICE_COUNT = 1,
 
 	/**Charges by the count of barcode scans.*/
 	DM_CW_SCAN_COUNT = 2,
@@ -166,30 +162,55 @@ typedef enum DM_ChargeWay
 	DM_CW_CONCURRENT_INSTANCE_COUNT = 10
 }DM_ChargeWay;
 
+/**
+* @enum Product
+*
+* Describes the Product.
+*/
+typedef enum Product
+{
+	/** Dynamsoft Barcode Reader */
+	PROD_DBR = 0x01,
+
+	/** Dynamsoft Label Recognition */
+	PROD_DLR = 0x02,
+
+	/** Dynamic Web Twain */
+	PROD_DWT = 0x04,
+
+	/** Dynamsoft Camera Enhancer */
+	PROD_DCE = 0x08,
+
+	/** Dynamsoft Panorama */
+	PROD_DPS = 0x10,
+
+	/** All Products */
+	PROD_ALL = 0xffff
+}Product;
 
 #pragma pack(push)
 #pragma pack(1)
 /**
-* @defgroup DBRLTSConnectionParameters DBRLTSConnectionParameters
+* @defgroup DM_DLSConnectionParameters DM_DLSConnectionParameters
 * @{
 */
 /**
-* Stores DBR License Tracking Server connection parameters.
+* Stores Dynamsoft License Server connection parameters.
 *
 */
-typedef struct tagDM_LTSConnectionParameters
+typedef struct tagDM_DLSConnectionParameters
 {
-	/**The URL of the license tracking server.*/
-	const char* mainServerURL;
+	/**The URL of the license server.*/
+	char* mainServerURL;
 
-	/**The URL of the standby license tracking server.*/
-	const char* standbyServerURL;
+	/**The URL of the standby license server.*/
+	char* standbyServerURL;
 
 	/**The handshake code.*/
-	const char* handshakeCode;
+	char* handshakeCode;
 
-	/**The session password of the handshake code set in license tracking server.*/
-	const char* sessionPassword;
+	/**The session password of the handshake code set in license server.*/
+	char* sessionPassword;
 
 	/**Sets the deployment type.*/
 	DM_DeploymentType deploymentType;
@@ -212,17 +233,21 @@ typedef struct tagDM_LTSConnectionParameters
 	/**Sets the max concurrent instance count.*/
 	int maxConcurrentInstanceCount;
 
+	/**Sets the organization ID.*/
+	char* organizationID;
+
+	/* Sets the products. A combined value of Product Enumeration items. */
+	int products;
+
 	/**Reserved memory for struct. The length of this array indicates the size of the memory reserved for this struct.*/
-	char reserved[60];
-}DM_LTSConnectionParameters;
+	char reserved[52];
+}DM_DLSConnectionParameters;
 
 /**
-* @}defgroup DBRLTSConnectionParameters
+* @}defgroup DM_DLSConnectionParameters
 */
 #pragma pack(pop)
 
-DBR_API void* DM_CreateImgReference();
-
-DBR_API void DM_DestroyImgReference(void** ref);
+#endif
 
 #endif

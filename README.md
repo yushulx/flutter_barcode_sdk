@@ -3,9 +3,8 @@
 
 The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
 
-## What You Should Know About Dynamsoft Barcode SDK
-- [![](https://img.shields.io/badge/Download-Offline%20SDK-orange)](https://www.dynamsoft.com/barcode-reader/downloads)
-- [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
+## License Key for SDK
+[![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
 ## Build Configuration
 
@@ -154,13 +153,19 @@ Barcode Scanner
 
 ![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-scanner.png)
 
-## Currently Supported Platforms
+## Supported Platforms
 - **Android**
 - **iOS**
 - **Windows**
 - **Linux**
 - **macOS**
 - **Web**
+
+## SDK Version
+| Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
+| ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
+| Version    | 8.2       | 8.2   | 9.0      | 8.2    |8.2      | 8.2     |
+
 
 ## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | macOS | Web|
@@ -299,36 +304,3 @@ Barcode Scanner
   int ret = await _barcodeReader.setParameters(json.encode(obj));
   ```
 
-## How to Use the License Key
-
-### Mobile
-No license required. Instead, you need to get an private organization ID and update the plugin code:
-
-```java
-parameters.organizationID = "200001";
-```
-
-By default, the public organization ID `200001` authorize developers to use the SDK for 7 days.
-
-### Desktop
-Invoke the `setLicense()` method:
-
-```dart
-_barcodeReader.setLicense('LICENSE-KEY');
-```
-
-### Web
-Update the `PRODUCT-KEYS` :
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>
-<script>
-  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
-</script>
-```
-
-## License Agreement
-https://www.dynamsoft.com/Products/barcode-reader-license-agreement.aspx
-
-## Contact Us
-<support@dynamsoft.com>

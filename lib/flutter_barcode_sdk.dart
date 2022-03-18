@@ -86,8 +86,7 @@ class FlutterBarcodeSdk {
     return await _channel.invokeMethod('setParameters', {'params': params});
   }
 
-  /// Initialize barcode reader and barcode scanner.
-  /// Web only!
+  /// Initialize barcode reader object.
   Future<void> init() async {
     return await _channel.invokeMethod('init');
   }
