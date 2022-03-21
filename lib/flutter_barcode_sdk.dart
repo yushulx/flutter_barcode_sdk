@@ -31,13 +31,13 @@ class FlutterBarcodeSdk {
     return convertResults(ret);
   }
 
-  /// Decodes barcodes from bytes of an image file.
-  Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async {
-    assert(bytes.isNotEmpty);
-    List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
-        await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes}));
-    return convertResults(ret);
-  }
+  // Decodes barcodes from bytes of an image file.
+  // Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async {
+  //   assert(bytes.isNotEmpty);
+  //   List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
+  //       await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes}));
+  //   return convertResults(ret);
+  // }
 
   /// Decodes barcodes from an image buffer.
   ///
