@@ -47,6 +47,8 @@ class FlutterBarcodeSdkWeb {
         return setParameters(call.arguments['params']);
       case 'init':
         return initBarcodeSDK();
+      case 'setLicense':
+        return setLicense(call.arguments['license']);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -96,5 +98,10 @@ class FlutterBarcodeSdkWeb {
   /// Initialize barcode reader and scanner.
   Future<void> initBarcodeSDK() async {
     await _barcodeManager.initBarcodeSDK();
+  }
+
+  /// Set license key.
+  Future<void> setLicense(String license) async {
+    await _barcodeManager.setLicense(license);
   }
 }

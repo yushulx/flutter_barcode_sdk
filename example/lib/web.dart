@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk/utils.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,6 +29,7 @@ class _WebState extends State<Web> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
+    await _barcodeReader.setLicense('LICENSE-KEY');
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
     // Get all current parameters.

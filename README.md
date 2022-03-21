@@ -53,22 +53,21 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 8.9.3       | 8.9.3   | 9.0      | 9.0    |8.2      | 8.2     |
+| Version    | 8.9.3       | 8.9.3   | 9.0      | 9.0    |8.2      | 8.8.7     |
 
 
 ## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |
+| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:    |
 | `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:      |
-| `Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async`     | :heavy_check_mark:      | :x:   | :heavy_check_mark:      | :heavy_check_mark:      | :x:     |:x:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :x:     |:x:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
-| `Future<void> closeVideo() async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:x:     |
 | `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | :heavy_check_mark:     |
 | `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
+| `Future<void> closeVideo() async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 
 ## Usage
 - Initialize Flutter barcode SDK and set license key:
@@ -83,12 +82,6 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 
   ```dart
   List<BarcodeResult> results = await _barcodeReader.decodeFile(image-path);
-  ```
-- Read barcodes from image file bytes:
-
-  ```dart
-  Uint8List bytes = await File(image-path).readAsBytes();
-  List<BarcodeResult> results = await _barcodeReader.decodeFileBytes(bytes);
   ```
 
 - Read barcodes from video stream [CameraImage](https://pub.dev/documentation/camera/latest/camera/CameraImage-class.html):
@@ -203,15 +196,8 @@ To make the demo app work on macOS:
   ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
 
 ### Web
-Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.2.3/dist/dbr.js" data-productKeys="PRODUCT-KEYS"></script>` to `index.html`.
+Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.8.7/dist/dbr.js"></script>` to `index.html`.
 
-There are two editions: [compact edition and full edtion](https://www.npmjs.com/package/dynamsoft-javascript-barcode). The compact edition is used as the default. To enable the full edition, you need to add the following line to `index.html` after including the JS library.
-
-```html
-<script>
-  Dynamsoft.DBR.BarcodeReader._bUseFullFeature = true;
-</script>
-```
 
 ## Try Barcode Decoding Example
 

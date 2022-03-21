@@ -3,6 +3,7 @@ library dynamsoft;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:html';
 // import 'dart:js';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/global.dart';
@@ -36,6 +37,7 @@ class BarcodeReader {
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
   external PromiseJsImpl<dynamic> outputSettingsToString();
   external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
+  external static set productKeys(String license);
 }
 
 /// BarcodeManager class.
@@ -68,6 +70,11 @@ class BarcodeManager {
     BarcodeScanner scanner =
         await handleThenable(BarcodeScanner.createInstance());
     initBarcodeScanner(scanner);
+  }
+
+  /// Set license key.
+  Future<void> setLicense(String license) async {
+    BarcodeReader.productKeys = license;
   }
 
   /// Show camera view.

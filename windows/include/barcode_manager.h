@@ -1,6 +1,7 @@
 #ifndef BARCODE_MANAGER_H_
 #define BARCODE_MANAGER_H_
 
+#include "DynamsoftCommon.h"
 #include "DynamsoftBarcodeReader.h"
 
 

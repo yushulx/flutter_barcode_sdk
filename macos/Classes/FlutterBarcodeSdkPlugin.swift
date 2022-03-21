@@ -32,9 +32,23 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
+        case "decodeImageBuffer":
+            DispatchQueue.global().async {
+                let res = self.decodeBuffer(arguments: call.arguments as! NSDictionary)
+                result(res)
+            }
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    func decodeBuffer(arguments:NSDictionary) -> NSArray {
+        let buffer:FlutterStandardTypedData = arguments.value(forKey: "bytes") as! FlutterStandardTypedData
+        let w:Int = arguments.value(forKey: "width") as! Int
+        let h:Int = arguments.value(forKey: "height") as! Int
+        let stride:Int = arguments.value(forKey: "stride") as! Int
+        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, withWidth: w, height: h, stride: stride, format:.ARGB_8888, templateName: "")
+        return self.wrapResults(results: ret)
     }
     
     public override init() {
