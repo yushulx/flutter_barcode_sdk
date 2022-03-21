@@ -10,6 +10,9 @@ external String stringify(Object obj);
 @JS('console.log')
 external void log(Object obj);
 
+@JS('alert')
+external void alert(Object obj);
+
 @JS('Promise')
 class PromiseJsImpl<T> extends ThenableJsImpl<T> {
   external PromiseJsImpl(Function resolver);
