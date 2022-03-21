@@ -4,6 +4,7 @@ library dynamsoft;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
+import 'dart:typed_data';
 // import 'dart:js';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/global.dart';
@@ -33,6 +34,8 @@ class BarcodeScanner {
 class BarcodeReader {
   external static PromiseJsImpl<BarcodeReader> createInstance();
   external PromiseJsImpl<List<dynamic>> decode(dynamic file);
+  external PromiseJsImpl<List<dynamic>> decodeBuffer(
+      Uint8List bytes, int width, int height, int stride, int format);
   external PromiseJsImpl<dynamic> getRuntimeSettings();
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
   external PromiseJsImpl<dynamic> outputSettingsToString();
@@ -139,6 +142,15 @@ class BarcodeManager {
   Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
     List<dynamic> barcodeResults =
         await handleThenable(_barcodeReader!.decode(filename));
+
+    return _resultWrapper(barcodeResults);
+  }
+
+  /// Decode barcodes from an image buffer.
+  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
+      Uint8List bytes, int width, int height, int stride, int format) async {
+    List<dynamic> barcodeResults = await handleThenable(
+        _barcodeReader!.decodeBuffer(bytes, width, height, stride, format));
 
     return _resultWrapper(barcodeResults);
   }
