@@ -4,6 +4,7 @@ import 'dart:async';
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html show window;
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/barcode_manager.dart';
@@ -49,6 +50,13 @@ class FlutterBarcodeSdkWeb {
         return initBarcodeSDK();
       case 'setLicense':
         return setLicense(call.arguments['license']);
+      case 'decodeImageBuffer':
+        return decodeImageBuffer(
+            call.arguments['bytes'],
+            call.arguments['width'],
+            call.arguments['height'],
+            call.arguments['stride'],
+            call.arguments['format']);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -103,5 +111,12 @@ class FlutterBarcodeSdkWeb {
   /// Set license key.
   Future<void> setLicense(String license) async {
     await _barcodeManager.setLicense(license);
+  }
+
+  /// Decode barcodes from an image buffer.
+  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
+      Uint8List bytes, int width, int height, int stride, int format) async {
+    return _barcodeManager.decodeImageBuffer(
+        bytes, width, height, stride, format);
   }
 }
