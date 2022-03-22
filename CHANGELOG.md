@@ -1,3 +1,6 @@
+## 1.4.1
+* Removed unused import: 'dart:html'.
+
 ## 1.4.0
 * Updated web SDK to v8.8.7.
 * Added `setLicense()` method for web.
