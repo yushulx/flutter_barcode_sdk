@@ -1,3 +1,7 @@
+## 1.5.0
+* Updated Android SDK to v9.0.0.
+* Bug fixes.
+
 ## 1.4.1
 * Removed unused import: 'dart:html'.
 

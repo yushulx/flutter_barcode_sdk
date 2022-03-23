@@ -53,7 +53,7 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 8.9.3       | 8.9.3   | 9.0      | 9.0    |8.2      | 8.8.7     |
+| Version    | 9.0       | 8.9.3   | 9.0      | 9.0    |8.2      | 8.8.7     |
 
 
 ## API Compatibility
