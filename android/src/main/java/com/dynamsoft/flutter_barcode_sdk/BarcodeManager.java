@@ -4,8 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.dynamsoft.dbr.BarcodeReaderException;
-import com.dynamsoft.dbr.DBRLTSLicenseVerificationListener;
-import com.dynamsoft.dbr.DMLTSConnectionParameters;
+import com.dynamsoft.dbr.DBRLicenseVerificationListener;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
 import com.dynamsoft.dbr.EnumConflictMode;
 import com.dynamsoft.dbr.EnumImagePixelFormat;
@@ -21,33 +20,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.plugin.common.MethodChannel.Result;
+
 public class BarcodeManager {
     private static final String TAG = "DynamsoftBarcodeReader";
     private BarcodeReader mBarcodeReader;
 
-    public BarcodeManager() {
-        try {
-            mBarcodeReader = new BarcodeReader();
-            //Best Coverage settings
-            //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", EnumConflictMode.CM_OVERWRITE);
-            //Best Speed settings
-            //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}", EnumConflictMode.CM_OVERWRITE);
-            //Balance settings
-            mBarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}", EnumConflictMode.CM_OVERWRITE);
-            PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
-            settings.intermediateResultTypes = EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE;
-            settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED | EnumBarcodeFormat.BF_DATAMATRIX | EnumBarcodeFormat.BF_QR_CODE | EnumBarcodeFormat.BF_PDF417;
-            settings.barcodeFormatIds_2 = 0;
-            mBarcodeReader.updateRuntimeSettings(settings);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // public BarcodeManager() {
+    // try {
+    // mBarcodeReader = new BarcodeReader();
+    // //Best Coverage settings
+    // //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}",
+    // EnumConflictMode.CM_OVERWRITE);
+    // //Best Speed settings
+    // //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}",
+    // EnumConflictMode.CM_OVERWRITE);
+    // //Balance settings
+    // mBarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}",
+    // EnumConflictMode.CM_OVERWRITE);
+    // PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
+    // settings.intermediateResultTypes =
+    // EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE;
+    // settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED |
+    // EnumBarcodeFormat.BF_DATAMATRIX | EnumBarcodeFormat.BF_QR_CODE |
+    // EnumBarcodeFormat.BF_PDF417;
+    // settings.barcodeFormatIds_2 = 0;
+    // mBarcodeReader.updateRuntimeSettings(settings);
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     private void wrapResults(TextResult[] results, List<Map<String, Object>> out) {
         if (results != null) {
 
-            for (TextResult result: results) {
+            for (TextResult result : results) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("format", result.barcodeFormatString);
                 data.put("text", result.barcodeText);
@@ -69,15 +76,20 @@ public class BarcodeManager {
         if (mBarcodeReader == null) {
             try {
                 mBarcodeReader = new BarcodeReader();
-                //Best Coverage settings
-                //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", EnumConflictMode.CM_OVERWRITE);
-                //Best Speed settings
-                //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}", EnumConflictMode.CM_OVERWRITE);
-                //Balance settings
-                mBarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}", EnumConflictMode.CM_OVERWRITE);
+                // Best Coverage settings
+                // mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}",
+                // EnumConflictMode.CM_OVERWRITE);
+                // Best Speed settings
+                // mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}",
+                // EnumConflictMode.CM_OVERWRITE);
+                // Balance settings
+                mBarcodeReader.initRuntimeSettingsWithString(
+                        "{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}",
+                        EnumConflictMode.CM_OVERWRITE);
                 PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
                 settings.intermediateResultTypes = EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE;
-                settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED | EnumBarcodeFormat.BF_DATAMATRIX | EnumBarcodeFormat.BF_QR_CODE | EnumBarcodeFormat.BF_PDF417;
+                settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED | EnumBarcodeFormat.BF_DATAMATRIX
+                        | EnumBarcodeFormat.BF_QR_CODE | EnumBarcodeFormat.BF_PDF417;
                 settings.barcodeFormatIds_2 = 0;
                 mBarcodeReader.updateRuntimeSettings(settings);
             } catch (Exception e) {
@@ -86,12 +98,15 @@ public class BarcodeManager {
         }
     }
 
-    public void setLicense(String license) {
-        try {
-            mBarcodeReader.initLicense(license);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void setLicense(String license, final Result result) {
+        BarcodeReader.initLicense(
+                "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjM0ODEwLVRYbE5iMkpwYkdWUWNtOXEiLCJvcmdhbml6YXRpb25JRCI6IjIzNDgxMCJ9",
+                new DBRLicenseVerificationListener() {
+                    @Override
+                    public void DBRLicenseVerificationCallback(boolean isSuccessful, Exception e) {
+                        result.success("");
+                    }
+                });
     }
 
     public List<Map<String, Object>> decodeFile(String filename) {
@@ -108,7 +123,7 @@ public class BarcodeManager {
 
     public List<Map<String, Object>> decodeFileBytes(byte[] bytes) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes != null ? bytes.length : 0);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes != null ? bytes.length : 0);
         try {
             TextResult[] results = mBarcodeReader.decodeBufferedImage(bitmap, "");
             wrapResults(results, ret);
@@ -121,7 +136,7 @@ public class BarcodeManager {
     public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         int pixelFormat = EnumImagePixelFormat.IPF_BGR_888;
-        switch(format) {
+        switch (format) {
             case 0:
                 pixelFormat = EnumImagePixelFormat.IPF_GRAYSCALED;
                 break;
@@ -145,8 +160,7 @@ public class BarcodeManager {
             settings.barcodeFormatIds = formats;
             mBarcodeReader.updateRuntimeSettings(settings);
             return 0;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
@@ -155,8 +169,7 @@ public class BarcodeManager {
     public String getParameters() {
         try {
             return mBarcodeReader.outputSettingsToString("currentRuntimeSettings");
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             return e.toString();
         }
     }
@@ -166,8 +179,7 @@ public class BarcodeManager {
             PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
             mBarcodeReader.initRuntimeSettingsWithString(params, EnumConflictMode.CM_OVERWRITE);
             return 0;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             return -1;
         }
     }
