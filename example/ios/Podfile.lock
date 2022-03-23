@@ -1,10 +1,10 @@
 PODS:
   - camera (0.0.1):
     - Flutter
-  - DynamsoftBarcodeReader (8.9.3)
+  - DynamsoftBarcodeReader (9.0.0)
   - Flutter (1.0.0)
-  - flutter_barcode_sdk (1.3.0):
-    - DynamsoftBarcodeReader (= 8.9.3)
+  - flutter_barcode_sdk (1.6.0):
+    - DynamsoftBarcodeReader (= 9.0.0)
     - Flutter
   - image_picker (0.0.1):
     - Flutter
@@ -36,9 +36,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
-  DynamsoftBarcodeReader: a9b09b565cbe68464d6994f4be9687f369d76ce7
+  DynamsoftBarcodeReader: 906e1fc9dfde3cf55020f39cfaf551a28d9e278e
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_barcode_sdk: 4d9b34f49ab750ba8844526548cdbf4c724f1d5f
+  flutter_barcode_sdk: 21379dcea03e181bf7049966f13ad8aa591dc71b
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
 

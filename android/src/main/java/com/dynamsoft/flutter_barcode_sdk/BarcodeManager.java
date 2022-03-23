@@ -100,7 +100,7 @@ public class BarcodeManager {
 
     public void setLicense(String license, final Result result) {
         BarcodeReader.initLicense(
-                "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjM0ODEwLVRYbE5iMkpwYkdWUWNtOXEiLCJvcmdhbml6YXRpb25JRCI6IjIzNDgxMCJ9",
+            license,
                 new DBRLicenseVerificationListener() {
                     @Override
                     public void DBRLicenseVerificationCallback(boolean isSuccessful, Exception e) {
