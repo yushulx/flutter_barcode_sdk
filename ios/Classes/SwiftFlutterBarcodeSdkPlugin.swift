@@ -2,9 +2,9 @@ import Flutter
 import UIKit
 import DynamsoftBarcodeReader
 
-public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
-    
-    var reader: DynamsoftBarcodeReader? = DynamsoftBarcodeReader()
+public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVerificationListener {
+    private var reader: DynamsoftBarcodeReader?
+    var completionHandlers: [FlutterResult] = []
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_barcode_sdk", binaryMessenger: registrar.messenger())
@@ -12,28 +12,26 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
-    public override init() {
-        super.init()
-        reader = DynamsoftBarcodeReader()
+    // public override init() {
+    //     super.init()
+    //     reader = DynamsoftBarcodeReader()
         
-        //Best Coverage settings
-        //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
-        //Best Speed settings
-        //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
-        //balance settings
-        reader!.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}", conflictMode: EnumConflictMode.overwrite, error:nil)
-        let settings = try! reader!.getRuntimeSettings()
-        settings.barcodeFormatIds = Int(EnumBarcodeFormat.ONED.rawValue) | Int(EnumBarcodeFormat.PDF417.rawValue) | Int(EnumBarcodeFormat.QRCODE.rawValue) | Int(EnumBarcodeFormat.DATAMATRIX.rawValue)
-        reader!.update(settings, error: nil)
-        reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "EnableFillBinaryVacancy", argumentValue: "0", error: nil)
-        reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeX", argumentValue: "81", error: nil)
-        reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
-    }
+    //     //Best Coverage settings
+    //     //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
+    //     //Best Speed settings
+    //     //barcodeReader.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}", conflictMode: EnumConflictMode.overwrite, error: nil)
+    //     //balance settings
+    //     reader!.initRuntimeSettings(with: "{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}", conflictMode: EnumConflictMode.overwrite, error:nil)
+    //     let settings = try! reader!.getRuntimeSettings()
+    //     settings.barcodeFormatIds = Int(EnumBarcodeFormat.ONED.rawValue) | Int(EnumBarcodeFormat.PDF417.rawValue) | Int(EnumBarcodeFormat.QRCODE.rawValue) | Int(EnumBarcodeFormat.DATAMATRIX.rawValue)
+    //     reader!.update(settings, error: nil)
+    //     reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "EnableFillBinaryVacancy", argumentValue: "0", error: nil)
+    //     reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeX", argumentValue: "81", error: nil)
+    //     reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
+    // }
 
     func initObj() {
-        if (reader == nil) {
-            reader = DynamsoftBarcodeReader()
-        }
+        reader = DynamsoftBarcodeReader()
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -44,8 +42,8 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
             self.initObj()
             result(.none)
         case "setLicense":
+            completionHandlers.append(result)
             self.setLicense(arg: call.arguments as! NSDictionary)
-            result(.none)
         case "setBarcodeFormats":
             self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
             result(.none)
@@ -72,7 +70,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         let w:Int = arguments.value(forKey: "width") as! Int
         let h:Int = arguments.value(forKey: "height") as! Int
         let stride:Int = arguments.value(forKey: "stride") as! Int
-        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, withWidth: w, height: h, stride: stride, format:.ARGB_8888, templateName: "")
+        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format:.ARGB_8888)
         return self.wrapResults(results: ret)
     }
 
@@ -80,29 +78,34 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         let formats:Int = arg.value(forKey: "formats") as! Int
         let settings = try! reader!.getRuntimeSettings()
         settings.barcodeFormatIds = formats
-        reader!.update(settings, error: nil)
+        try? reader!.updateRuntimeSettings(settings)
     }
     
     func getParameters() -> String {
-        let ret = try! reader!.outputSettings(to: "currentRuntimeSettings")
-        return ret
+        let ret = try? reader!.outputSettingsToString("currentRuntimeSettings")
+        return ret!
     }
     
     func setParameters(arg:NSDictionary) {
         let params:String = arg.value(forKey: "params") as! String
-        reader!.initRuntimeSettings(with: params, conflictMode: .overwrite, error: nil)
+        try? reader!.initRuntimeSettingsWithString(params, conflictMode: EnumConflictMode.overwrite)
     }
     
     func decodeFile(arg:NSDictionary) -> NSArray {
         let path:String = arg.value(forKey: "filename") as! String
-        let ret:[iTextResult] = try! self.reader!.decodeFile(withName: path, templateName: "")
+        let ret:[iTextResult] = try! self.reader!.decodeFileWithName(path)
         return self.wrapResults(results: ret)
     }
 
     func setLicense(arg:NSDictionary) {
-        let lic:String = arg.value(forKey: "license") as! String
-        reader = DynamsoftBarcodeReader(license: lic)
+        let license: String = arg.value(forKey: "license") as! String
+        DynamsoftBarcodeReader.initLicense(license, verificationDelegate: self)     
     }
+
+    public func dbrLicenseVerificationCallback(_ isSuccess: Bool, error: Error?)
+    {
+        completionHandlers.first?(.none)
+    }     
 
     func wrapResults(results:[iTextResult]) -> NSArray {
         let outResults = NSMutableArray(capacity: 8)
