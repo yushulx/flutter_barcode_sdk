@@ -1,3 +1,6 @@
+## 2.0.0
+* Updated mac SDK to v9.0.0.
+
 ## 1.7.0
 * Updated web SDK to v9.0.0.
 * Bug fixes.
