@@ -24,7 +24,7 @@ class BarcodeScanner {
   external set onFrameRead(Function func);
   external PromiseJsImpl<dynamic> getRuntimeSettings();
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
-  external PromiseJsImpl<dynamic> outputSettingsToString();
+  external PromiseJsImpl<dynamic> outputRuntimeSettingsToString();
   external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
 }
 
@@ -37,7 +37,7 @@ class BarcodeReader {
       Uint8List bytes, int width, int height, int stride, int format);
   external PromiseJsImpl<dynamic> getRuntimeSettings();
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
-  external PromiseJsImpl<dynamic> outputSettingsToString();
+  external PromiseJsImpl<dynamic> outputRuntimeSettingsToString();
   external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
   external static set productKeys(String license);
 }
@@ -158,7 +158,7 @@ class BarcodeManager {
   /// https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
   Future<String> getParameters() async {
     dynamic settings =
-        await handleThenable(_barcodeReader!.outputSettingsToString());
+        await handleThenable(_barcodeReader!.outputRuntimeSettingsToString());
     return stringify(settings);
   }
 

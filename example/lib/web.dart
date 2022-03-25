@@ -31,16 +31,16 @@ class _WebState extends State<Web> {
     await _barcodeReader.setLicense('LICENSE-KEY');
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
-    // Get all current parameters.
-    // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
-    String params = await _barcodeReader.getParameters();
-    // Convert parameters to a JSON object.
-    dynamic obj = json.decode(json.decode(params));
-    // Modify parameters.
-    obj['ImageParameter']['DeblurLevel'] = 5;
-    // Update the parameters.
-    int ret = await _barcodeReader.setParameters(json.encode(obj));
-    print('Parameter update: $ret');
+    // // Get all current parameters.
+    // // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+    // String params = await _barcodeReader.getParameters();
+    // // Convert parameters to a JSON object.
+    // dynamic obj = json.decode(json.decode(params));
+    // // Modify parameters.
+    // obj['ImageParameter']['DeblurLevel'] = 5;
+    // // Update the parameters.
+    // int ret = await _barcodeReader.setParameters(json.encode(obj));
+    // print('Parameter update: $ret');
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

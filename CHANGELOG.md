@@ -1,3 +1,7 @@
+## 1.7.0
+* Updated web SDK to v9.0.0.
+* Bug fixes.
+
 ## 1.6.0
 * Updated iOS SDK to v9.0.0.
 * Bug fixes.
