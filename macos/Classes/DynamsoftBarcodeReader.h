@@ -296,38 +296,38 @@ typedef NS_OPTIONS(NSInteger , EnumBarcodeFormat)
     /** No barcode format in BarcodeFormat group 1*/
     EnumBarcodeFormatNULL NS_SWIFT_NAME(Null) = 0x0,
     
-	/** Code 39 */
-    EnumBarcodeFormatCODE39     		 = 0x1,
-	
-	/** Code 128 */
-    EnumBarcodeFormatCODE128    		 = 0x2,
+    /** Code 39 */
+    EnumBarcodeFormatCODE39              = 0x1,
+    
+    /** Code 128 */
+    EnumBarcodeFormatCODE128             = 0x2,
 
-	/** Code 93 */
-    EnumBarcodeFormatCODE93     		 = 0x4,
+    /** Code 93 */
+    EnumBarcodeFormatCODE93              = 0x4,
 
-	/** Codabar */
-    EnumBarcodeFormatCODABAR    		 = 0x8,
+    /** Codabar */
+    EnumBarcodeFormatCODABAR             = 0x8,
 
-	/** Interleaved 2 of 5 */
-    EnumBarcodeFormatITF        		 = 0x10,
+    /** Interleaved 2 of 5 */
+    EnumBarcodeFormatITF                 = 0x10,
 
-	/** EAN-13 */
-    EnumBarcodeFormatEAN13      		 = 0x20,
+    /** EAN-13 */
+    EnumBarcodeFormatEAN13               = 0x20,
 
-	/** EAN-8 */
-    EnumBarcodeFormatEAN8       		 = 0x40,
+    /** EAN-8 */
+    EnumBarcodeFormatEAN8                = 0x40,
 
-	/** UPC-A */
-    EnumBarcodeFormatUPCA       		 = 0x80,
+    /** UPC-A */
+    EnumBarcodeFormatUPCA                = 0x80,
 
-	/** UPC-E */
-    EnumBarcodeFormatUPCE       		 = 0x100,
+    /** UPC-E */
+    EnumBarcodeFormatUPCE                = 0x100,
 
-	/** Industrial 2 of 5 */
-    EnumBarcodeFormatINDUSTRIAL 		 = 0x200,
+    /** Industrial 2 of 5 */
+    EnumBarcodeFormatINDUSTRIAL          = 0x200,
 
     /** CODE39 Extended */
-    EnumBarcodeFormatCODE39EXTENDED 	 = 0x400,
+    EnumBarcodeFormatCODE39EXTENDED      = 0x400,
     
     /** MSI Code */
     EnumBarcodeFormatMSICODE             = 0x100000,
@@ -356,17 +356,20 @@ typedef NS_OPTIONS(NSInteger , EnumBarcodeFormat)
     /** Patch code. */
     EnumBarcodeFormatPATCHCODE           = 0x00040000,
     
-	/** PDF417 */
-    EnumBarcodeFormatPDF417     		 = 0x02000000,
+    /** CODE_11 . */
+    EnumBarcodeFormatCODE_11             = 0x200000,
+    
+    /** PDF417 */
+    EnumBarcodeFormatPDF417              = 0x02000000,
 
-	/** QRCode */
-    EnumBarcodeFormatQRCODE     		 = 0x04000000,
+    /** QRCode */
+    EnumBarcodeFormatQRCODE              = 0x04000000,
 
-	/** DataMatrix */
-    EnumBarcodeFormatDATAMATRIX 		 = 0x08000000,
+    /** DataMatrix */
+    EnumBarcodeFormatDATAMATRIX          = 0x08000000,
 
-	/** AZTEC */
-    EnumBarcodeFormatAZTEC       		 = 0x10000000,
+    /** AZTEC */
+    EnumBarcodeFormatAZTEC                = 0x10000000,
     
     /**MAXICODE */
     EnumBarcodeFormatMAXICODE            = 0x20000000,
@@ -380,14 +383,14 @@ typedef NS_OPTIONS(NSInteger , EnumBarcodeFormat)
     /**GS1 Composite Code*/
     EnumBarcodeFormatGS1COMPOSITE        = -2147483648,
 
-    /** Combined value of BF_CODABAR, BF_CODE_128, BF_CODE_39, BF_CODE_39_Extended, BF_CODE_93, BF_EAN_13, BF_EAN_8, INDUSTRIAL_25, BF_ITF, BF_UPC_A, BF_UPC_E */
-    EnumBarcodeFormatONED                = 0x000007FF,
+    /** Combined value of BF_CODABAR, BF_CODE_128, BF_CODE_39, BF_CODE_39_Extended, BF_CODE_93, BF_EAN_13, BF_EAN_8, INDUSTRIAL_25, BF_ITF, BF_UPC_A, BF_UPC_E, BF_MSI_CODE*/
+    EnumBarcodeFormatONED                = 0x003007FF,
     
     /** Combined value of BF_GS1_DATABAR_OMNIDIRECTIONAL, BF_GS1_DATABAR_TRUNCATED, BF_GS1_DATABAR_STACKED, BF_GS1_DATABAR_STACKED_OMNIDIRECTIONAL, BF_GS1_DATABAR_EXPANDED, BF_GS1_DATABAR_EXPANDED_STACKED, BF_GS1_DATABAR_LIMITED */
     EnumBarcodeFormatGS1DATABAR          = 0x0003F800,
     
-	/** All supported formats in BarcodeFormat group 1. */
-    EnumBarcodeFormatALL                 = -31457281
+    /** All supported formats in BarcodeFormat group 1. */
+    EnumBarcodeFormatALL                 = -29360129
 
 };
 
@@ -1172,7 +1175,6 @@ typedef NS_ENUM(NSInteger,EnumDMChargeWay)
     /**Charges by the count of concurrent instances.*/
     EnumDMChargeWayConcurrentInstanceCount = 10
 };
-
 
 /**
  * @} defgroup Enum Enumerations
