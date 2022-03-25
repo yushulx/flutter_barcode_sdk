@@ -53,8 +53,63 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.0       | 9.0   | 9.0      | 9.0    |8.2      | 8.8.7     |
+| Version    | 9.0       | 9.0   | 9.0      | 9.0    |8.2      | 9.0     |
 
+## Build Configuration
+
+### Android
+Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
+
+```
+minSdkVersion 21
+```
+
+### iOS
+Add the keys to `ios/Runner/Info.plist` to make camera work:
+
+```
+<key>NSCameraUsageDescription</key>
+<string>Can I use the camera please?</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Can I use the mic please?</string>
+```
+
+### Desktop
+
+**Windows & Linux**
+
+Install `CMake` and `platform-specific C++ compiler`.
+
+**macOS**
+
+Install `Xcode`.
+
+To make the demo app work on macOS:
+- Disable `com.apple.security.app-sandbox` and enable `com.apple.security.files.user-selected.read-write` in `example/macos/Runner/DebugProfile.entitlements`:
+    
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+  </dict>
+  </plist>
+  ```    
+
+- Import `DynamsoftBarcodeReader.h` to the bridging header file.
+    
+  ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
+
+### Web
+Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.0/dist/dbr.js"></script>` to `index.html`.
 
 ## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | macOS | Web|
@@ -140,63 +195,6 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
   ```dart
   int ret = await _barcodeReader.setParameters(json.encode(obj));
   ```
-
-
-## Build Configuration
-
-### Android
-Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
-
-```
-minSdkVersion 21
-```
-
-### iOS
-Add the keys to `ios/Runner/Info.plist` to make camera work:
-
-```
-<key>NSCameraUsageDescription</key>
-<string>Can I use the camera please?</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Can I use the mic please?</string>
-```
-
-### Desktop
-
-**Windows & Linux**
-
-Install `CMake` and `platform-specific C++ compiler`.
-
-**macOS**
-
-Install `Xcode`.
-
-To make the demo app work on macOS:
-- Disable `com.apple.security.app-sandbox` and enable `com.apple.security.files.user-selected.read-write` in `example/macos/Runner/DebugProfile.entitlements`:
-    
-  ```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-  <plist version="1.0">
-  <dict>
-    <key>com.apple.security.app-sandbox</key>
-    <false/>
-    <key>com.apple.security.cs.allow-jit</key>
-    <true/>
-    <key>com.apple.security.network.server</key>
-    <true/>
-    <key>com.apple.security.files.user-selected.read-write</key>
-    <true/>
-  </dict>
-  </plist>
-  ```    
-
-- Import `DynamsoftBarcodeReader.h` to the bridging header file.
-    
-  ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
-
-### Web
-Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@8.8.7/dist/dbr.js"></script>` to `index.html`.
 
 
 ## Try Barcode Decoding Example
