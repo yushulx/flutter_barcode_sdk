@@ -81,7 +81,11 @@ class BarcodeManager {
 
   /// Set license key.
   Future<void> setLicense(String license) async {
-    BarcodeReader.license = license;
+    try {
+      BarcodeReader.license = license;
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Show camera view.
