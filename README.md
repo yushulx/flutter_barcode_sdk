@@ -109,7 +109,12 @@ To make the demo app work on macOS:
   ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
 
 ### Web
-Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.0/dist/dbr.js"></script>` to `index.html`.
+In `index.html`, include:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.0/dist/dbr.js"></script>
+<script src="https://yushulx.me/javascript-barcode-qr-code-scanner/dbr-scanner-wrapper.js"></script>
+```
 
 ## API Compatibility
 | Methods      | Android |    iOS | Windows | Linux | macOS | Web|
@@ -129,7 +134,7 @@ Include `<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@
     
   ```dart
   _barcodeReader = FlutterBarcodeSdk();
-  await _barcodeReader.setLicense('LICENSE-KEY');
+  await _barcodeReader.setLicense('DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
   await _barcodeReader.init();
   ```
 
@@ -282,7 +287,7 @@ Barcode Reader
 
 Barcode Scanner
 
-![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-scanner.png)
+![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2022/04/flutter-web-qr-code-scanner.png)
 
 
 

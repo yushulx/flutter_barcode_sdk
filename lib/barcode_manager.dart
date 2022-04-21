@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 // import 'dart:js';
+import 'package:flutter_barcode_sdk/wrapper.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/global.dart';
 import 'package:js/js.dart';
@@ -39,13 +40,19 @@ class BarcodeReader {
   external PromiseJsImpl<void> updateRuntimeSettings(String settings);
   external PromiseJsImpl<dynamic> outputRuntimeSettingsToString();
   external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
-  external static set productKeys(String license);
+  external static set license(String license);
 }
 
 /// BarcodeManager class.
 class BarcodeManager {
   BarcodeScanner? _barcodeScanner;
   BarcodeReader? _barcodeReader;
+  DBRWrapper? _dbrWrapper;
+
+  /// Initializes the BarcodeManager.
+  BarcodeManager() {
+    _dbrWrapper = DBRWrapper();
+  }
 
   /// Wrap callback results.
   List<BarcodeResult> callbackResults(List<Map<dynamic, dynamic>> results) {
@@ -66,22 +73,22 @@ class BarcodeManager {
 
   /// Initialize barcode reader and scanner.
   Future<void> initBarcodeSDK() async {
-    BarcodeReader reader = await handleThenable(BarcodeReader.createInstance());
-    initBarcodeReader(reader);
-
-    BarcodeScanner scanner =
-        await handleThenable(BarcodeScanner.createInstance());
-    initBarcodeScanner(scanner);
+    _barcodeReader = await handleThenable(BarcodeReader.createInstance());
+    _barcodeScanner = await handleThenable(_dbrWrapper!.createDefaultScanner(
+        allowInterop((results) =>
+            {globalCallback(callbackResults(_resultWrapper(results)))})));
   }
 
   /// Set license key.
   Future<void> setLicense(String license) async {
-    BarcodeReader.productKeys = license;
+    BarcodeReader.license = license;
   }
 
   /// Show camera view.
   Future<void> decodeVideo() async {
+    _dbrWrapper!.clearOverlay();
     _barcodeScanner!.show();
+    _dbrWrapper!.patchOverlay();
   }
 
   /// Close camera view.

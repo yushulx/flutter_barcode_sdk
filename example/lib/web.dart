@@ -28,7 +28,8 @@ class _WebState extends State<Web> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
-    await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setLicense(
+        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
     // // Get all current parameters.
@@ -64,7 +65,7 @@ class _WebState extends State<Web> {
   }
 
   void updateResults(List<BarcodeResult> results) {
-    if (results.length > 0) _barcodeReader.closeVideo();
+    // if (results.length > 0) _barcodeReader.closeVideo();
 
     setState(() {
       _barcodeResults = getBarcodeResults(results);

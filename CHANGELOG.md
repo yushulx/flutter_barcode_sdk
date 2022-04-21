@@ -1,3 +1,6 @@
+## 2.0.1
+* Web overlay patch for displaying barcode and QR code results on camera preview.
+
 ## 2.0.0
 * Updated mac SDK to v9.0.0.
 
