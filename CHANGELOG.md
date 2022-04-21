@@ -1,3 +1,6 @@
+## 2.0.2
+* Catch license re-activation error when running hot restart for web application.
+
 ## 2.0.1
 * Web overlay patch for displaying barcode and QR code results on camera preview.
 
