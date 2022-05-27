@@ -1,3 +1,6 @@
+## 2.0.3
+* Fixed "method not found: 'createDefaultScanner'" in web release mode
+
 ## 2.0.2
 * Catch license re-activation error when running hot restart for web application.
 
