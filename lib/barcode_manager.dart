@@ -51,7 +51,7 @@ class BarcodeManager {
 
   /// Initializes the BarcodeManager.
   BarcodeManager() {
-    _dbrWrapper = DBRWrapper();
+    _dbrWrapper = DBRWrapper.createInstance();
   }
 
   /// Wrap callback results.

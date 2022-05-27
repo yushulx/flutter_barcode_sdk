@@ -6,6 +6,7 @@ import 'utils.dart';
 /// DBRWrapper class.
 @JS('DBRWrapper')
 class DBRWrapper {
+  external static DBRWrapper createInstance();
   external PromiseJsImpl<BarcodeScanner> createDefaultScanner(Function func);
   external void patchOverlay();
   external void clearOverlay();
