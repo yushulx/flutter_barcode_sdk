@@ -2417,6 +2417,28 @@ typedef NS_ENUM(NSInteger,EnumDMChargeWay)
 
 @end
 
+@protocol DBRLicenseVerificationListener <NSObject>
+
+@required
+/**
+ * The callback of license server when using method initLicense.
+ *
+ * @param [in,out] isSuccess Whether the license verification was successful.
+ * @param [in,out] error The error message from license server.
+ *
+ * @par Code Snippet:
+ * @code
+     [DynamsoftBarcodeReader initLicense:@"Put your license here" verificationDelegate:self];
+     - (void)DBRLicenseVerificationCallback:(bool)isSuccess error:(NSError * _Nullable)error
+     {
+         //TODO add your code for license verification
+     }
+ * @endcode
+ */
+- (void)DBRLicenseVerificationCallback:(bool)isSuccess error:(NSError * _Nullable)error;
+
+@end
+
 /**
 * Defines a class that provides functions for working with extracting barcode data. 
 * 
@@ -2464,6 +2486,8 @@ typedef NS_ENUM(NSInteger,EnumDMChargeWay)
  * @endcode
  */
 - (instancetype _Nonnull)init;
+
++ (void)initLicense:(nonnull NSString *)license verificationDelegate:(nonnull id<DBRLicenseVerificationListener>)listener NS_SWIFT_NAME(initLicense(_:verificationDelegate:));
  
  /**
   * Initializes DynamsoftBarcodeReader with a license.
