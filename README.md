@@ -53,7 +53,7 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.0       | 9.0   | 9.0      | 9.0    |9.0      | 9.0     |
+| Version    | 9.0       | 9.0   | 9.4      | 9.4    |9.4      | 9.3.1     |
 
 ## Build Configuration
 
@@ -126,8 +126,6 @@ In `index.html`, include:
 | `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | :heavy_check_mark:     |
 | `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
-| `Future<void> closeVideo() async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 
 ## Usage
 - Initialize Flutter barcode SDK and set license key:
@@ -285,9 +283,7 @@ Barcode Reader
 
 ![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-sdk.png)
 
-Barcode Scanner
 
-![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2022/04/flutter-web-qr-code-scanner.png)
 
 
 
