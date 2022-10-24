@@ -67,6 +67,7 @@ public class BarcodeManager {
                 data.put("x4", result.localizationResult.resultPoints[3].x);
                 data.put("y4", result.localizationResult.resultPoints[3].y);
                 data.put("angle", result.localizationResult.angle);
+                data.put("barcodeBytes", result.barcodeBytes);
                 out.add(data);
             }
         }
@@ -135,18 +136,8 @@ public class BarcodeManager {
 
     public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        int pixelFormat = EnumImagePixelFormat.IPF_BGR_888;
-        switch (format) {
-            case 0:
-                pixelFormat = EnumImagePixelFormat.IPF_GRAYSCALED;
-                break;
-            case 1:
-                pixelFormat = EnumImagePixelFormat.IPF_ARGB_8888;
-                break;
-        }
-
         try {
-            TextResult[] results = mBarcodeReader.decodeBuffer(bytes, width, height, stride, pixelFormat, "");
+            TextResult[] results = mBarcodeReader.decodeBuffer(bytes, width, height, stride, format, "");
             wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
