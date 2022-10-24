@@ -7,6 +7,7 @@ import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
+import 'dart:typed_data';
 
 class Desktop extends StatefulWidget {
   @override

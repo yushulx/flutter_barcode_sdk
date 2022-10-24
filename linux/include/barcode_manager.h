@@ -59,8 +59,7 @@ class BarcodeManager {
                 fl_value_set_string_take (map, "x4", fl_value_new_int(results->results[index]->localizationResult->x4));
                 fl_value_set_string_take (map, "y4", fl_value_new_int(results->results[index]->localizationResult->y4));
                 fl_value_set_string_take (map, "angle", fl_value_new_int(results->results[index]->localizationResult->angle));
-                std::vector<uint8_t> raw_image(results->results[index]->barcodeBytes, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength);
-                fl_value_set_string_take (map, "barcodeBytes", fl_value_new_uint8_list(raw_image, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength));
+                fl_value_set_string_take (map, "barcodeBytes", fl_value_new_uint8_list(results->results[index]->barcodeBytes, results->results[index]->barcodeBytesLength));
                 fl_value_append_take (out, map);
             }
         }
