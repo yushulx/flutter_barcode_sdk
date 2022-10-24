@@ -142,6 +142,7 @@ class BarcodeManager {
       tmp['x4'] = value['localizationResult']['x4'];
       tmp['y4'] = value['localizationResult']['y4'];
       tmp['angle'] = value['localizationResult']['angle'];
+      tmp['barcodeBytes'] = value['barcodeBytes'];
       results.add(tmp);
     }
 

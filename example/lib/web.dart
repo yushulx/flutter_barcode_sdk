@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -128,6 +128,22 @@ class _WebState extends State<Web> {
                           });
 
                           if (_file != null) {
+                            // Uint8List fileBytes =
+                            //     await pickedFile.readAsBytes();
+
+                            // ui.Image image =
+                            //     await decodeImageFromList(fileBytes);
+
+                            // ByteData byteData = await image.toByteData(
+                            //     format: ui.ImageByteFormat.rawRgba);
+                            // List<BarcodeResult> results =
+                            //     await _barcodeReader.decodeImageBuffer(
+                            //         byteData.buffer.asUint8List(),
+                            //         image.width,
+                            //         image.height,
+                            //         byteData.lengthInBytes ~/ image.height,
+                            //         ImagePixelFormat.IPF_ARGB_8888.index);
+
                             List<BarcodeResult> results =
                                 await _barcodeReader.decodeFile(_file);
                             updateResults(results);
