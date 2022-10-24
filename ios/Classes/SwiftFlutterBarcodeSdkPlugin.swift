@@ -71,7 +71,8 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
         let h:Int = arguments.value(forKey: "height") as! Int
         let stride:Int = arguments.value(forKey: "stride") as! Int
         let format:Int = arguments.value(forKey: "format") as! Int
-        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format:format)
+        let enumImagePixelFormat = EnumImagePixelFormat(rawValue: format)
+        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format: enumImagePixelFormat!)
         return self.wrapResults(results: ret)
     }
 
