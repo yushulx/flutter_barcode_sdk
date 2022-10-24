@@ -1,9 +1,11 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc.
+The Flutter barcode Qr reading SDK is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. The SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader SDK, including file decoding and image buffer decoding. The project is maintained by community contributors.
 
-## License Key for SDK
+For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which is better than combining the [Flutter camera plugin](https://pub.dev/packages/camera) and the Flutter barcode SDK.
+
+## Getting a License Key for Dynamsoft Barcode Reader
 [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
 
 ## Supported Platforms
@@ -53,7 +55,7 @@ The Flutter barcode SDK plugin is a wrapper for [Dynamsoft Barcode Reader SDK](h
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.0       | 9.0   | 9.0      | 9.0    |9.0      | 9.0     |
+| Version    | 9.0       | 9.0   | 9.4      | 9.4    |9.4      | 9.3.1     |
 
 ## Build Configuration
 
@@ -112,7 +114,7 @@ To make the demo app work on macOS:
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.0/dist/dbr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.3.1/dist/dbr.js"></script>
 <script src="https://yushulx.me/javascript-barcode-qr-code-scanner/dbr-scanner-wrapper.js"></script>
 ```
 
@@ -126,8 +128,6 @@ In `index.html`, include:
 | `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | :heavy_check_mark:     |
 | `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<void> decodeVideo(Function callback) async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
-| `Future<void> closeVideo() async`     | :x:       | :x:   | :x:       | :x:       |:x:       | :heavy_check_mark:     |
 
 ## Usage
 - Initialize Flutter barcode SDK and set license key:
@@ -144,36 +144,23 @@ In `index.html`, include:
   List<BarcodeResult> results = await _barcodeReader.decodeFile(image-path);
   ```
 
-- Read barcodes from video stream [CameraImage](https://pub.dev/documentation/camera/latest/camera/CameraImage-class.html):
+- Read barcodes from an image buffer:
+
 
   ```dart
-  CameraImage availableImage;
-  int format = FlutterBarcodeSdk.IF_UNKNOWN;
+  import 'dart:ui' as ui;
+  Uint8List fileBytes = await file.readAsBytes();
+  ui.Image image = await decodeImageFromList(fileBytes);
 
-  switch (availableImage.format.group) {
-    case ImageFormatGroup.yuv420:
-      format = FlutterBarcodeSdk.IF_YUV420;
-      break;
-    case ImageFormatGroup.bgra8888:
-      format = FlutterBarcodeSdk.IF_BRGA8888;
-      break;
-    default:
-      format = FlutterBarcodeSdk.IF_UNKNOWN;
-  }
-
-  List<BarcodeResult> results = _barcodeReader.decodeImageBuffer(
-                availableImage.planes[0].bytes,
-                availableImage.width,
-                availableImage.height,
-                availableImage.planes[0].bytesPerRow,
-                format);
-  ```
-
-- Read barcodes from web browser video stream:
-
-  ```dart
-  _barcodeReader.decodeVideo(
-                              (results) => {updateResults(results)});
+  ByteData byteData = await image.toByteData(
+      format: ui.ImageByteFormat.rawRgba);
+  List<BarcodeResult> results =
+      await _barcodeReader.decodeImageBuffer(
+          byteData.buffer.asUint8List(),
+          image.width,
+          image.height,
+          byteData.lengthInBytes ~/ image.height,
+          ImagePixelFormat.IPF_ARGB_8888.index);
   ```
 
 - Set barcode formats:
@@ -205,7 +192,7 @@ In `index.html`, include:
 ## Try Barcode Decoding Example
 
 ### Mobile
-The example allows users to scan barcodes via the camera video stream in real-time or read barcodes by taking a picture.
+The example allows users to scan barcode Qr code via the camera video stream and read barcode QRCode by a static picture.
 
 ```
 cd example
@@ -242,37 +229,22 @@ buildTypes {
 -keep class com.dynamsoft.dbr.** { *; }
 ```
 
-**A Better Barcode and QR Code Scanner Plugin**
-
-To get better user experience for scanning barcodes and QR code in real-time, it is recommended to use the [https://pub.dev/packages/flutter_camera_qrcode_scanner](https://pub.dev/packages/flutter_camera_qrcode_scanner) plugin.
-
 ### Windows, Linux and macOS Desktop
 Input a valid image path for barcode decoding.
 
 ![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
 
-- Windows
+```
+cd example
+# Windows
+flutter run -d windows
 
-  ```
-  cd example
-  flutter run -d windows
-  ```
+# Linux
+flutter run -d linux
 
-
-- Linux 
-
-  ```
-  cd example
-  flutter run -d linux
-  ```
-
-- macOS
-
-  ```
-  cd example
-  flutter run -d macos
-  ```
-
+# macOS
+flutter run -d macos
+```
 
 ### Web Browser
 
@@ -281,13 +253,9 @@ cd example
 flutter run -d chrome
 ```
 
-Barcode Reader
-
 ![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-sdk.png)
 
-Barcode Scanner
 
-![flutter web barcode scanner](https://www.dynamsoft.com/codepool/img/2022/04/flutter-web-qr-code-scanner.png)
 
 
 

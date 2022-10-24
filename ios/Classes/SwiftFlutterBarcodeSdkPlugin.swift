@@ -70,7 +70,9 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
         let w:Int = arguments.value(forKey: "width") as! Int
         let h:Int = arguments.value(forKey: "height") as! Int
         let stride:Int = arguments.value(forKey: "stride") as! Int
-        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format:.ARGB_8888)
+        let format:Int = arguments.value(forKey: "format") as! Int
+        let enumImagePixelFormat = EnumImagePixelFormat(rawValue: format)
+        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format: enumImagePixelFormat!)
         return self.wrapResults(results: ret)
     }
 
@@ -108,9 +110,9 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
     }     
 
     func wrapResults(results:[iTextResult]) -> NSArray {
-        let outResults = NSMutableArray(capacity: 8)
+        let outResults = NSMutableArray(capacity: 1)
         for item in results {
-            let subDic = NSMutableDictionary(capacity: 8)
+            let subDic = NSMutableDictionary(capacity: 12)
             if item.barcodeFormat_2 != EnumBarcodeFormat2.Null {
                 subDic.setObject(item.barcodeFormatString_2 ?? "", forKey: "format" as NSCopying)
             }else{
@@ -127,6 +129,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
             subDic.setObject(Int(points[3].x), forKey: "x4" as NSCopying)
             subDic.setObject(Int(points[3].y), forKey: "y4" as NSCopying)
             subDic.setObject(item.localizationResult?.angle ?? 0, forKey: "angle" as NSCopying)
+            subDic.setObject(item.barcodeBytes ?? "", forKey: "barcodeBytes" as NSCopying)
             outResults.add(subDic)
         }
 

@@ -61,6 +61,8 @@ class BarcodeManager {
                 map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
                 map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
                 map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
+                std::vector<uint8_t> raw_image(results->results[index]->barcodeBytes, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength);
+                map[EncodableValue("barcodeBytes")] = raw_image;
                 out.push_back(map);
             }
         }
@@ -110,10 +112,43 @@ class BarcodeManager {
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch(format) {
             case 0:
-                pixelFormat = IPF_GRAYSCALED;
+                pixelFormat = IPF_BINARY;
                 break;
             case 1:
+                pixelFormat = IPF_BINARYINVERTED;
+                break;
+            case 2:
+                pixelFormat = IPF_GRAYSCALED;
+                break;
+            case 3:
+                pixelFormat = IPF_NV21;
+                break;
+            case 4:
+                pixelFormat = IPF_RGB_565;
+                break;
+            case 5:
+                pixelFormat = IPF_RGB_555;
+                break;
+            case 6:
+                pixelFormat = IPF_RGB_888;
+                break;
+            case 7:
                 pixelFormat = IPF_ARGB_8888;
+                break;
+            case 8:
+                pixelFormat = IPF_RGB_161616;
+                break;
+            case 9: 
+                pixelFormat = IPF_ARGB_16161616;
+                break;
+            case 10:
+                pixelFormat = IPF_ABGR_8888;
+                break;
+            case 11:
+                pixelFormat = IPF_ABGR_16161616;
+                break;
+            case 12:
+                pixelFormat = IPF_BGR_888;
                 break;
         }
 

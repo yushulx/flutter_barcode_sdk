@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
+import 'dart:typed_data';
 
 class Desktop extends StatefulWidget {
   @override
@@ -165,12 +166,21 @@ class _DesktopState extends State<Desktop> {
                           } else {
                             _isValid = true;
                           }
-                          // Uint8List bytes = await file.readAsBytes();
-                          // List<BarcodeResult> results =
-                          //     await _barcodeReader.decodeFileBytes(bytes);
+                          Uint8List fileBytes = await file.readAsBytes();
 
+                          ui.Image image = await decodeImageFromList(fileBytes);
+
+                          ByteData byteData = await image.toByteData(
+                              format: ui.ImageByteFormat.rawRgba);
                           List<BarcodeResult> results =
-                              await _barcodeReader.decodeFile(_controller.text);
+                              await _barcodeReader.decodeImageBuffer(
+                                  byteData.buffer.asUint8List(),
+                                  image.width,
+                                  image.height,
+                                  byteData.lengthInBytes ~/ image.height,
+                                  ImagePixelFormat.IPF_ARGB_8888.index);
+                          // List<BarcodeResult> results =
+                          //     await _barcodeReader.decodeFile(_controller.text);
 
                           setState(() {
                             _barcodeResults = getBarcodeResults(results);

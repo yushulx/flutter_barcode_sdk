@@ -1,3 +1,9 @@
+## 2.1.0
+* Added `ImagePixelFormat` enum to support more pixel formats.
+* Added `barcodeBytes` property for barcode result.
+* Updated Windows, macOS and Linux to Dynamsoft Barcode Reader v9.4.
+* Updated web to Dynamsoft Barcode Reader v9.3.1.
+
 ## 2.0.3
 * Fixed "method not found: 'createDefaultScanner'" in web release mode
 
