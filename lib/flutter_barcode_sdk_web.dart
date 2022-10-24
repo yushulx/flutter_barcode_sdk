@@ -4,7 +4,7 @@ import 'dart:async';
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html show window;
-import 'dart:typed_data';
+// import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/barcode_manager.dart';

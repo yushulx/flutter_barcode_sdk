@@ -1,3 +1,6 @@
+## 2.1.1
+* Fixed uint8 bytes conversion failure in web app.
+
 ## 2.1.0
 * Added `ImagePixelFormat` enum to support more pixel formats.
 * Added `barcodeBytes` property for barcode result.

@@ -20,19 +20,24 @@ class BarcodeResult {
   BarcodeResult(this.format, this.text, this.x1, this.y1, this.x2, this.y2,
       this.x3, this.y3, this.x4, this.y4, this.angle, this.barcodeBytes);
 
-  BarcodeResult.fromJson(Map<dynamic, dynamic> json)
-      : format = json['format'],
-        text = json['text'],
-        x1 = json['x1'],
-        y1 = json['y1'],
-        x2 = json['x2'],
-        y2 = json['y2'],
-        x3 = json['x3'],
-        y3 = json['y3'],
-        x4 = json['x4'],
-        y4 = json['y4'],
-        angle = json['angle'],
-        barcodeBytes = json['barcodeBytes'];
+  static BarcodeResult fromJson(Map<dynamic, dynamic> json) {
+    String format = json['format'];
+    String text = json['text'];
+    int x1 = json['x1'];
+    int y1 = json['y1'];
+    int x2 = json['x2'];
+    int y2 = json['y2'];
+    int x3 = json['x3'];
+    int y3 = json['y3'];
+    int x4 = json['x4'];
+    int y4 = json['y4'];
+    int angle = json['angle'];
+    List<Object?> lobjects = json['barcodeBytes'];
+    List<int> lint = lobjects.map((e) => e as int).toList();
+    Uint8List barcodeBytes = Uint8List.fromList(lint);
+    return BarcodeResult(
+        format, text, x1, y1, x2, y2, x3, y3, x4, y4, angle, barcodeBytes);
+  }
 
   Map<String, dynamic> toJson() => {
         'format': format,
