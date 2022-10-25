@@ -1,3 +1,6 @@
+## 2.1.2
+* Fixed JSON format exception caused by special characters in the barcode text.
+
 ## 2.1.1
 * Fixed uint8 bytes conversion failure in web app.
 
