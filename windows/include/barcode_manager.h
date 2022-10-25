@@ -51,7 +51,7 @@ class BarcodeManager {
             {
                 EncodableMap map;
                 map[EncodableValue("format")] = results->results[index]->barcodeFormatString;
-                map[EncodableValue("text")] = results->results[index]->barcodeText;
+                // map[EncodableValue("text")] = results->results[index]->barcodeText;
                 map[EncodableValue("x1")] = results->results[index]->localizationResult->x1;
                 map[EncodableValue("y1")] = results->results[index]->localizationResult->y1;
                 map[EncodableValue("x2")] = results->results[index]->localizationResult->x2;
@@ -61,8 +61,8 @@ class BarcodeManager {
                 map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
                 map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
                 map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
-                std::vector<uint8_t> raw_image(results->results[index]->barcodeBytes, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength);
-                map[EncodableValue("barcodeBytes")] = raw_image;
+                std::vector<uint8_t> rawBytes(results->results[index]->barcodeBytes, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength);
+                map[EncodableValue("barcodeBytes")] = rawBytes;
                 out.push_back(map);
             }
         }

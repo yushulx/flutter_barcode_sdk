@@ -110,15 +110,15 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
     }     
 
     func wrapResults(results:[iTextResult]) -> NSArray {
-        let outResults = NSMutableArray(capacity: 1)
+        let outResults = NSMutableArray(capacity: 8)
         for item in results {
-            let subDic = NSMutableDictionary(capacity: 12)
+            let subDic = NSMutableDictionary(capacity: 11)
             if item.barcodeFormat_2 != EnumBarcodeFormat2.Null {
                 subDic.setObject(item.barcodeFormatString_2 ?? "", forKey: "format" as NSCopying)
             }else{
                 subDic.setObject(item.barcodeFormatString ?? "", forKey: "format" as NSCopying)
             }
-            subDic.setObject(item.barcodeText ?? "", forKey: "text" as NSCopying)
+            // subDic.setObject(item.barcodeText ?? "", forKey: "text" as NSCopying)
             let points = item.localizationResult?.resultPoints as! [CGPoint]
             subDic.setObject(Int(points[0].x), forKey: "x1" as NSCopying)
             subDic.setObject(Int(points[0].y), forKey: "y1" as NSCopying)

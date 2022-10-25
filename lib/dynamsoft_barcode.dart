@@ -22,7 +22,7 @@ class BarcodeResult {
 
   static BarcodeResult fromJson(Map<dynamic, dynamic> json) {
     String format = json['format'];
-    String text = json['text'];
+
     int x1 = json['x1'];
     int y1 = json['y1'];
     int x2 = json['x2'];
@@ -35,6 +35,8 @@ class BarcodeResult {
     List<Object?> lobjects = json['barcodeBytes'];
     List<int> lint = lobjects.map((e) => e as int).toList();
     Uint8List barcodeBytes = Uint8List.fromList(lint);
+
+    String text = String.fromCharCodes(barcodeBytes);
     return BarcodeResult(
         format, text, x1, y1, x2, y2, x3, y3, x4, y4, angle, barcodeBytes);
   }

@@ -49,7 +49,7 @@ class BarcodeManager {
             {
                 FlValue* map = fl_value_new_map ();
                 fl_value_set_string_take (map, "format", fl_value_new_string(results->results[index]->barcodeFormatString));
-                fl_value_set_string_take (map, "text", fl_value_new_string(results->results[index]->barcodeText));
+                // fl_value_set_string_take (map, "text", fl_value_new_string(results->results[index]->barcodeText));
                 fl_value_set_string_take (map, "x1", fl_value_new_int(results->results[index]->localizationResult->x1));
                 fl_value_set_string_take (map, "y1", fl_value_new_int(results->results[index]->localizationResult->y1));
                 fl_value_set_string_take (map, "x2", fl_value_new_int(results->results[index]->localizationResult->x2));

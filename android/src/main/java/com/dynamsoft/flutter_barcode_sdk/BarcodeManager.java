@@ -57,7 +57,7 @@ public class BarcodeManager {
             for (TextResult result : results) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("format", result.barcodeFormatString);
-                data.put("text", result.barcodeText);
+                // data.put("text", result.barcodeText);
                 data.put("x1", result.localizationResult.resultPoints[0].x);
                 data.put("y1", result.localizationResult.resultPoints[0].y);
                 data.put("x2", result.localizationResult.resultPoints[1].x);

@@ -132,7 +132,7 @@ class BarcodeManager {
 
       var tmp = Map<dynamic, dynamic>();
       tmp['format'] = value['barcodeFormatString'];
-      tmp['text'] = value['barcodeText'];
+      // tmp['text'] = value['barcodeText'];
       tmp['x1'] = value['localizationResult']['x1'];
       tmp['y1'] = value['localizationResult']['y1'];
       tmp['x2'] = value['localizationResult']['x2'];
