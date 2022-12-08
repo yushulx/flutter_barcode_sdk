@@ -46,13 +46,13 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
             completionHandlers.append(result)
             self.setLicense(arg: call.arguments as! NSDictionary)
         case "setBarcodeFormats":
-            self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
-            result(.none)
+            let ret = self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
+            result(ret)
         case "getParameters":
             result(self.getParameters())
         case "setParameters":
-            self.setParameters(arg: call.arguments as! NSDictionary)
-            result(.none)
+            let ret = self.setParameters(arg: call.arguments as! NSDictionary)
+            result(ret)
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
@@ -73,30 +73,32 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
         let stride:Int = arguments.value(forKey: "stride") as! Int
         let format:Int = arguments.value(forKey: "format") as! Int
         let enumImagePixelFormat = EnumImagePixelFormat(rawValue: format)
-        let ret:[iTextResult] = try! reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format: enumImagePixelFormat!)
+        let ret = try? reader!.decodeBuffer(buffer.data, width: w, height: h, stride: stride, format: enumImagePixelFormat!)
         return self.wrapResults(results: ret)
     }
 
-    func setBarcodeFormats(arg:NSDictionary) {
+    func setBarcodeFormats(arg:NSDictionary) -> Int {
         let formats:Int = arg.value(forKey: "formats") as! Int
         let settings = try! reader!.getRuntimeSettings()
         settings.barcodeFormatIds = formats
         try? reader!.updateRuntimeSettings(settings)
+        return 0
     }
     
     func getParameters() -> String {
-        let ret = try? reader!.outputSettingsToString("currentRuntimeSettings")
-        return ret!
+        let ret = try! reader!.outputSettingsToString("currentRuntimeSettings")
+        return ret
     }
     
-    func setParameters(arg:NSDictionary) {
+    func setParameters(arg:NSDictionary) -> Int {
         let params:String = arg.value(forKey: "params") as! String
-        try? reader!.initRuntimeSettingsWithString(params, conflictMode: EnumConflictMode.overwrite)
+        try! reader!.initRuntimeSettingsWithString(params, conflictMode: EnumConflictMode.overwrite)
+        return 0
     }
     
     func decodeFile(arg:NSDictionary) -> NSArray {
         let path:String = arg.value(forKey: "filename") as! String
-        let ret:[iTextResult] = try! self.reader!.decodeFileWithName(path)
+        let ret = try? self.reader!.decodeFileWithName(path)
         return self.wrapResults(results: ret)
     }
 
@@ -114,9 +116,12 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
         }
     }     
 
-    func wrapResults(results:[iTextResult]) -> NSArray {
+    func wrapResults(results:[iTextResult]?) -> NSArray {
         let outResults = NSMutableArray(capacity: 8)
-        for item in results {
+        if results == nil {
+            return outResults
+        }
+        for item in results! {
             let subDic = NSMutableDictionary(capacity: 11)
             if item.barcodeFormat_2 != EnumBarcodeFormat2.Null {
                 subDic.setObject(item.barcodeFormatString_2 ?? "", forKey: "format" as NSCopying)

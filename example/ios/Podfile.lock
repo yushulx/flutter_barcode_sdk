@@ -36,12 +36,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
-  DynamsoftBarcodeReader: 906e1fc9dfde3cf55020f39cfaf551a28d9e278e
+  DynamsoftBarcodeReader: f15749834dd2b6f998e6423124082f3b2f8622ca
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_barcode_sdk: 0ea7e61c459da8c3a7944b40341a331ac40316ed
+  flutter_barcode_sdk: 9c20fd0e8f5332059ed5863ac32aae9b1c270748
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

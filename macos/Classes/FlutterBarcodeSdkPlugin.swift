@@ -22,13 +22,13 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
             let ret = self.setLicense(arg: call.arguments as! NSDictionary)
             result(ret)
         case "setBarcodeFormats":
-            self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
-            result(.none)
+            let ret = self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
+            result(ret)
         case "getParameters":
             result(self.getParameters())
         case "setParameters":
-            self.setParameters(arg: call.arguments as! NSDictionary)
-            result(.none)
+            let ret = self.setParameters(arg: call.arguments as! NSDictionary)
+            result(ret)
         case "decodeFile":
             let res = self.decodeFile(arg: call.arguments as! NSDictionary)
             result(res)
@@ -91,11 +91,12 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         return 0
     }
     
-    func setBarcodeFormats(arg:NSDictionary) {
+    func setBarcodeFormats(arg:NSDictionary) -> Int {
         let formats:Int = arg.value(forKey: "formats") as! Int
         let settings = try! reader!.getRuntimeSettings()
         settings.barcodeFormatIds = formats
         reader!.update(settings, error: nil)
+        return 0
     }
     
     func getParameters() -> String {
@@ -103,9 +104,10 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         return ret
     }
     
-    func setParameters(arg:NSDictionary) {
+    func setParameters(arg:NSDictionary) -> Int{
         let params:String = arg.value(forKey: "params") as! String
         reader!.initRuntimeSettings(with: params, conflictMode: .overwrite, error: nil)
+        return 0
     }
 
     func wrapResults(results:[iTextResult]) -> NSArray {
