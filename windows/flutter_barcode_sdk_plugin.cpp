@@ -96,14 +96,14 @@ namespace
     }
     else if (method_call.method_name().compare("init") == 0)
     {
-      manager->Init();
+      int ret = manager->Init();
 
-      result->Success(EncodableValue(""));
+      result->Success(EncodableValue(ret));
     }
     else if (method_call.method_name().compare("setLicense") == 0)
     {
       std::string license;
-
+      int ret = 0;
       if (arguments)
       {
         auto license_it = arguments->find(EncodableValue("license"));
@@ -111,10 +111,10 @@ namespace
         {
           license = std::get<std::string>(license_it->second);
         }
-        manager->SetLicense(license.c_str());
+        ret = manager->SetLicense(license.c_str());
       }
 
-      result->Success(EncodableValue(""));
+      result->Success(EncodableValue(ret));
     }
     else if (method_call.method_name().compare("decodeFile") == 0)
     {

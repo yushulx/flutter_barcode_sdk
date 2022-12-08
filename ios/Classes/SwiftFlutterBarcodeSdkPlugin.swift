@@ -30,8 +30,9 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
     //     reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
     // }
 
-    func initObj() {
+    func initObj() -> Int {
         reader = DynamsoftBarcodeReader()
+        return 0
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -39,8 +40,8 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
         case "getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
         case "init":
-            self.initObj()
-            result(.none)
+            let ret = self.initObj()
+            result(ret)
         case "setLicense":
             completionHandlers.append(result)
             self.setLicense(arg: call.arguments as! NSDictionary)
@@ -106,7 +107,11 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
 
     public func dbrLicenseVerificationCallback(_ isSuccess: Bool, error: Error?)
     {
-        completionHandlers.first?(.none)
+        if isSuccess {
+            completionHandlers.first?(0)
+        } else{
+            completionHandlers.first?(-1)
+        }
     }     
 
     func wrapResults(results:[iTextResult]) -> NSArray {

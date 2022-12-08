@@ -72,20 +72,25 @@ class BarcodeManager {
   }
 
   /// Initialize barcode reader and scanner.
-  Future<void> initBarcodeSDK() async {
+  Future<int> initBarcodeSDK() async {
     _barcodeReader = await handleThenable(BarcodeReader.createInstance());
     _barcodeScanner = await handleThenable(_dbrWrapper!.createDefaultScanner(
         allowInterop((results) =>
             {globalCallback(callbackResults(_resultWrapper(results)))})));
+
+    return 0;
   }
 
   /// Set license key.
-  Future<void> setLicense(String license) async {
+  Future<int> setLicense(String license) async {
     try {
       BarcodeReader.license = license;
     } catch (e) {
       print(e);
+      return -1;
     }
+
+    return 0;
   }
 
   /// Show camera view.

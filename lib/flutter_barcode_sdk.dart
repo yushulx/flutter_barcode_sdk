@@ -58,8 +58,9 @@ class FlutterBarcodeSdk {
 
   /// Set Dynamsoft Barcode Reader License Key
   /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense
-  Future<void> setLicense(String license) async {
-    await _channel.invokeMethod('setLicense', {'license': license});
+  Future<int> setLicense(String license) async {
+    int ret = await _channel.invokeMethod('setLicense', {'license': license});
+    return ret;
   }
 
   /// Decodes barcodes from an image file.
@@ -125,7 +126,8 @@ class FlutterBarcodeSdk {
   }
 
   /// Initialize barcode reader object.
-  Future<void> init() async {
-    return await _channel.invokeMethod('init');
+  Future<int> init() async {
+    int ret = await _channel.invokeMethod('init');
+    return ret;
   }
 }

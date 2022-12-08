@@ -35,9 +35,9 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } 
   else if (strcmp(method, "init") == 0) {
-    self->manager->Init();
+    int ret = self->manager->Init();
 
-    g_autoptr(FlValue) result = fl_value_new_string("");
+    g_autoptr(FlValue) result = fl_value_new_int(ret);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   }
   else if (strcmp(method, "setLicense") == 0) {
@@ -51,9 +51,9 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     }
   
     const char* license = fl_value_get_string(value);
-    self->manager->SetLicense(license);
+    int ret = self->manager->SetLicense(license);
 
-    g_autoptr(FlValue) result = fl_value_new_string("Done");
+    g_autoptr(FlValue) result = fl_value_new_int(ret);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   }
   else if (strcmp(method, "decodeFile") == 0) {

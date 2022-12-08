@@ -16,11 +16,11 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         case "getPlatformVersion":
             result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
         case "init":
-            self.initObj()
-            result(.none)
+            let ret = self.initObj()
+            result(ret)
         case "setLicense":
-            self.setLicense(arg: call.arguments as! NSDictionary)
-            result(.none)
+            let ret = self.setLicense(arg: call.arguments as! NSDictionary)
+            result(ret)
         case "setBarcodeFormats":
             self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
             result(.none)
@@ -71,10 +71,12 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         reader!.setModeArgument("BinarizationModes", index: 0, argumentName: "BlockSizeY", argumentValue: "81", error: nil)
     }
 
-    func initObj() {
+    func initObj() -> Int {
         if (reader == nil) {
             reader = DynamsoftBarcodeReader()
         }
+
+        return 0
     }
 
     func decodeFile(arg:NSDictionary) -> NSArray {
@@ -83,9 +85,10 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         return self.wrapResults(results: ret)
     }
 
-    func setLicense(arg:NSDictionary) {
+    func setLicense(arg:NSDictionary) -> Int {
         let lic:String = arg.value(forKey: "license") as! String
         reader = DynamsoftBarcodeReader(license: lic)
+        return 0
     }
     
     func setBarcodeFormats(arg:NSDictionary) {

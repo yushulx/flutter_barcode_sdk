@@ -68,14 +68,16 @@ class BarcodeManager {
         return out;
     }
 
-    void Init() 
+    int Init() 
     {
         reader = new CBarcodeReader();
+        return 0;
     }
 
-    void SetLicense(const char * license) 
+    int SetLicense(const char * license) 
     {
         CBarcodeReader::InitLicense(license);
+        return 0;
     }
 
     FlValue* DecodeFile(const char * filename) 

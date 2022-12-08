@@ -73,7 +73,7 @@ public class BarcodeManager {
         }
     }
 
-    public void init() {
+    public int init() {
         if (mBarcodeReader == null) {
             try {
                 mBarcodeReader = new BarcodeReader();
@@ -95,8 +95,11 @@ public class BarcodeManager {
                 mBarcodeReader.updateRuntimeSettings(settings);
             } catch (Exception e) {
                 e.printStackTrace();
+                return -1;
             }
         }
+
+        return 0;
     }
 
     public void setLicense(String license, final Result result) {
@@ -105,7 +108,13 @@ public class BarcodeManager {
                 new DBRLicenseVerificationListener() {
                     @Override
                     public void DBRLicenseVerificationCallback(boolean isSuccessful, Exception e) {
-                        result.success("");
+                        if (isSuccessful)
+                        {
+                            result.success(0);
+                        }
+                        else {
+                            result.success(-1);
+                        }
                     }
                 });
     }

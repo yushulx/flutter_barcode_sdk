@@ -104,13 +104,14 @@ class FlutterBarcodeSdkWeb {
   }
 
   /// Initialize barcode reader and scanner.
-  Future<void> initBarcodeSDK() async {
-    await _barcodeManager.initBarcodeSDK();
+  Future<int> initBarcodeSDK() async {
+    return await _barcodeManager.initBarcodeSDK();
   }
 
   /// Set license key.
-  Future<void> setLicense(String license) async {
-    await _barcodeManager.setLicense(license);
+  Future<int> setLicense(String license) async {
+    int ret = await _barcodeManager.setLicense(license);
+    return ret;
   }
 
   /// Decode barcodes from an image buffer.
