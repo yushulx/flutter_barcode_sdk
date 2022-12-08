@@ -1,10 +1,10 @@
 PODS:
   - camera (0.0.1):
     - Flutter
-  - DynamsoftBarcodeReader (9.0.0)
+  - DynamsoftBarcodeReader (9.4.0)
   - Flutter (1.0.0)
   - flutter_barcode_sdk (2.0.0):
-    - DynamsoftBarcodeReader (= 9.0.0)
+    - DynamsoftBarcodeReader (= 9.4.0)
     - Flutter
   - image_picker (0.0.1):
     - Flutter

@@ -1,3 +1,6 @@
+## 2.1.3
+* Updated Android and iOS SDK to v9.4.0.
+
 ## 2.1.2
 * Fixed JSON format exception caused by special characters in the barcode text.
 

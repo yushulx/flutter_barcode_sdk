@@ -17,7 +17,7 @@ rootProject.allprojects {
         google()
         mavenCentral()
         maven {
-            url "https://download2.dynamsoft.com/maven/dbr/aar"
+            url "https://download2.dynamsoft.com/maven/aar"
         }
     }
 }
@@ -38,5 +38,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.dynamsoft:dynamsoftbarcodereader:9.0.0@aar'
+    implementation 'com.dynamsoft:dynamsoftbarcodereader:9.4.0@aar'
 }
