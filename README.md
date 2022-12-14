@@ -114,7 +114,7 @@ To make the demo app work on macOS:
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.3.1/dist/dbr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.0/dist/dbr.js"></script>
 <script src="https://yushulx.me/javascript-barcode-qr-code-scanner/dbr-scanner-wrapper.js"></script>
 ```
 
