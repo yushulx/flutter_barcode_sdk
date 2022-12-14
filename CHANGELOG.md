@@ -1,3 +1,6 @@
+## 2.2.0
+* Updated Dynamsoft Barcode Reader to v9.6
+
 ## 2.1.3
 * Updated Android and iOS SDK to v9.4.0.
 
