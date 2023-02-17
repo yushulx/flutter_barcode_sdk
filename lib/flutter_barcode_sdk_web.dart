@@ -34,12 +34,6 @@ class FlutterBarcodeSdkWeb {
         return getPlatformVersion();
       case 'decodeFile':
         return decodeFile(call.arguments['filename']);
-      case 'decodeVideo':
-        decodeVideo();
-        break;
-      case 'closeVideo':
-        closeVideo();
-        break;
       case 'setBarcodeFormats':
         return setBarcodeFormats(call.arguments['formats']);
       case 'getParameters':
@@ -75,16 +69,6 @@ class FlutterBarcodeSdkWeb {
   /// Decode barcodes from an image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String file) async {
     return _barcodeManager.decodeFile(file);
-  }
-
-  /// Decode barcodes from real-time video stream.
-  Future<void> decodeVideo() async {
-    _barcodeManager.decodeVideo();
-  }
-
-  /// Close video window.
-  Future<void> closeVideo() async {
-    _barcodeManager.closeVideo();
   }
 
   /// Decode barcodes from real-time video stream.

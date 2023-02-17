@@ -78,117 +78,116 @@ class _DesktopState extends State<Desktop> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Dynamsoft Barcode Reader'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dynamsoft Barcode Reader'),
+      ),
+      body: Column(children: [
+        Container(
+          height: 100,
+          child: Row(children: <Widget>[
+            Text(
+              _platformVersion,
+              style: TextStyle(fontSize: 14, color: Colors.black),
+            )
+          ]),
+        ),
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: 'Input an image path',
+            errorText: _isValid ? null : 'File not exists',
           ),
-          body: Column(children: [
-            Container(
-              height: 100,
-              child: Row(children: <Widget>[
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                getDefaultImage(),
                 Text(
-                  _platformVersion,
+                  _barcodeResults,
                   style: TextStyle(fontSize: 14, color: Colors.black),
-                )
-              ]),
-            ),
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Input an image path',
-                errorText: _isValid ? null : 'File not exists',
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    getDefaultImage(),
-                    Text(
-                      _barcodeResults,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
-                  ],
                 ),
-              ),
+              ],
             ),
-            Container(
-              height: 100,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    MaterialButton(
-                        child: Text('Open an Image'),
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        onPressed: () async {
-                          final typeGroup = XTypeGroup(
-                            label: 'images',
-                            extensions: ['jpg', 'png'],
-                          );
-                          try {
-                            final files = await FileSelectorPlatform.instance
-                                .openFiles(acceptedTypeGroups: [typeGroup]);
-                            final file = files[0];
-                            List<BarcodeResult> results =
-                                await _barcodeReader.decodeFile(file.path);
+          ),
+        ),
+        Container(
+          height: 100,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                MaterialButton(
+                    child: Text('Open an Image'),
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: () async {
+                      final typeGroup = XTypeGroup(
+                        label: 'images',
+                        extensions: ['jpg', 'png'],
+                      );
+                      try {
+                        final files = await FileSelectorPlatform.instance
+                            .openFiles(acceptedTypeGroups: [typeGroup]);
+                        final file = files[0];
+                        List<BarcodeResult> results =
+                            await _barcodeReader.decodeFile(file.path);
 
-                            _isValid = true;
-                            setState(() {
-                              _controller.text = file.path;
-                              _barcodeResults = getBarcodeResults(results);
-                            });
-                          } catch (err) {
-                            print('Error: $err');
-                          }
-                        }),
-                    MaterialButton(
-                        child: Text('Decode Barcode'),
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        onPressed: () async {
-                          if (_controller.text.isEmpty) {
-                            _isValid = false;
-                            setState(() {
-                              _barcodeResults = '';
-                            });
-                            return;
-                          }
+                        _isValid = true;
+                        setState(() {
+                          _controller.text = file.path;
+                          _barcodeResults = getBarcodeResults(results);
+                        });
+                      } catch (err) {
+                        print('Error: $err');
+                      }
+                    }),
+                MaterialButton(
+                    child: Text('Decode Barcode'),
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: () async {
+                      if (_controller.text.isEmpty) {
+                        _isValid = false;
+                        setState(() {
+                          _barcodeResults = '';
+                        });
+                        return;
+                      }
 
-                          File file = File(_controller.text);
-                          if (!file.existsSync()) {
-                            _isValid = false;
-                            setState(() {
-                              _barcodeResults = '';
-                            });
-                            return;
-                          } else {
-                            _isValid = true;
-                          }
-                          Uint8List fileBytes = await file.readAsBytes();
+                      File file = File(_controller.text);
+                      if (!file.existsSync()) {
+                        _isValid = false;
+                        setState(() {
+                          _barcodeResults = '';
+                        });
+                        return;
+                      } else {
+                        _isValid = true;
+                      }
+                      Uint8List fileBytes = await file.readAsBytes();
 
-                          ui.Image image = await decodeImageFromList(fileBytes);
+                      ui.Image image = await decodeImageFromList(fileBytes);
 
-                          ByteData byteData = await image.toByteData(
-                              format: ui.ImageByteFormat.rawRgba);
-                          List<BarcodeResult> results =
-                              await _barcodeReader.decodeImageBuffer(
-                                  byteData.buffer.asUint8List(),
-                                  image.width,
-                                  image.height,
-                                  byteData.lengthInBytes ~/ image.height,
-                                  ImagePixelFormat.IPF_ARGB_8888.index);
-                          // List<BarcodeResult> results =
-                          //     await _barcodeReader.decodeFile(_controller.text);
+                      ByteData byteData = await image.toByteData(
+                          format: ui.ImageByteFormat.rawRgba);
+                      List<BarcodeResult> results =
+                          await _barcodeReader.decodeImageBuffer(
+                              byteData.buffer.asUint8List(),
+                              image.width,
+                              image.height,
+                              byteData.lengthInBytes ~/ image.height,
+                              ImagePixelFormat.IPF_ARGB_8888.index);
+                      // List<BarcodeResult> results =
+                      //     await _barcodeReader.decodeFile(_controller.text);
 
-                          setState(() {
-                            _barcodeResults = getBarcodeResults(results);
-                          });
-                        }),
-                  ]),
-            ),
-          ])),
+                      setState(() {
+                        _barcodeResults = getBarcodeResults(results);
+                      });
+                    }),
+              ]),
+        ),
+      ]),
     );
   }
 }

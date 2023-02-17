@@ -10,8 +10,9 @@ import 'package:flutter_barcode_sdk_example/mobile.dart';
 import 'package:flutter_barcode_sdk_example/web.dart';
 
 Future<void> main() async {
+  StatefulWidget app;
   if (kIsWeb) {
-    runApp(Web());
+    app = Web();
   } else if (Platform.isAndroid || Platform.isIOS) {
     // Ensure that plugin services are initialized so that `availableCameras()`
     // can be called before `runApp()`
@@ -23,20 +24,19 @@ Future<void> main() async {
     // Get a specific camera from the list of available cameras.
     final firstCamera = cameras.first;
 
-    runApp(
-      MaterialApp(
-        title: 'Dynamsoft Barcode Reader',
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text("Dynamsoft Barcode Reader"),
-          ),
-          body: Mobile(
-            camera: firstCamera,
-          ),
-        ),
-      ),
+    app = Mobile(
+      camera: firstCamera,
     );
   } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    runApp(Desktop());
+    app = Desktop();
   }
+
+  runApp(
+    MaterialApp(
+      title: 'Dynamsoft Barcode Reader',
+      home: Scaffold(
+        body: app,
+      ),
+    ),
+  );
 }

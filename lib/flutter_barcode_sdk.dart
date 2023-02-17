@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
-import 'package:flutter_barcode_sdk/global.dart';
 
 /// Image pixel format.
 enum ImagePixelFormat {
@@ -70,14 +69,6 @@ class FlutterBarcodeSdk {
     return convertResults(ret);
   }
 
-  // Decodes barcodes from bytes of an image file.
-  // Future<List<BarcodeResult>> decodeFileBytes(Uint8List bytes) async {
-  //   assert(bytes.isNotEmpty);
-  //   List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
-  //       await _channel.invokeMethod('decodeFileBytes', {'bytes': bytes}));
-  //   return convertResults(ret);
-  // }
-
   /// Decodes barcodes from an image buffer.
   ///
   /// E.g. [CameraImage]
@@ -92,19 +83,6 @@ class FlutterBarcodeSdk {
       'format': format
     }));
     return convertResults(ret);
-  }
-
-  /// Decodes barcodes from webcam stream.
-  /// Web only!
-  Future<void> decodeVideo(Function callback) async {
-    globalCallback = callback;
-    await _channel.invokeMethod('decodeVideo');
-  }
-
-  /// Close webcam stream.
-  /// Web only!
-  Future<void> closeVideo() async {
-    await _channel.invokeMethod('closeVideo');
   }
 
   /// Set barcode formats.

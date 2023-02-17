@@ -5,29 +5,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 // import 'dart:js';
-import 'package:flutter_barcode_sdk/wrapper.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
-import 'package:flutter_barcode_sdk/global.dart';
 import 'package:js/js.dart';
 import 'utils.dart';
-
-// @JS('DBR')
-// class DBR {
-//   external static Object get EnumBarcodeFormat;
-// }
-
-/// BarcodeScanner class.
-@JS('DBR.BarcodeScanner')
-class BarcodeScanner {
-  external static PromiseJsImpl<BarcodeScanner> createInstance();
-  external void show();
-  external void hide();
-  external set onFrameRead(Function func);
-  external PromiseJsImpl<dynamic> getRuntimeSettings();
-  external PromiseJsImpl<void> updateRuntimeSettings(String settings);
-  external PromiseJsImpl<dynamic> outputRuntimeSettingsToString();
-  external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
-}
 
 /// BarcodeReader class.
 @JS('DBR.BarcodeReader')
@@ -45,25 +25,11 @@ class BarcodeReader {
 
 /// BarcodeManager class.
 class BarcodeManager {
-  BarcodeScanner? _barcodeScanner;
   BarcodeReader? _barcodeReader;
-  DBRWrapper? _dbrWrapper;
-
-  /// Initializes the BarcodeManager.
-  BarcodeManager() {
-    _dbrWrapper = DBRWrapper.createInstance();
-  }
 
   /// Wrap callback results.
   List<BarcodeResult> callbackResults(List<Map<dynamic, dynamic>> results) {
     return convertResults(results);
-  }
-
-  /// Initialize Barcode Scanner.
-  void initBarcodeScanner(BarcodeScanner scanner) {
-    _barcodeScanner = scanner;
-    _barcodeScanner!.onFrameRead = allowInterop((results) =>
-        {globalCallback(callbackResults(_resultWrapper(results)))});
   }
 
   /// Initialize Barcode Reader.
@@ -74,9 +40,6 @@ class BarcodeManager {
   /// Initialize barcode reader and scanner.
   Future<int> initBarcodeSDK() async {
     _barcodeReader = await handleThenable(BarcodeReader.createInstance());
-    _barcodeScanner = await handleThenable(_dbrWrapper!.createDefaultScanner(
-        allowInterop((results) =>
-            {globalCallback(callbackResults(_resultWrapper(results)))})));
 
     return 0;
   }
@@ -91,18 +54,6 @@ class BarcodeManager {
     }
 
     return 0;
-  }
-
-  /// Show camera view.
-  Future<void> decodeVideo() async {
-    _dbrWrapper!.clearOverlay();
-    _barcodeScanner!.show();
-    _dbrWrapper!.patchOverlay();
-  }
-
-  /// Close camera view.
-  Future<void> closeVideo() async {
-    _barcodeScanner!.hide();
   }
 
   /// Set barcode formats.
@@ -120,12 +71,6 @@ class BarcodeManager {
     obj['barcodeFormatIds'] = formats;
     await handleThenable(
         _barcodeReader!.updateRuntimeSettings(json.encode(obj)));
-
-    settings = await handleThenable(_barcodeScanner!.getRuntimeSettings());
-    obj = json.decode(stringify(settings));
-    obj['barcodeFormatIds'] = formats;
-    await handleThenable(
-        _barcodeScanner!.updateRuntimeSettings(json.encode(obj)));
   }
 
   /// Convert List<dynamic> to List<Map<dynamic, dynamic>>.
@@ -182,8 +127,6 @@ class BarcodeManager {
   /// Set parameters to adjust barcode detection algorithm.
   Future<int> setParameters(String params) async {
     await handleThenable(_barcodeReader!.initRuntimeSettingsWithString(params));
-    await handleThenable(
-        _barcodeScanner!.initRuntimeSettingsWithString(params));
     return 0;
   }
 }

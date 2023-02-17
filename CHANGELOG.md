@@ -1,3 +1,7 @@
+## 2.2.1
+* Removed useless code in web plugin.
+* Optimized scanner example code for web.
+
 ## 2.2.0
 * Updated Dynamsoft Barcode Reader to v9.6
 
