@@ -41,7 +41,7 @@ class BarcodeManager {
             
         if (results == NULL || results->resultsCount == 0)
         {
-            printf("No barcode found.\n");
+            // printf("No barcode found.\n");
         }
         else
         {

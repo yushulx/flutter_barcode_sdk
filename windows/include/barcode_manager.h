@@ -11,23 +11,79 @@
 
 #include <flutter/standard_method_codec.h>
 
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <functional>
+
 using namespace std;
 using namespace dynamsoft::dbr;
 using flutter::EncodableMap;
 using flutter::EncodableValue;
 using flutter::EncodableList;
 
+class Task
+  {
+  public:
+      std::function<void()> func;
+      unsigned char* buffer;
+  };
+
+  class WorkerThread
+  {
+  public:
+      std::mutex m;
+      std::condition_variable cv;
+      std::queue<Task> tasks = {};
+      volatile bool running;
+    std::thread t;
+  };
+
 class BarcodeManager {
     public:
+    
 
     ~BarcodeManager() 
     {
+        clear();
         if (reader != NULL)
         {
             delete reader;
             reader = NULL;
         }
     };
+
+    void clearTasks()
+    {
+        if (worker->tasks.size() > 0)
+        {
+            for (int i = 0; i < worker->tasks.size(); i++)
+            {
+                free(worker->tasks.front().buffer);
+                worker->tasks.pop();
+            }
+        }
+    }
+
+    void clear()
+    {
+        if (worker)
+        {
+            std::unique_lock<std::mutex> lk(worker->m);
+            worker->running = false;
+            
+            clearTasks();
+
+            worker->cv.notify_one();
+            lk.unlock();
+
+            worker->t.join();
+            delete worker;
+            worker = NULL;
+            printf("Quit native thread.\n");
+        }
+    }
 
     const char* GetVersion() 
     {
@@ -43,7 +99,7 @@ class BarcodeManager {
             
         if (results == NULL || results->resultsCount == 0)
         {
-            printf("No barcode found.\n");
+            // printf("No barcode found.\n");
         }
         else 
         {
@@ -71,46 +127,44 @@ class BarcodeManager {
         return out;
     }
 
-    int Init() 
+    static void run(BarcodeManager *self)
     {
-        reader = new CBarcodeReader();
-        return 0;
-    }
-
-    int SetLicense(const char * license) 
-    {
-        CBarcodeReader::InitLicense(license);
-        return 0;
-    }
-
-    EncodableList DecodeFile(const char * filename) 
-    {
-        EncodableList out;   
-        if (reader == NULL) return out;
-        int ret = reader->DecodeFile(filename, "");
-
-        if (ret == DBRERR_FILE_NOT_FOUND)
+        while (self->worker->running)
         {
-            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
-            return out;
+            std::function<void()> task;
+            std::unique_lock<std::mutex> lk(self->worker->m);
+            self->worker->cv.wait(lk, [&]
+                                { return !self->worker->tasks.empty() || !self->worker->running; });
+            if (!self->worker->running)
+            {
+                break;
+            }
+            task = std::move(self->worker->tasks.front().func);
+            self->worker->tasks.pop();
+            lk.unlock();
+
+            task();
         }
-
-        return WrapResults();
     }
 
-    EncodableList DecodeFileBytes(const unsigned char * bytes, int size) 
-    {
-        EncodableList out;
-        if (reader == NULL) return out;
-        reader->DecodeFileInMemory(bytes, size, "");
-        return WrapResults();
+    void queueTask(unsigned char* barcodeBuffer, int width, int height, int stride, int format, int len)
+    {    
+        unsigned char *data = (unsigned char *)malloc(len);
+        memcpy(data, barcodeBuffer, len);
+
+        std::unique_lock<std::mutex> lk(worker->m);
+        clearTasks();
+        std::function<void()> task_function = std::bind(scan, this, data, width, height, stride, format);
+        Task task;
+        task.func = task_function;
+        task.buffer = data;
+        worker->tasks.push(task);
+        worker->cv.notify_one();
+        lk.unlock();
     }
 
-    EncodableList DecodeImageBuffer(const unsigned char * buffer, int width, int height, int stride, int format) 
+    static void scan(BarcodeManager *self, unsigned char * buffer, int width, int height, int stride, int format)
     {
-        EncodableList out;
-        if (reader == NULL) return out;
-
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch(format) {
             case 0:
@@ -154,9 +208,57 @@ class BarcodeManager {
                 break;
         }
 
-        reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
+        self->reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
+
+        free(buffer);
+        EncodableList results = self->WrapResults();
+        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result = std::move(self->pendingResults.front());
+        self->pendingResults.erase(self->pendingResults.begin());
+        result->Success(results);
+    }
+
+    int Init() 
+    {
+        reader = new CBarcodeReader();
+        worker = new WorkerThread();
+        worker->running = true;
+        worker->t = thread(&run, this);
+        return 0;
+    }
+
+    int SetLicense(const char * license) 
+    {
+        CBarcodeReader::InitLicense(license);
+        return 0;
+    }
+
+    EncodableList DecodeFile(const char * filename) 
+    {
+        EncodableList out;   
+        if (reader == NULL) return out;
+        int ret = reader->DecodeFile(filename, "");
+
+        if (ret == DBRERR_FILE_NOT_FOUND)
+        {
+            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
+            return out;
+        }
 
         return WrapResults();
+    }
+
+    EncodableList DecodeFileBytes(const unsigned char * bytes, int size) 
+    {
+        EncodableList out;
+        if (reader == NULL) return out;
+        reader->DecodeFileInMemory(bytes, size, "");
+        return WrapResults();
+    }
+
+    void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>& pendingResult, const unsigned char * buffer, int width, int height, int stride, int format) 
+    {
+        pendingResults.push_back(std::move(pendingResult));
+        queueTask((unsigned char*)buffer, width, height, stride, format, stride * height);
     }
 
     int SetFormats(int formats) 
@@ -196,6 +298,8 @@ class BarcodeManager {
 
     private:
         CBarcodeReader *reader; 
+        WorkerThread *worker;
+        vector<std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>> pendingResults = {};
 };
 
 #endif 

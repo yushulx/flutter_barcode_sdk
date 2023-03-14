@@ -188,10 +188,10 @@ namespace
         {
           format = std::get<int>(format_it->second);
         }
-        results = manager->DecodeImageBuffer(reinterpret_cast<unsigned char*>(bytes.data()), width, height, stride, format);
+        manager->DecodeImageBuffer(result, reinterpret_cast<unsigned char*>(bytes.data()), width, height, stride, format);
       }
 
-      result->Success(results);
+      // result->Success(results);
     }
     else if (method_call.method_name().compare("setBarcodeFormats") == 0)
     {
