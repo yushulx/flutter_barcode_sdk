@@ -1,3 +1,6 @@
+## 2.2.2
+* Windows update: Move DecodeImageBuffer method to C++ native thread to avoid UI thread blocking.
+
 ## 2.2.1
 * Removed useless code in web plugin.
 * Optimized scanner example code for web.
