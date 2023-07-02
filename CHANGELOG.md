@@ -1,3 +1,6 @@
+## 2.2.3
+* Fixed `initLicense` return value for Windows and Linux. 
+
 ## 2.2.2
 * Windows update: Move DecodeImageBuffer method to C++ native thread to avoid UI thread blocking.
 
