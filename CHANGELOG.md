@@ -1,3 +1,6 @@
+## 2.2.3
+* Updated some barcode SDK versions to v9.6.20.
+
 ## 2.2.2
 * Windows update: Move DecodeImageBuffer method to C++ native thread to avoid UI thread blocking.
 
