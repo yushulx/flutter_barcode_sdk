@@ -76,8 +76,8 @@ class BarcodeManager {
 
     int SetLicense(const char * license) 
     {
-        CBarcodeReader::InitLicense(license);
-        return 0;
+        int ret = CBarcodeReader::InitLicense(license);
+        return ret;
     }
 
     FlValue* DecodeFile(const char * filename) 
