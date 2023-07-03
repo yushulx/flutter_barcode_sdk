@@ -55,7 +55,7 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.6.0       | 9.6.0   | 9.6.0      | 9.6.0    |9.6.0      | 9.6.0     |
+| Version    | 9.6.20       | 9.6.21   | 9.6.20      | 9.6.20    |9.6.0      | 9.6.20     |
 
 ## Build Configuration
 
@@ -114,7 +114,7 @@ To make the demo app work on macOS:
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.0/dist/dbr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.20/dist/dbr.js"></script>
 ```
 
 ## API Compatibility

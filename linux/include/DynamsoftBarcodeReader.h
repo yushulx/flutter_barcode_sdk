@@ -646,6 +646,7 @@ typedef enum PDFReadingMode
 #endif
 }PDFReadingMode;
 
+
 #pragma pack(push)
 #pragma pack(1)
 
@@ -3623,6 +3624,24 @@ extern "C" {
 	 *
 	 */
 	DBR_API int DBR_IsInstanceValid(void* barcodeReader);
+
+	/**
+	* Sets a directory path for saving the license data.
+	* @param [in] The directory path for saving the license data.
+	*/
+	DBR_API int DBR_SetLicenseCachePath(const char* directoryPath);
+
+	/**
+	* Gets the device uuid used for license activating.
+	* @param [in] the uuid GenerationMethod ,0:random 1:hardware 
+	* @param [in,out] returns the uuid
+	*/
+	DBR_API int DBR_GetDeviceUUID(int uuidGenerationMethod, char** uuid);
+
+	/**
+	*Frees memory allocated for the  string.
+	*/
+	DBR_API void DBR_FreeString(char** content);
 	/**
 	 * @}defgroup CCallback
 	 */
@@ -4493,9 +4512,24 @@ namespace dynamsoft
 			 *
 			 */
 			void Recycle();
+
 			/**
-			 * @}
-			 */
+			* Sets a directory path for saving the license data.
+			* @param [in] The directory path for saving the license data.
+			*/
+			static int SetLicenseCachePath(const char* directoryPath);
+
+			/**
+			* Gets the device uuid used for license activating.
+			* @param [in] the uuid GenerationMethod.
+			* @param [in,out] returns the uuid
+			*/
+			static int GetDeviceUUID(int uuidGenerationMethod, char** uuid);
+
+			/**
+			*Frees memory allocated for the string.
+			*/
+			static void FreeString(char** content);
 		private:
 			CBarcodeReader(const CBarcodeReader& r);
 

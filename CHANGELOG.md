@@ -1,3 +1,6 @@
+## 2.2.4
+* Updated some barcode SDK versions to v9.6.20.
+
 ## 2.2.3
 * Fixed `initLicense` return value for Windows and Linux. 
 
