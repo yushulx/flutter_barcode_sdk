@@ -31,7 +31,7 @@
 /**Instance count is over limit.*/
 #define DMERR_INSTANCE_COUNT_OVER_LIMIT -20008
 
-/**Interface InitLicenseFromDLS has to be called before creating any SDK objects.*/
+/**Interface InitLicense has to be called before creating any SDK objects.*/
 #define DMERR_LICENSE_INIT_SEQUENCE_FAILED -20009
 
 /**Trial License*/
