@@ -1,5 +1,6 @@
 ## 2.2.5
 * Updated barcode SDK for macOS to v9.6.20.
+* Replaced x86_64 with arm64 in macOS plugin.
 
 ## 2.2.4
 * Updated some barcode SDK versions to v9.6.20.
