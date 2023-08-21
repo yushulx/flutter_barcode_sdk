@@ -8,23 +8,23 @@ import 'overlay_painter.dart';
 class ScannerScreen extends StatefulWidget {
   final FlutterBarcodeSdk barcodeReader;
 
-  const ScannerScreen({this.barcodeReader});
+  const ScannerScreen({required this.barcodeReader});
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  FlutterBarcodeSdk _barcodeReader;
-  List<CameraDescription> _cameras;
-  CameraController _controller;
+  FlutterBarcodeSdk? _barcodeReader;
+  List<CameraDescription>? _cameras;
+  CameraController? _controller;
   bool _isCameraReady = false;
   String _selectedItem = '';
   final List<String> _cameraNames = [''];
   bool _loading = true;
   bool _isTakingPicture = false;
-  List<BarcodeResult> _results;
-  Size _previewSize;
+  List<BarcodeResult>? _results;
+  Size? _previewSize;
 
   @override
   void initState() {
@@ -35,16 +35,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   Future<void> toggleCamera(int index) async {
     _isCameraReady = false;
-    if (_controller != null) _controller.dispose();
+    if (_controller != null) _controller!.dispose();
 
-    _controller = CameraController(_cameras[index], ResolutionPreset.max);
-    _controller.initialize().then((_) {
+    _controller = CameraController(_cameras![index], ResolutionPreset.max);
+    _controller!.initialize().then((_) {
       if (!mounted) {
         return;
       }
 
       _isCameraReady = true;
-      _previewSize = _controller.value.previewSize;
+      _previewSize = _controller!.value.previewSize;
       setState(() {});
 
       decodeFrames();
@@ -60,7 +60,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     setState(() {
-      _selectedItem = _cameras[index].name;
+      _selectedItem = _cameras![index].name;
     });
   }
 
@@ -68,10 +68,10 @@ class _ScannerScreenState extends State<ScannerScreen> {
     try {
       WidgetsFlutterBinding.ensureInitialized();
       _cameras = await availableCameras();
-      if (_cameras.isEmpty) return;
+      if (_cameras!.isEmpty) return;
 
       _cameraNames.clear();
-      for (CameraDescription description in _cameras) {
+      for (CameraDescription description in _cameras!) {
         _cameraNames.add(description.name);
       }
       _selectedItem = _cameraNames[0];
@@ -94,8 +94,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
       if (!_isTakingPicture) {
         _isTakingPicture = true;
-        XFile file = await _controller.takePicture();
-        _results = await _barcodeReader.decodeFile(file.path);
+        XFile file = await _controller!.takePicture();
+        _results = await _barcodeReader!.decodeFile(file.path);
         setState(() {});
         _isTakingPicture = false;
       }
@@ -106,7 +106,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   @override
   void dispose() {
-    if (_controller != null) _controller.dispose();
+    if (_controller != null) _controller!.dispose();
     _controller = null;
     super.dispose();
   }
@@ -116,7 +116,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     return WillPopScope(
         // override the pop action
         onWillPop: () async {
-          _controller.dispose();
+          _controller!.dispose();
           _controller = null;
           _isCameraReady = false;
           return true;
@@ -143,19 +143,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
                               : SizedBox(
                                   width: _previewSize == null
                                       ? 640
-                                      : _previewSize.width,
+                                      : _previewSize!.width,
                                   height: _previewSize == null
                                       ? 480
-                                      : _previewSize.height,
+                                      : _previewSize!.height,
                                   child: CameraPreview(
-                                    _controller,
+                                    _controller!,
                                   )),
                           Positioned(
                             top: 0.0,
                             right: 0.0,
                             bottom: 0.0,
                             left: 0.0,
-                            child: _results == null || _results.isEmpty
+                            child: _results == null || _results!.isEmpty
                                 ? Container(
                                     color: Colors.black.withOpacity(0.1),
                                     child: const Center(
@@ -168,7 +168,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                         ),
                                       ),
                                     ))
-                                : createOverlay(_results),
+                                : createOverlay(_results!),
                           ),
                         ],
                       ),
@@ -194,7 +194,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                 child: Text(value),
                               );
                             }).toList(),
-                            onChanged: (String newValue) {
+                            onChanged: (String? newValue) {
                               if (newValue == null || newValue == '') return;
                               int index = _cameraNames.indexOf(newValue);
                               toggleCamera(index);

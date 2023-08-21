@@ -18,7 +18,7 @@ class _DesktopState extends State<Desktop> {
   String _platformVersion = 'Unknown';
   final _controller = TextEditingController();
   String _barcodeResults = '';
-  FlutterBarcodeSdk _barcodeReader;
+  late FlutterBarcodeSdk _barcodeReader;
   bool _isValid = false;
 
   @override
@@ -169,8 +169,10 @@ class _DesktopState extends State<Desktop> {
 
                       ui.Image image = await decodeImageFromList(fileBytes);
 
-                      ByteData byteData = await image.toByteData(
+                      ByteData? byteData = await image.toByteData(
                           format: ui.ImageByteFormat.rawRgba);
+                      
+                      if (byteData == null) return;
                       List<BarcodeResult> results =
                           await _barcodeReader.decodeImageBuffer(
                               byteData.buffer.asUint8List(),

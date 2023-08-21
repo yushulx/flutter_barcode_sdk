@@ -15,18 +15,18 @@ class Mobile extends StatefulWidget {
   final CameraDescription camera;
 
   const Mobile({
-    Key key,
-    @required this.camera,
-  }) : super(key: key);
+    super.key,
+    required this.camera,
+  });
 
   @override
   MobileState createState() => MobileState();
 }
 
 class MobileState extends State<Mobile> {
-  CameraController _controller;
-  Future<void> _initializeControllerFuture;
-  FlutterBarcodeSdk _barcodeReader;
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
+  FlutterBarcodeSdk? _barcodeReader;
   bool _isScanAvailable = true;
   bool _isScanRunning = false;
   String _barcodeResults = '';
@@ -45,8 +45,7 @@ class MobileState extends State<Mobile> {
     );
 
     // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
-    _initializeControllerFuture.then((_) {
+    _initializeControllerFuture = _controller!.initialize().then((_) {
       setState(() {});
     });
     // Initialize Dynamsoft Barcode Reader
@@ -56,26 +55,26 @@ class MobileState extends State<Mobile> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
-    await _barcodeReader.setLicense(
+    await _barcodeReader!.setLicense(
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
-    await _barcodeReader.init();
-    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+    await _barcodeReader!.init();
+    await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
     // Get all current parameters.
     // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
-    String params = await _barcodeReader.getParameters();
+    String params = await _barcodeReader!.getParameters();
     // Convert parameters to a JSON object.
     dynamic obj = json.decode(params);
     // Modify parameters.
     obj['ImageParameter']['DeblurLevel'] = 5;
     // Update the parameters.
-    int ret = await _barcodeReader.setParameters(json.encode(obj));
+    int ret = await _barcodeReader!.setParameters(json.encode(obj));
     print('Parameter update: $ret');
   }
 
   void pictureScan() async {
     if (_isScanRunning) stopVideo();
-    final image = await _controller.takePicture();
-    List<BarcodeResult> results = await _barcodeReader.decodeFile(image?.path);
+    final image = await _controller!.takePicture();
+    List<BarcodeResult> results = await _barcodeReader!.decodeFile(image.path);
 
     // Uint8List bytes = await image.readAsBytes();
     // List<BarcodeResult> results =
@@ -88,7 +87,7 @@ class MobileState extends State<Mobile> {
         builder: (context) => DisplayPictureScreen(
             // Pass the automatically generated path to
             // the DisplayPictureScreen widget.
-            imagePath: image?.path,
+            imagePath: image.path,
             barcodeResults: getBarcodeResults(results)),
       ),
     );
@@ -99,7 +98,7 @@ class MobileState extends State<Mobile> {
       _buttonText = 'Stop Video Scan';
     });
     _isScanRunning = true;
-    await _controller.startImageStream((CameraImage availableImage) async {
+    await _controller!.startImageStream((CameraImage availableImage) async {
       assert(defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
       int format = ImagePixelFormat.IPF_NV21.index;
@@ -122,7 +121,7 @@ class MobileState extends State<Mobile> {
       _isScanAvailable = false;
 
       _barcodeReader
-          .decodeImageBuffer(
+          !.decodeImageBuffer(
               availableImage.planes[0].bytes,
               availableImage.width,
               availableImage.height,
@@ -148,7 +147,7 @@ class MobileState extends State<Mobile> {
       _barcodeResults = '';
     });
     _isScanRunning = false;
-    await _controller.stopImageStream();
+    await _controller!.stopImageStream();
   }
 
   void videoScan() async {
@@ -167,19 +166,19 @@ class MobileState extends State<Mobile> {
   }
 
   Widget getCameraWidget() {
-    if (!_controller.value.isInitialized) {
+    if (!_controller!.value.isInitialized) {
       return Center(child: CircularProgressIndicator());
     } else {
       // https://stackoverflow.com/questions/49946153/flutter-camera-appears-stretched
       final size = MediaQuery.of(context).size;
-      var scale = size.aspectRatio * _controller.value.aspectRatio;
+      var scale = size.aspectRatio * _controller!.value.aspectRatio;
 
       if (scale < 1) scale = 1 / scale;
 
       return Transform.scale(
         scale: scale,
         child: Center(
-          child: CameraPreview(_controller),
+          child: CameraPreview(_controller!),
         ),
       );
       // return CameraPreview(_controller);
@@ -243,8 +242,7 @@ class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
   final String barcodeResults;
 
-  const DisplayPictureScreen({Key key, this.imagePath, this.barcodeResults})
-      : super(key: key);
+  const DisplayPictureScreen({super.key, required this.imagePath, required this.barcodeResults});
 
   @override
   Widget build(BuildContext context) {

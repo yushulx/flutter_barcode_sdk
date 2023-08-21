@@ -27,7 +27,7 @@ Future<void> main() async {
     app = Mobile(
       camera: firstCamera,
     );
-  } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  } else {
     app = Desktop();
   }
 

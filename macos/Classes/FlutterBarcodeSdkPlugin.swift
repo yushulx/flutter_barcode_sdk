@@ -4,11 +4,29 @@ import FlutterMacOS
 public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
     
     var reader: DynamsoftBarcodeReader? = DynamsoftBarcodeReader()
-    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_barcode_sdk", binaryMessenger: registrar.messenger)
         let instance = FlutterBarcodeSdkPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
+    }
+
+    var callback: Callback = Callback()
+
+    public class Callback: NSObject, DBRLicenseVerificationListener {
+        var completionHandlers: [FlutterResult] = []
+
+        public func append(result: @escaping FlutterResult) {
+            completionHandlers.append(result)
+        }
+
+        public func dbrLicenseVerificationCallback(_ isSuccess: Bool, error: Error?)
+        {
+            if isSuccess {
+                completionHandlers.first?(0)
+            } else{
+                completionHandlers.first?(-1)
+            }
+        } 
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -19,8 +37,8 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
             let ret = self.initObj()
             result(ret)
         case "setLicense":
-            let ret = self.setLicense(arg: call.arguments as! NSDictionary)
-            result(ret)
+            callback.append(result: result)
+            self.setLicense(arg: call.arguments as! NSDictionary)
         case "setBarcodeFormats":
             let ret = self.setBarcodeFormats(arg: call.arguments as! NSDictionary)
             result(ret)
@@ -72,8 +90,9 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
     }
 
     func initObj() -> Int {
+        
         if (reader == nil) {
-            reader = DynamsoftBarcodeReader()
+        reader = DynamsoftBarcodeReader()
         }
 
         return 0
@@ -85,10 +104,9 @@ public class FlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
         return self.wrapResults(results: ret)
     }
 
-    func setLicense(arg:NSDictionary) -> Int {
-        let lic:String = arg.value(forKey: "license") as! String
-        reader = DynamsoftBarcodeReader(license: lic)
-        return 0
+    func setLicense(arg:NSDictionary) {
+        let license: String = arg.value(forKey: "license") as! String
+        DynamsoftBarcodeReader.initLicense(license, verificationDelegate: callback)     
     }
     
     func setBarcodeFormats(arg:NSDictionary) -> Int {

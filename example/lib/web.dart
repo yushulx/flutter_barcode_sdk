@@ -17,8 +17,8 @@ class Web extends StatefulWidget {
 
 class _WebState extends State<Web> {
   String _platformVersion = 'Unknown';
-  FlutterBarcodeSdk _barcodeReader;
-  String _file;
+  FlutterBarcodeSdk? _barcodeReader;
+  String? _file;
   String _barcodeResults = '';
   final picker = ImagePicker();
   bool _isSDKLoaded = false;
@@ -32,10 +32,10 @@ class _WebState extends State<Web> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
-    await _barcodeReader.setLicense(
+    await _barcodeReader!.setLicense(
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
-    await _barcodeReader.init();
-    await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+    await _barcodeReader!.init();
+    await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
 
     setState(() {
       _isSDKLoaded = true;
@@ -109,7 +109,7 @@ class _WebState extends State<Web> {
               children: [
                 _file == null
                     ? Image.asset('images/default.png')
-                    : Image.network(_file),
+                    : Image.network(_file!),
                 Text(
                   _barcodeResults,
                   style: TextStyle(fontSize: 14, color: Colors.black),
@@ -164,7 +164,7 @@ class _WebState extends State<Web> {
                         //         ImagePixelFormat.IPF_ARGB_8888.index);
 
                         List<BarcodeResult> results =
-                            await _barcodeReader.decodeFile(_file);
+                            await _barcodeReader!.decodeFile(_file!);
                         updateResults(results);
                       }
                     }),
@@ -182,7 +182,7 @@ class _WebState extends State<Web> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ScannerScreen(
-                                  barcodeReader: _barcodeReader,
+                                  barcodeReader: _barcodeReader!,
                                 )),
                       );
                     }),
