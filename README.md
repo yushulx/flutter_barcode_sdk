@@ -55,7 +55,7 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.6.20       | 9.6.21   | 9.6.20      | 9.6.20    |9.6.0      | 9.6.20     |
+| Version    | 9.6.20       | 9.6.21   | 9.6.20      | 9.6.20    |9.6.20      | 9.6.20     |
 
 ## Build Configuration
 
