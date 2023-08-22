@@ -1,3 +1,7 @@
+## 2.2.6
+* Fixed Linux plugin build issue.
+* Updated dependencies for macOS plugin.
+
 ## 2.2.5
 * Updated barcode SDK for macOS to v9.6.20.
 * Replaced x86_64 with arm64 in macOS plugin.

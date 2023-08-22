@@ -23,6 +23,5 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
 
 # List of absolute paths to libraries that should be bundled with the plugin
 set(flutter_barcode_sdk_bundled_libraries
-  "${PROJECT_SOURCE_DIR}/lib/"
   PARENT_SCOPE
 )
