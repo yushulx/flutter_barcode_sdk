@@ -6,7 +6,7 @@ The Flutter barcode Qr reading SDK is a wrapper for [Dynamsoft Barcode Reader SD
 For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which is better than combining the [Flutter camera plugin](https://pub.dev/packages/camera) and the Flutter barcode SDK.
 
 ## Getting a License Key for Dynamsoft Barcode Reader
-[![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr)
+[![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
 
 ## Supported Platforms
 - **Android**
