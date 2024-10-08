@@ -1,7 +1,7 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The Flutter Barcode QR Reading SDK is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
+The Flutter Barcode QR Reading SDK is a wrapper for the [Dynamsoft Barcode Reader SDK v9.x](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
 
 For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
@@ -51,11 +51,6 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
   - Planet
   - Australian Post
   - UK Royal Mail
-
-## SDK Version Used for Different Platforms
-| Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.x      | 9.x  | 9.x     | 9.x    |9.x      | 9.x     |
 
 ## Build Configuration
 
@@ -114,7 +109,7 @@ To make the demo app work on macOS:
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.20/dist/dbr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.42/dist/dbr.js"></script>
 ```
 
 ## API Compatibility
