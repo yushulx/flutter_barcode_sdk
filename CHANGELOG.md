@@ -1,3 +1,6 @@
+## 2.2.7
+* Support AGP 8 for Android.
+
 ## 2.2.6
 * Fixed Linux plugin build issue.
 * Updated dependencies for macOS plugin.
