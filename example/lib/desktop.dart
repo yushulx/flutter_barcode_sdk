@@ -30,7 +30,7 @@ class _DesktopState extends State<Desktop> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
-    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
+    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
     await _barcodeReader.setLicense(
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
     await _barcodeReader.init();
@@ -171,7 +171,7 @@ class _DesktopState extends State<Desktop> {
 
                       ByteData? byteData = await image.toByteData(
                           format: ui.ImageByteFormat.rawRgba);
-                      
+
                       if (byteData == null) return;
                       List<BarcodeResult> results =
                           await _barcodeReader.decodeImageBuffer(

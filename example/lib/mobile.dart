@@ -54,7 +54,7 @@ class MobileState extends State<Mobile> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
-    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense?product=dbr
+    // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
     await _barcodeReader!.setLicense(
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
     await _barcodeReader!.init();
@@ -120,8 +120,8 @@ class MobileState extends State<Mobile> {
 
       _isScanAvailable = false;
 
-      _barcodeReader
-          !.decodeImageBuffer(
+      _barcodeReader!
+          .decodeImageBuffer(
               availableImage.planes[0].bytes,
               availableImage.width,
               availableImage.height,
@@ -242,7 +242,8 @@ class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
   final String barcodeResults;
 
-  const DisplayPictureScreen({super.key, required this.imagePath, required this.barcodeResults});
+  const DisplayPictureScreen(
+      {super.key, required this.imagePath, required this.barcodeResults});
 
   @override
   Widget build(BuildContext context) {

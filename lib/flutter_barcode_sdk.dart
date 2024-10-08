@@ -55,7 +55,7 @@ class FlutterBarcodeSdk {
   }
 
   /// Set Dynamsoft Barcode Reader License Key
-  /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense
+  /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
   Future<int> setLicense(String license) async {
     int ret = await _channel.invokeMethod('setLicense', {'license': license});
     return ret;
