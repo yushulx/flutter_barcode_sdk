@@ -134,7 +134,7 @@ class _WebState extends State<Web> {
                       }
 
                       final pickedFile =
-                          await picker.getImage(source: ImageSource.camera);
+                          await picker.pickImage(source: ImageSource.gallery);
 
                       setState(() {
                         if (pickedFile != null) {
