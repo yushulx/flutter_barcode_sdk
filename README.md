@@ -1,9 +1,9 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The Flutter barcode Qr reading SDK is a wrapper for [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It aims to cover Android, iOS, Web, Windows, Linux and macOS, supporting linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. The SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader SDK, including file decoding and image buffer decoding. The project is maintained by community contributors.
+The Flutter Barcode QR Reading SDK is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
 
-For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which is better than combining the [Flutter camera plugin](https://pub.dev/packages/camera) and the Flutter barcode SDK.
+For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
 ## Getting a License Key for Dynamsoft Barcode Reader
 [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
@@ -55,7 +55,7 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
 ## SDK Version Used for Different Platforms
 | Dynamsoft Barcode Reader      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| Version    | 9.6.20       | 9.6.21   | 9.6.20      | 9.6.20    |9.6.20      | 9.6.20     |
+| Version    | 9.x      | 9.x  | 9.x     | 9.x    |9.x      | 9.x     |
 
 ## Build Configuration
 
@@ -133,7 +133,7 @@ In `index.html`, include:
     
   ```dart
   _barcodeReader = FlutterBarcodeSdk();
-  await _barcodeReader.setLicense('DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
+  await _barcodeReader.setLicense('LICENSE-KEY');
   await _barcodeReader.init();
   ```
 
@@ -168,7 +168,7 @@ In `index.html`, include:
   await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
   ```
 
-- Get current barcode detection [parameters](https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest):
+- Get current barcode detection parameters:
     
   ```dart
   String params = await _barcodeReader.getParameters();
