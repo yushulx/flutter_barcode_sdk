@@ -1,3 +1,6 @@
+## 2.2.8
+* Upgrade Android/iOS native libraries to v9.6.40.
+
 ## 2.2.7
 * Support AGP 8 for Android.
 
