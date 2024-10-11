@@ -42,5 +42,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.dynamsoft:dynamsoftbarcodereader:9.6.20@aar'
+    implementation 'com.dynamsoft:dynamsoftbarcodereader:9.6.40@aar'
 }
