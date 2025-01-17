@@ -8,6 +8,7 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'license.dart';
 import 'scanner_screen.dart';
 
 class Web extends StatefulWidget {
@@ -32,7 +33,7 @@ class _WebState extends State<Web> {
 
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
-    await _barcodeReader!.setLicense('LICENSE-KEY');
+    await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
     await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
 

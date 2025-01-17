@@ -11,6 +11,8 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 
+import 'license.dart';
+
 class Mobile extends StatefulWidget {
   final CameraDescription camera;
 
@@ -55,7 +57,7 @@ class MobileState extends State<Mobile> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
-    await _barcodeReader!.setLicense('LICENSE-KEY');
+    await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
     await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
     // Get all current parameters.

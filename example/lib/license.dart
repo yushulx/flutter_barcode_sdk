@@ -1,0 +1,1 @@
+String LICENSE_KEY = 'LICENSE-KEY';

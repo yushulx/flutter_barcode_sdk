@@ -9,6 +9,8 @@ import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'dart:typed_data';
 
+import 'license.dart';
+
 class Desktop extends StatefulWidget {
   @override
   _DesktopState createState() => _DesktopState();
@@ -31,7 +33,7 @@ class _DesktopState extends State<Desktop> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
-    await _barcodeReader.setLicense('LICENSE-KEY');
+    await _barcodeReader.setLicense(LICENSE_KEY);
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
 
