@@ -1,17 +1,24 @@
 PODS:
+  - DCV (1.0.0)
   - file_selector_macos (0.0.1):
     - FlutterMacOS
-  - flutter_barcode_sdk (2.0.0):
+  - flutter_barcode_sdk (2.3.0):
+    - DCV
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - path_provider_macos (0.0.1):
+  - path_provider_foundation (0.0.1):
+    - Flutter
     - FlutterMacOS
 
 DEPENDENCIES:
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - flutter_barcode_sdk (from `Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
-  - path_provider_macos (from `Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos`)
+  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - DCV
 
 EXTERNAL SOURCES:
   file_selector_macos:
@@ -20,15 +27,16 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
-  path_provider_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos
+  path_provider_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
 
 SPEC CHECKSUMS:
-  file_selector_macos: ff6dc948d4ddd34e8602a1f60b7d0b4cc6051a47
-  flutter_barcode_sdk: b7367e2c9957f5d99375f3e568d170ebede67ff3
+  DCV: a0ff457169fe0e30a36bec2f359ccd3a18480be1
+  file_selector_macos: cc3858c981fe6889f364731200d6232dac1d812d
+  flutter_barcode_sdk: 9ecb4b8294db80d0b8362ec76cba038bb206d665
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  path_provider_macos: a0a3fd666cb7cd0448e936fb4abad4052961002b
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2

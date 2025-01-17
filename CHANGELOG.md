@@ -1,3 +1,6 @@
+## 2.3.0
+* Update SDK for macOS plugin.
+
 ## 2.2.8
 * Upgrade Android/iOS native libraries to v9.6.40.
 

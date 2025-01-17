@@ -39,12 +39,8 @@ class _DesktopState extends State<Desktop> {
     // Get all current parameters.
     // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
     String params = await _barcodeReader.getParameters();
-    // Convert parameters to a JSON object.
-    dynamic obj = json.decode(params);
-    // Modify parameters.
-    obj['ImageParameter']['DeblurLevel'] = 5;
     // Update the parameters.
-    int ret = await _barcodeReader.setParameters(json.encode(obj));
+    int ret = await _barcodeReader.setParameters(params);
     print('Parameter update: $ret');
   }
 

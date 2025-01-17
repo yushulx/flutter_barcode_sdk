@@ -1,14 +1,23 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The Flutter Barcode QR Reading SDK is a wrapper for the [Dynamsoft Barcode Reader SDK v9.x](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, etc. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
+The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
 
-For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
+> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
-## Getting a License Key for Dynamsoft Barcode Reader
+## **Table of Contents**
+1. [Getting a License Key](#getting-a-license-key)
+2. [Supported Platforms](#supported-platforms)
+3. [Supported Barcode Symbologies](#supported-barcode-symbologies)
+4. [Build Configuration](#build-configuration)
+5. [API Compatibility](#api-compatibility)
+6. [Usage](#usage)
+7. [Examples](#try-barcode-decoding-example)
+
+## **Getting a License Key**
 [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
 
-## Supported Platforms
+## **Supported Platforms**
 - **Android**
 - **iOS**
 - **Windows**
@@ -16,27 +25,28 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
 - **macOS**
 - **Web**
 
-## Supported Barcode Symbologies
-- Linear Barcodes (1D)
-  - Code 39 (including Code 39 Extended)
-  - Code 93
-  - Code 128
-  - Codabar
-  - Interleaved 2 of 5
-  - EAN-8
-  - EAN-13
-  - UPC-A
-  - UPC-E
-  - Industrial 2 of 5
+## **Supported Barcode Symbologies**
+### **Linear Barcodes (1D)**
+- Code 39 (including Code 39 Extended)
+- Code 93
+- Code 128
+- Codabar
+- Interleaved 2 of 5
+- EAN-8
+- EAN-13
+- UPC-A
+- UPC-E
+- Industrial 2 of 5
 
-- 2D Barcodes
-  - QR Code (including Micro QR Code and Model 1)
-  - Data Matrix
-  - PDF417 (including Micro PDF417)
-  - Aztec Code
-  - MaxiCode (mode 2-5)
-  - DotCode
+### **2D Barcodes**
+- QR Code (including Micro QR Code and Model 1)
+- Data Matrix
+- PDF417 (including Micro PDF417)
+- Aztec Code
+- MaxiCode (mode 2-5)
+- DotCode
 
+### **Others**
 - Patch Code
 - GS1 Composite Code
 - GS1 DataBar
@@ -52,17 +62,17 @@ For live camera scenarios, it is recommended to use the official [Dynamsoft Capt
   - Australian Post
   - UK Royal Mail
 
-## Build Configuration
+## **Build Configuration**
 
-### Android
-Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
+### **Android**
+Set the minimum SDK version in `android/app/build.gradle`.
 
 ```
 minSdkVersion 21
 ```
 
 ### iOS
-Add the keys to `ios/Runner/Info.plist` to make camera work:
+Add camera usage descriptions to `ios/Runner/Info.plist`:
 
 ```
 <key>NSCameraUsageDescription</key>
@@ -101,9 +111,12 @@ To make the demo app work on macOS:
   </plist>
   ```    
 
-- Import `DynamsoftBarcodeReader.h` to the bridging header file.
-    
-  ![macOS bridging header](https://www.dynamsoft.com/codepool/img/2021/flutter/macos-bridging-barcode-header.png)
+- If `DCV` package is not found, run the command:
+
+  ```bash
+  pod repo add master https://github.com/CocoaPods/Specs
+  ```
+  The command manually adds the CocoaPods `master` spec repository to the local machine to resolve the issue.
 
 ### Web
 In `index.html`, include:
@@ -112,7 +125,7 @@ In `index.html`, include:
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.42/dist/dbr.js"></script>
 ```
 
-## API Compatibility
+## **API Compatibility**
 | Methods      | Android |    iOS | Windows | Linux | macOS | Web|
 | ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
 | `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:    |
@@ -123,8 +136,8 @@ In `index.html`, include:
 | `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
 | `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
 
-## Usage
-- Initialize Flutter barcode SDK and set license key:
+## **Usage**
+- Initialize Flutter barcode SDK and set the license key:
     
   ```dart
   _barcodeReader = FlutterBarcodeSdk();
@@ -167,23 +180,16 @@ In `index.html`, include:
     
   ```dart
   String params = await _barcodeReader.getParameters();
-  // Convert parameters to a JSON object.
-  dynamic obj = jsonDecode(params);
-  // Modify parameters.
-  if (obj['ImageParameter'] != null) {
-    obj['ImageParameter']['DeblurLevel'] = 5;
-  } else
-    obj['deblurLevel'] = 5;
   ```
 
 - Set barcode detection parameters:
     
   ```dart
-  int ret = await _barcodeReader.setParameters(json.encode(obj));
+  int ret = await _barcodeReader.setParameters(params);
   ```
 
 
-## Try Barcode Decoding Example
+## **Try Barcode Decoding Example**
 
 ### Mobile
 The example allows users to scan barcode Qr code via the camera video stream and read barcode QRCode by a static picture.
@@ -193,11 +199,11 @@ cd example
 flutter run -d <device>
 ```
 
-Video Scan
+**Video Scan**
 
 ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-barcode-scanner-camera.gif)
 
-Picture Scan
+**Picture Scan**
 
 ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 

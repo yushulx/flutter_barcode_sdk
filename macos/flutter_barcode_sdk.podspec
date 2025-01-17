@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_barcode_sdk'
-  s.version          = '2.0.0'
+  s.version          = '2.3.0'
   s.summary          = 'A flutter plugin of Dynamsoft Barcode Reader.'
   s.description      = <<-DESC
   A flutter plugin of Dynamsoft Barcode Reader.
@@ -15,9 +15,15 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
-
-  s.platform = :osx, '10.11'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
-  s.vendored_libraries = ['lib/libDynamsoftBarcodeReader.dylib', 'lib/libDynamsoftLicenseClient.dylib', 'lib/libDynamicPdf.dylib']
+  s.platform = :osx, '10.11'
+  s.dependency 'DCV'
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    # 'FRAMEWORK_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/frameworks"',
+    # 'OTHER_LDFLAGS' => '-framework DCV',
+    # 'LD_RUNPATH_SEARCH_PATHS' => '@executable_path/../Frameworks'
+  }
+  
+  # s.vendored_frameworks = ['frameworks/DCV.framework']
 end
