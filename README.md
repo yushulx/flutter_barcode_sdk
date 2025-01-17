@@ -64,7 +64,7 @@ The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](
 
 ## **Build Configuration**
 
-### **Android**
+### Android
 Set the minimum SDK version in `android/app/build.gradle`.
 
 ```
