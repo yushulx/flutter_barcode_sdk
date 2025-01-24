@@ -24,6 +24,7 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     FlutterBarcodeSdkPlugin *self,
     FlMethodCall *method_call)
 {
+  bool isAsync = false;
   g_autoptr(FlMethodResponse) response = nullptr;
 
   const gchar *method = fl_method_call_get_name(method_call);
@@ -92,6 +93,7 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
   }
   else if (strcmp(method, "decodeImageBuffer") == 0)
   {
+    isAsync = true;
     if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP)
     {
       return;
@@ -132,8 +134,7 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     }
     int format = fl_value_get_int(value);
 
-    g_autoptr(FlValue) results = self->manager->DecodeImageBuffer(bytes, width, height, stride, format);
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(results));
+    self->manager->DecodeImageBuffer(method_call, bytes, width, height, stride, format);
   }
   else if (strcmp(method, "setBarcodeFormats") == 0)
   {
@@ -180,7 +181,10 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
 
-  fl_method_call_respond(method_call, response, nullptr);
+  if (!isAsync)
+  {
+    fl_method_call_respond(method_call, response, nullptr);
+  }
 }
 
 static void flutter_barcode_sdk_plugin_dispose(GObject *object)

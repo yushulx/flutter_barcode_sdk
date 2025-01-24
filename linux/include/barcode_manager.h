@@ -1,8 +1,9 @@
 #ifndef BARCODE_MANAGER_H_
 #define BARCODE_MANAGER_H_
 
-#include "DynamsoftCommon.h"
-#include "DynamsoftBarcodeReader.h"
+#include "DynamsoftCaptureVisionRouter.h"
+#include "DynamsoftUtility.h"
+#include "template.h"
 
 #include <vector>
 #include <iostream>
@@ -12,102 +13,226 @@
 #include <gtk/gtk.h>
 
 using namespace std;
+using namespace dynamsoft::license;
+using namespace dynamsoft::cvr;
 using namespace dynamsoft::dbr;
+using namespace dynamsoft::utility;
+using namespace dynamsoft::basic_structures;
+
+class MyCapturedResultReceiver : public CCapturedResultReceiver
+{
+public:
+    vector<CDecodedBarcodesResult *> results;
+
+public:
+    void OnDecodedBarcodesReceived(CDecodedBarcodesResult *pResult) override
+    {
+        pResult->Retain();
+        results.push_back(pResult);
+    }
+};
+
+class MyImageSourceStateListener : public CImageSourceStateListener
+{
+private:
+    CCaptureVisionRouter *m_router;
+    MyCapturedResultReceiver *m_receiver;
+    FlMethodCall *m_method_call;
+
+public:
+    MyImageSourceStateListener(CCaptureVisionRouter *router, MyCapturedResultReceiver *receiver)
+    {
+        m_router = router;
+        m_receiver = receiver;
+    }
+    void OnImageSourceStateReceived(ImageSourceState state) override
+    {
+        if (state == ISS_EXHAUSTED)
+        {
+            m_router->StopCapturing();
+
+            vector<CDecodedBarcodesResult *> results = m_router->results;
+
+            FlValue *out = fl_value_new_list();
+
+            for (int i = 0; i < results.size(); i++)
+            {
+                CDecodedBarcodesResult *result = results[i];
+                if (!result || result->GetItemsCount() == 0)
+                {
+                    continue;
+                }
+
+                int barcodeResultItemCount = result->GetItemsCount();
+
+                for (int j = 0; j < barcodeResultItemCount; j++)
+                {
+                    const CBarcodeResultItem *barcodeResultItem = result->GetItem(j);
+                    const char *format = barcodeResultItem->GetFormatString();
+                    const char *text = barcodeResultItem->GetText();
+                    int angle = barcodeResultItem->GetAngle();
+                    CPoint *points = barcodeResultItem->GetLocation().points;
+                    unsigned char *raw = barcodeResultItem->GetBytes();
+
+                    FlValue *map = fl_value_new_map();
+                    fl_value_set_string_take(map, "format", format);
+                    fl_value_set_string_take(map, "text", text);
+                    fl_value_set_string_take(map, "x1", points[0][0]);
+                    fl_value_set_string_take(map, "y1", points[0][1]);
+                    fl_value_set_string_take(map, "x2", points[1][0]);
+                    fl_value_set_string_take(map, "y2", points[1][1]);
+                    fl_value_set_string_take(map, "x3", points[2][0]);
+                    fl_value_set_string_take(map, "y3", points[2][1]);
+                    fl_value_set_string_take(map, "x4", points[3][0]);
+                    fl_value_set_string_take(map, "y4", points[3][1]);
+                    fl_value_set_string_take(map, "angle", angle);
+                    fl_value_set_string_take(map, "barcodeBytes", fl_value_new_uint8_list(raw, barcodeResultItem->GetBytesLength()));
+                    fl_value_append_take(out, map);
+                }
+
+                result->Release();
+            }
+
+            fl_method_call_respond(m_method_call, fl_method_success_response_new(out), nullptr);
+        }
+    }
+
+    void SetMethodCall(FlMethodCall *method_call)
+    {
+        m_method_call = method_call;
+    }
+};
 
 class BarcodeManager
 {
 public:
     ~BarcodeManager()
     {
-        if (reader != NULL)
+        if (handler != NULL)
         {
-            delete reader;
-            reader = NULL;
+            delete handler;
+            handler = NULL;
+        }
+
+        if (listener)
+        {
+            delete listener;
+            listener = NULL;
+        }
+
+        if (fileFetcher)
+        {
+            delete fileFetcher;
+            fileFetcher = NULL;
+        }
+
+        if (capturedReceiver)
+        {
+            delete capturedReceiver;
+            capturedReceiver = NULL;
         }
     };
 
-    FlValue *WrapResults()
+    FlValue *WrapResults(CCapturedResult *result)
     {
         FlValue *out = fl_value_new_list();
-        if (reader == NULL)
+        if (handler == NULL)
             return out;
 
-        TextResultArray *results = NULL;
-        reader->GetAllTextResults(&results);
-
-        if (results == NULL || results->resultsCount == 0)
+        CDecodedBarcodesResult *barcodeResult = result->GetDecodedBarcodesResult();
+        if (!barcodeResult || barcodeResult->GetItemsCount() == 0)
         {
-            // printf("No barcode found.\n");
-        }
-        else
-        {
-            for (int index = 0; index < results->resultsCount; index++)
-            {
-                FlValue *map = fl_value_new_map();
-                fl_value_set_string_take(map, "format", fl_value_new_string(results->results[index]->barcodeFormatString));
-                // fl_value_set_string_take (map, "text", fl_value_new_string(results->results[index]->barcodeText));
-                fl_value_set_string_take(map, "x1", fl_value_new_int(results->results[index]->localizationResult->x1));
-                fl_value_set_string_take(map, "y1", fl_value_new_int(results->results[index]->localizationResult->y1));
-                fl_value_set_string_take(map, "x2", fl_value_new_int(results->results[index]->localizationResult->x2));
-                fl_value_set_string_take(map, "y2", fl_value_new_int(results->results[index]->localizationResult->y2));
-                fl_value_set_string_take(map, "x3", fl_value_new_int(results->results[index]->localizationResult->x3));
-                fl_value_set_string_take(map, "y3", fl_value_new_int(results->results[index]->localizationResult->y3));
-                fl_value_set_string_take(map, "x4", fl_value_new_int(results->results[index]->localizationResult->x4));
-                fl_value_set_string_take(map, "y4", fl_value_new_int(results->results[index]->localizationResult->y4));
-                fl_value_set_string_take(map, "angle", fl_value_new_int(results->results[index]->localizationResult->angle));
-                fl_value_set_string_take(map, "barcodeBytes", fl_value_new_uint8_list(results->results[index]->barcodeBytes, results->results[index]->barcodeBytesLength));
-                fl_value_append_take(out, map);
-            }
+            return out;
         }
 
-        CBarcodeReader::FreeTextResults(&results);
+        int barcodeResultItemCount = barcodeResult->GetItemsCount();
+
+        for (int j = 0; j < barcodeResultItemCount; j++)
+        {
+            const CBarcodeResultItem *barcodeResultItem = barcodeResult->GetItem(j);
+            const char *format = barcodeResultItem->GetFormatString();
+            const char *text = barcodeResultItem->GetText();
+            int angle = barcodeResultItem->GetAngle();
+            CPoint *points = barcodeResultItem->GetLocation().points;
+            unsigned char *raw = barcodeResultItem->GetBytes();
+
+            FlValue *map = fl_value_new_map();
+            fl_value_set_string_take(map, "format", format);
+            fl_value_set_string_take(map, "text", text);
+            fl_value_set_string_take(map, "x1", points[0][0]);
+            fl_value_set_string_take(map, "y1", points[0][1]);
+            fl_value_set_string_take(map, "x2", points[1][0]);
+            fl_value_set_string_take(map, "y2", points[1][1]);
+            fl_value_set_string_take(map, "x3", points[2][0]);
+            fl_value_set_string_take(map, "y3", points[2][1]);
+            fl_value_set_string_take(map, "x4", points[3][0]);
+            fl_value_set_string_take(map, "y4", points[3][1]);
+            fl_value_set_string_take(map, "angle", angle);
+            fl_value_set_string_take(map, "barcodeBytes", fl_value_new_uint8_list(raw, barcodeResultItem->GetBytesLength()));
+            fl_value_append_take(out, map);
+        }
+
+        barcodeResult->Release();
+        result->Release();
         return out;
     }
 
     int Init()
     {
-        reader = new CBarcodeReader();
+        handler = new CCaptureVisionRouter;
+        char errorMsgBuffer[256];
+        int ret = handler->InitSettings(jsonString.c_str(), errorMsgBuffer, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMsgBuffer);
+        }
+
+        fileFetcher = new CFileFetcher();
+        handler->SetInput(fileFetcher);
+
+        capturedReceiver = new MyCapturedResultReceiver;
+        handler->AddResultReceiver(capturedReceiver);
+
+        listener = new MyImageSourceStateListener(handler, capturedReceiver);
+        handler->AddImageSourceStateListener(listener);
+
         return 0;
     }
 
     int SetLicense(const char *license)
     {
-        int ret = CBarcodeReader::InitLicense(license);
+        char errorMsgBuffer[512];
+        int ret = CLicenseManager::InitLicense(license, errorMsgBuffer, 512);
+        if (ret)
+        {
+            printf("InitLicense: %s\n", errorMsgBuffer);
+        }
         return ret;
     }
 
     FlValue *DecodeFile(const char *filename)
     {
         FlValue *out = fl_value_new_list();
-        if (reader == NULL)
+        if (handler == NULL)
             return out;
 
-        int ret = reader->DecodeFile(filename, "");
-
-        if (ret == DBRERR_FILE_NOT_FOUND)
-        {
-            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
-            return out;
-        }
-
-        return WrapResults();
+        CCapturedResult *result = handler->Capture(filename, "");
+        return WrapResults(result);
     }
 
     FlValue *DecodeFileBytes(const unsigned char *bytes, int size)
     {
         FlValue *out = fl_value_new_list();
-        if (reader == NULL)
+        if (handler == NULL)
             return out;
-
-        reader->DecodeFileInMemory(bytes, size, "");
-        return WrapResults();
+        CCapturedResult *result = handler->Capture(bytes, size);
+        return WrapResults(result);
     }
 
-    FlValue *DecodeImageBuffer(const unsigned char *buffer, int width, int height, int stride, int format)
+    void DecodeImageBuffer(FlMethodCall *method_call, const unsigned char *buffer, int width, int height, int stride, int format)
     {
-        FlValue *out = fl_value_new_list();
-        if (reader == NULL)
-            return out;
+        if (handler == NULL)
+            return;
 
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch (format)
@@ -153,24 +278,34 @@ public:
             break;
         }
 
-        reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
+        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat);
+        fileFetcher->SetFile(imageData);
+        delete imageData, imageData = NULL;
 
-        return WrapResults();
+        char errorMsg[512] = {0};
+        listener->SetMethodCall(method_call);
+        int errorCode = handler->StartCapturing("", true, errorMsg, 512);
+        if (errorCode != 0)
+        {
+            printf("StartCapturing: %s\n", errorMsg);
+        }
     }
 
-    int SetFormats(int formats)
+    int SetFormats(unsigned long long formats)
     {
         if (reader == NULL)
             return -1;
 
-        int ret = 0;
-        char sError[512];
-        PublicRuntimeSettings *runtimeSettings = new PublicRuntimeSettings();
-        reader->GetRuntimeSettings(runtimeSettings);
-        runtimeSettings->barcodeFormatIds = formats;
-        reader->UpdateRuntimeSettings(runtimeSettings, sError, 512);
-        delete runtimeSettings;
+        SimplifiedCaptureVisionSettings pSettings = {};
+        handler->GetSimplifiedSettings("", &pSettings);
+        pSettings.barcodeSettings.barcodeFormatIds = formats;
 
+        char errorMessage[256];
+        int ret = handler->UpdateSettings("", &pSettings, errorMessage, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMessage);
+        }
         return ret;
     }
 
@@ -179,25 +314,31 @@ public:
         if (reader == NULL)
             return fl_value_new_string("");
 
-        char *content = NULL;
-        reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
+        char *content = handler->OutputSettings("");
         FlValue *params = fl_value_new_string((const char *)content);
-        reader->FreeSettingsString(&content);
+        CCaptureVisionRouter::FreeString(content);
         return params;
     }
 
     FlValue *SetParameters(const char *params)
     {
-        if (reader == NULL)
+        if (handler == NULL)
             return fl_value_new_int(-1);
 
         char errorMessage[256];
-        int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
+        int ret = handler->InitSettings(params, errorMessage, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMessage);
+        }
         return fl_value_new_int(ret);
     }
 
 private:
-    CBarcodeReader *reader;
+    CCaptureVisionRouter *handler;
+    CFileFetcher *fileFetcher;
+    CImageSourceStateListener *listener;
+    MyCapturedResultReceiver *capturedReceiver;
 };
 
 #endif
