@@ -50,7 +50,7 @@ class OverlayPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       textPainter.layout(minWidth: 0, maxWidth: size.width);
-      textPainter.paint(canvas, Offset(minX, minY));
+      textPainter.paint(canvas, Offset(minX, minY - 30));
     }
   }
 

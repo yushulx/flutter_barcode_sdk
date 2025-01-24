@@ -173,7 +173,7 @@ In `index.html`, include:
 - Set barcode formats:
 
   ```dart
-  await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+  int ret = await _barcodeReader.setBarcodeFormats(BarcodeFormat.CODE_39 | BarcodeFormat.CODABAR | BarcodeFormat.QR_CODE | BarcodeFormat.DATAMATRIX);
   ```
 
 - Get current barcode detection parameters:
@@ -191,50 +191,27 @@ In `index.html`, include:
 
 ## **Try Barcode Decoding Example**
 
-### Mobile
-The example allows users to scan barcode Qr code via the camera video stream and read barcode QRCode by a static picture.
+### Android/iOS
+The example demonstrates how to use the Flutter Barcode SDK to read barcodes from an image file and decode the barcode image buffer from the camera stream on Android and iOS.
 
 ```
 cd example
 flutter run -d <device>
 ```
 
-**Video Scan**
+- **Camera Stream**
 
-![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-barcode-scanner-camera.gif)
+    ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-barcode-scanner-camera.gif)
 
-**Picture Scan**
+- **Image File**
 
-![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
+    ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
 
 
-For building Android release app, configure `build.gradle` and corresponding proguard file:
+### Windows, Linux and macOS
+Run the desktop barcode reader and scanner application on Windows, Linux or macOS:
 
-**build.gradle**
-```
-buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-```
-
-**proguard-rules.pro**
-
-```
--keep class com.dynamsoft.dbr.** { *; }
-```
-
-### Windows, Linux and macOS Desktop
-Input a valid image path for barcode decoding.
-
-![flutter windows barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-desktop-barcode-reader.png)
-
-```
+```bash
 cd example
 # Windows
 flutter run -d windows
@@ -246,9 +223,18 @@ flutter run -d linux
 flutter run -d macos
 ```
 
+- **Image File**
+
+    ![flutter desktop barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-reader-windows-linux-macos.png)
+
+- **Camera Stream**
+
+    ![flutter desktop barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-windows-linux-macos.png)
+
+
 ### Web Browser
 
-```
+```bash
 cd example
 flutter run -d chrome
 ```

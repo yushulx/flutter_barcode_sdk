@@ -4,8 +4,10 @@ import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 String getBarcodeResults(List<BarcodeResult> results) {
   StringBuffer sb = new StringBuffer();
   for (BarcodeResult result in results) {
+    sb.write('Format: ');
     sb.write(result.format);
     sb.write("\n");
+    sb.write('Text: ');
     sb.write(result.text);
     sb.write("\n");
     sb.write((result.barcodeBytes).toString());

@@ -4,7 +4,6 @@
 // This must be included before many other Windows headers.
 #include <windows.h>
 
-// For getPlatformVersion; remove unless needed for your plugin implementation.
 #include <VersionHelpers.h>
 
 #include <flutter/method_channel.h>
@@ -51,7 +50,8 @@ namespace
     auto plugin = std::make_unique<FlutterBarcodeSdkPlugin>();
 
     channel->SetMethodCallHandler(
-        [plugin_pointer = plugin.get()](const auto &call, auto result) {
+        [plugin_pointer = plugin.get()](const auto &call, auto result)
+        {
           plugin_pointer->HandleMethodCall(call, std::move(result));
         });
 
@@ -74,27 +74,7 @@ namespace
   {
     const auto *arguments = std::get_if<EncodableMap>(method_call.arguments());
 
-    if (method_call.method_name().compare("getPlatformVersion") == 0)
-    {
-      std::ostringstream version_stream;
-      version_stream << "Windows ";
-      if (IsWindows10OrGreater())
-      {
-        version_stream << "10+";
-      }
-      else if (IsWindows8OrGreater())
-      {
-        version_stream << "8";
-      }
-      else if (IsWindows7OrGreater())
-      {
-        version_stream << "7";
-      }
-      version_stream << ". Dynamsoft Barcode Reader version: ";
-      version_stream << manager->GetVersion();
-      result->Success(EncodableValue(version_stream.str()));
-    }
-    else if (method_call.method_name().compare("init") == 0)
+    if (method_call.method_name().compare("init") == 0)
     {
       int ret = manager->Init();
 
@@ -146,7 +126,7 @@ namespace
           bytes = std::get<vector<unsigned char>>(bytes_it->second);
         }
 
-        results = manager->DecodeFileBytes(reinterpret_cast<unsigned char*>(bytes.data()), (int)bytes.size());
+        results = manager->DecodeFileBytes(reinterpret_cast<unsigned char *>(bytes.data()), (int)bytes.size());
       }
 
       result->Success(results);
@@ -188,21 +168,21 @@ namespace
         {
           format = std::get<int>(format_it->second);
         }
-        manager->DecodeImageBuffer(result, reinterpret_cast<unsigned char*>(bytes.data()), width, height, stride, format);
+        manager->DecodeImageBuffer(result, reinterpret_cast<unsigned char *>(bytes.data()), width, height, stride, format);
       }
 
       // result->Success(results);
     }
     else if (method_call.method_name().compare("setBarcodeFormats") == 0)
     {
-      int formats = 0;
+      unsigned long long formats = 0;
       int ret = 0;
       if (arguments)
       {
         auto formts_it = arguments->find(EncodableValue("formats"));
         if (formts_it != arguments->end())
         {
-          formats = std::get<int>(formts_it->second);
+          formats = static_cast<unsigned long long>(std::get<int>(formts_it->second));
         }
 
         ret = manager->SetFormats(formats);

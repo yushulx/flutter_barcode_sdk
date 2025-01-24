@@ -25,8 +25,6 @@ class FlutterBarcodeSdkWeb {
   /// https://flutter.dev/go/federated-plugins
   Future<dynamic> handleMethodCall(MethodCall call) async {
     switch (call.method) {
-      case 'getPlatformVersion':
-        return getPlatformVersion();
       case 'decodeFile':
         return decodeFile(call.arguments['filename']);
       case 'setBarcodeFormats':
@@ -53,12 +51,6 @@ class FlutterBarcodeSdkWeb {
               'flutter_barcode_sdk for web doesn\'t implement \'${call.method}\'',
         );
     }
-  }
-
-  /// Returns a [String] containing the version of the platform.
-  Future<String> getPlatformVersion() {
-    final version = html.window.navigator.userAgent;
-    return Future.value(version);
   }
 
   /// Decode barcodes from an image file.

@@ -47,9 +47,6 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
-            case "getPlatformVersion":
-                result.success("Android " + android.os.Build.VERSION.RELEASE);
-                break;
             case "init": {
                 int ret = mBarcodeManager.init();
                 result.success(ret);

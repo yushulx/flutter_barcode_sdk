@@ -64,36 +64,97 @@ List<BarcodeResult> convertResults(List<Map<dynamic, dynamic>> ret) {
 
 /// Supported barcode formats: https://www.dynamsoft.com/barcode-reader/parameters/enum/format-enums.html?ver=latest#barcodeformat
 class BarcodeFormat {
-  static const int ALL = -31457281;
-  static const int ONED = 0x001007FF;
+  static const int ONED = 0x003007FF;
+
   static const int GS1_DATABAR = 0x0003F800;
-  static const int NULL = 0x00;
+
   static const int CODE_39 = 0x1;
+
   static const int CODE_128 = 0x2;
+
   static const int CODE_93 = 0x4;
+
   static const int CODABAR = 0x8;
+
   static const int ITF = 0x10;
+
   static const int EAN_13 = 0x20;
+
   static const int EAN_8 = 0x40;
+
   static const int UPC_A = 0x80;
+
   static const int UPC_E = 0x100;
+
   static const int INDUSTRIAL_25 = 0x200;
+
   static const int CODE_39_EXTENDED = 0x400;
+
   static const int GS1_DATABAR_OMNIDIRECTIONAL = 0x800;
+
   static const int GS1_DATABAR_TRUNCATED = 0x1000;
+
   static const int GS1_DATABAR_STACKED = 0x2000;
+
   static const int GS1_DATABAR_STACKED_OMNIDIRECTIONAL = 0x4000;
+
   static const int GS1_DATABAR_EXPANDED = 0x8000;
+
   static const int GS1_DATABAR_EXPANDED_STACKED = 0x10000;
+
   static const int GS1_DATABAR_LIMITED = 0x20000;
+
   static const int PATCHCODE = 0x00040000;
+
+  static const int CODE_32 = 0x1000000;
+
   static const int PDF417 = 0x02000000;
+
   static const int QR_CODE = 0x04000000;
+
   static const int DATAMATRIX = 0x08000000;
+
   static const int AZTEC = 0x10000000;
+
   static const int MAXICODE = 0x20000000;
+
   static const int MICRO_QR = 0x40000000;
+
   static const int MICRO_PDF417 = 0x00080000;
-  static const int GS1_COMPOSITE = -2147483648;
+
+  static const int GS1_COMPOSITE = 0x80000000;
+
   static const int MSI_CODE = 0x100000;
+
+  static const int CODE_11 = 0x200000;
+
+  static const int TWO_DIGIT_ADD_ON = 0x400000;
+
+  static const int FIVE_DIGIT_ADD_ON = 0x800000;
+
+  static const int MATRIX_25 = 0x1000000000;
+
+  static const int POSTALCODE = 0x3F0000000000000;
+
+  static const int NONSTANDARD_BARCODE = 0x100000000;
+
+  static const int USPSINTELLIGENTMAIL = 0x10000000000000;
+
+  static const int POSTNET = 0x20000000000000;
+
+  static const int PLANET = 0x40000000000000;
+
+  static const int AUSTRALIANPOST = 0x80000000000000;
+
+  static const int RM4SCC = 0x100000000000000;
+
+  static const int KIX = 0x200000000000000;
+
+  static const int DOTCODE = 0x200000000;
+
+  static const int PHARMACODE_ONE_TRACK = 0x400000000;
+
+  static const int PHARMACODE_TWO_TRACK = 0x800000000;
+
+  static const int PHARMACODE = 0xC00000000;
 }

@@ -37,8 +37,6 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, DBRLicenseVe
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "getPlatformVersion":
-            result("iOS " + UIDevice.current.systemVersion)
         case "init":
             let ret = self.initObj()
             result(ret)

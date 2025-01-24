@@ -76,7 +76,9 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "deque": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     },
     "java.configuration.updateBuildConfiguration": "automatic"
 }

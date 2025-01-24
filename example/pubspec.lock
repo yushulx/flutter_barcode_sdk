@@ -189,6 +189,14 @@ packages:
       relative: true
     source: path
     version: "2.3.0"
+  flutter_lite_camera:
+    dependency: "direct main"
+    description:
+      name: flutter_lite_camera
+      sha256: "40b03b0eabbb3faf2f92ee3e314fe038209713dbf182730c7dda09a3000d4f88"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -525,5 +533,5 @@ packages:
     source: hosted
     version: "1.1.0"
 sdks:
-  dart: ">=3.5.0 <4.0.0"
+  dart: ">=3.6.0 <4.0.0"
   flutter: ">=3.24.0"

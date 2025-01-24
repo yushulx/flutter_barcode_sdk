@@ -17,7 +17,6 @@ class Web extends StatefulWidget {
 }
 
 class _WebState extends State<Web> {
-  String _platformVersion = 'Unknown';
   FlutterBarcodeSdk? _barcodeReader;
   String? _file;
   String _barcodeResults = '';
@@ -27,7 +26,6 @@ class _WebState extends State<Web> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
     initBarcodeSDK();
   }
 
@@ -35,30 +33,13 @@ class _WebState extends State<Web> {
     _barcodeReader = FlutterBarcodeSdk();
     await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
-    await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
+    // await _barcodeReader!.setBarcodeFormats(BarcodeFormat.CODE_39 |
+    //     BarcodeFormat.CODABAR |
+    //     BarcodeFormat.QR_CODE |
+    //     BarcodeFormat.DATAMATRIX);
 
     setState(() {
       _isSDKLoaded = true;
-    });
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterBarcodeSdk.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
     });
   }
 
@@ -94,15 +75,6 @@ class _WebState extends State<Web> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
-        Container(
-          height: 100,
-          child: Row(children: <Widget>[
-            Text(
-              _platformVersion,
-              style: TextStyle(fontSize: 14, color: Colors.black),
-            )
-          ]),
-        ),
         Expanded(
           child: SingleChildScrollView(
             child: Column(

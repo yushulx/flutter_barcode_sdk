@@ -28,6 +28,7 @@ dependencies:
   path:
   image_picker:
   file_selector:
+  flutter_lite_camera: ^0.0.1
 
 dev_dependencies:
   flutter_test:

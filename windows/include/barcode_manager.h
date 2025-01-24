@@ -1,9 +1,9 @@
 #ifndef BARCODE_MANAGER_H_
 #define BARCODE_MANAGER_H_
 
-#include "DynamsoftCommon.h"
-#include "DynamsoftBarcodeReader.h"
-
+#include "DynamsoftCaptureVisionRouter.h"
+#include "DynamsoftUtility.h"
+#include "template.h"
 
 #include <vector>
 #include <iostream>
@@ -18,39 +18,43 @@
 #include <functional>
 
 using namespace std;
+using namespace dynamsoft::license;
+using namespace dynamsoft::cvr;
 using namespace dynamsoft::dbr;
+using namespace dynamsoft::utility;
+using namespace dynamsoft::basic_structures;
+
+using flutter::EncodableList;
 using flutter::EncodableMap;
 using flutter::EncodableValue;
-using flutter::EncodableList;
 
 class Task
-  {
-  public:
-      std::function<void()> func;
-      unsigned char* buffer;
-  };
+{
+public:
+    std::function<void()> func;
+    unsigned char *buffer;
+};
 
-  class WorkerThread
-  {
-  public:
-      std::mutex m;
-      std::condition_variable cv;
-      std::queue<Task> tasks = {};
-      volatile bool running;
+class WorkerThread
+{
+public:
+    std::mutex m;
+    std::condition_variable cv;
+    std::queue<Task> tasks = {};
+    volatile bool running;
     std::thread t;
-  };
+};
 
-class BarcodeManager {
-    public:
-    
-
-    ~BarcodeManager() 
+class BarcodeManager
+{
+public:
+    ~BarcodeManager()
     {
         clear();
-        if (reader != NULL)
+        if (handler != NULL)
         {
-            delete reader;
-            reader = NULL;
+            delete handler;
+            handler = NULL;
         }
     };
 
@@ -72,7 +76,7 @@ class BarcodeManager {
         {
             std::unique_lock<std::mutex> lk(worker->m);
             worker->running = false;
-            
+
             clearTasks();
 
             worker->cv.notify_one();
@@ -85,45 +89,48 @@ class BarcodeManager {
         }
     }
 
-    const char* GetVersion() 
-    {
-        return DBR_GetVersion();
-    }
-
-    EncodableList WrapResults() 
+    EncodableList WrapResults(CCapturedResult *result)
     {
         EncodableList out;
-        if (reader == NULL) return out;
-        TextResultArray *results = NULL;
-        reader->GetAllTextResults(&results);
-            
-        if (results == NULL || results->resultsCount == 0)
+        if (handler == NULL)
+            return out;
+
+        CDecodedBarcodesResult *barcodeResult = result->GetDecodedBarcodesResult();
+        if (!barcodeResult || barcodeResult->GetItemsCount() == 0)
         {
-            // printf("No barcode found.\n");
-        }
-        else 
-        {
-            for (int index = 0; index < results->resultsCount; index++)
-            {
-                EncodableMap map;
-                map[EncodableValue("format")] = results->results[index]->barcodeFormatString;
-                // map[EncodableValue("text")] = results->results[index]->barcodeText;
-                map[EncodableValue("x1")] = results->results[index]->localizationResult->x1;
-                map[EncodableValue("y1")] = results->results[index]->localizationResult->y1;
-                map[EncodableValue("x2")] = results->results[index]->localizationResult->x2;
-                map[EncodableValue("y2")] = results->results[index]->localizationResult->y2;
-                map[EncodableValue("x3")] = results->results[index]->localizationResult->x3;
-                map[EncodableValue("y3")] = results->results[index]->localizationResult->y3;
-                map[EncodableValue("x4")] = results->results[index]->localizationResult->x4;
-                map[EncodableValue("y4")] = results->results[index]->localizationResult->y4;
-                map[EncodableValue("angle")] = results->results[index]->localizationResult->angle;
-                std::vector<uint8_t> rawBytes(results->results[index]->barcodeBytes, results->results[index]->barcodeBytes + results->results[index]->barcodeBytesLength);
-                map[EncodableValue("barcodeBytes")] = rawBytes;
-                out.push_back(map);
-            }
+            return out;
         }
 
-        CBarcodeReader::FreeTextResults(&results);
+        int barcodeResultItemCount = barcodeResult->GetItemsCount();
+
+        for (int j = 0; j < barcodeResultItemCount; j++)
+        {
+            const CBarcodeResultItem *barcodeResultItem = barcodeResult->GetItem(j);
+            const char *format = barcodeResultItem->GetFormatString();
+            const char *text = barcodeResultItem->GetText();
+            int angle = barcodeResultItem->GetAngle();
+            CPoint *points = barcodeResultItem->GetLocation().points;
+            unsigned char *raw = barcodeResultItem->GetBytes();
+
+            EncodableMap map;
+            map[EncodableValue("format")] = format;
+            map[EncodableValue("text")] = text;
+            map[EncodableValue("x1")] = points[0][0];
+            map[EncodableValue("y1")] = points[0][1];
+            map[EncodableValue("x2")] = points[1][0];
+            map[EncodableValue("y2")] = points[1][1];
+            map[EncodableValue("x3")] = points[2][0];
+            map[EncodableValue("y3")] = points[2][1];
+            map[EncodableValue("x4")] = points[3][0];
+            map[EncodableValue("y4")] = points[3][1];
+            map[EncodableValue("angle")] = angle;
+            std::vector<uint8_t> rawBytes(raw, raw + barcodeResultItem->GetBytesLength());
+            map[EncodableValue("barcodeBytes")] = rawBytes;
+            out.push_back(map);
+        }
+
+        barcodeResult->Release();
+        result->Release();
         return out;
     }
 
@@ -134,7 +141,7 @@ class BarcodeManager {
             std::function<void()> task;
             std::unique_lock<std::mutex> lk(self->worker->m);
             self->worker->cv.wait(lk, [&]
-                                { return !self->worker->tasks.empty() || !self->worker->running; });
+                                  { return !self->worker->tasks.empty() || !self->worker->running; });
             if (!self->worker->running)
             {
                 break;
@@ -147,8 +154,8 @@ class BarcodeManager {
         }
     }
 
-    void queueTask(unsigned char* barcodeBuffer, int width, int height, int stride, int format, int len)
-    {    
+    void queueTask(unsigned char *barcodeBuffer, int width, int height, int stride, int format, int len)
+    {
         unsigned char *data = (unsigned char *)malloc(len);
         memcpy(data, barcodeBuffer, len);
 
@@ -163,143 +170,161 @@ class BarcodeManager {
         lk.unlock();
     }
 
-    static void scan(BarcodeManager *self, unsigned char * buffer, int width, int height, int stride, int format)
+    static void scan(BarcodeManager *self, unsigned char *buffer, int width, int height, int stride, int format)
     {
         ImagePixelFormat pixelFormat = IPF_BGR_888;
-        switch(format) {
-            case 0:
-                pixelFormat = IPF_BINARY;
-                break;
-            case 1:
-                pixelFormat = IPF_BINARYINVERTED;
-                break;
-            case 2:
-                pixelFormat = IPF_GRAYSCALED;
-                break;
-            case 3:
-                pixelFormat = IPF_NV21;
-                break;
-            case 4:
-                pixelFormat = IPF_RGB_565;
-                break;
-            case 5:
-                pixelFormat = IPF_RGB_555;
-                break;
-            case 6:
-                pixelFormat = IPF_RGB_888;
-                break;
-            case 7:
-                pixelFormat = IPF_ARGB_8888;
-                break;
-            case 8:
-                pixelFormat = IPF_RGB_161616;
-                break;
-            case 9: 
-                pixelFormat = IPF_ARGB_16161616;
-                break;
-            case 10:
-                pixelFormat = IPF_ABGR_8888;
-                break;
-            case 11:
-                pixelFormat = IPF_ABGR_16161616;
-                break;
-            case 12:
-                pixelFormat = IPF_BGR_888;
-                break;
+        switch (format)
+        {
+        case 0:
+            pixelFormat = IPF_BINARY;
+            break;
+        case 1:
+            pixelFormat = IPF_BINARYINVERTED;
+            break;
+        case 2:
+            pixelFormat = IPF_GRAYSCALED;
+            break;
+        case 3:
+            pixelFormat = IPF_NV21;
+            break;
+        case 4:
+            pixelFormat = IPF_RGB_565;
+            break;
+        case 5:
+            pixelFormat = IPF_RGB_555;
+            break;
+        case 6:
+            pixelFormat = IPF_RGB_888;
+            break;
+        case 7:
+            pixelFormat = IPF_ARGB_8888;
+            break;
+        case 8:
+            pixelFormat = IPF_RGB_161616;
+            break;
+        case 9:
+            pixelFormat = IPF_ARGB_16161616;
+            break;
+        case 10:
+            pixelFormat = IPF_ABGR_8888;
+            break;
+        case 11:
+            pixelFormat = IPF_ABGR_16161616;
+            break;
+        case 12:
+            pixelFormat = IPF_BGR_888;
+            break;
         }
 
-        self->reader->DecodeBuffer(buffer, width, height, stride, pixelFormat, "");
-
+        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat);
+        CCapturedResult *captureResult = self->handler->Capture(imageData);
+        delete imageData, imageData = NULL;
         free(buffer);
-        EncodableList results = self->WrapResults();
+
+        EncodableList results = self->WrapResults(captureResult);
         std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result = std::move(self->pendingResults.front());
         self->pendingResults.erase(self->pendingResults.begin());
         result->Success(results);
     }
 
-    int Init() 
+    int Init()
     {
-        reader = new CBarcodeReader();
+        handler = new CCaptureVisionRouter;
+        char errorMsgBuffer[256];
+        int ret = handler->InitSettings(jsonString.c_str(), errorMsgBuffer, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMsgBuffer);
+        }
         worker = new WorkerThread();
         worker->running = true;
         worker->t = thread(&run, this);
         return 0;
     }
 
-    int SetLicense(const char * license) 
+    int SetLicense(const char *license)
     {
-        int ret = CBarcodeReader::InitLicense(license);
+        char errorMsgBuffer[512];
+        int ret = CLicenseManager::InitLicense(license, errorMsgBuffer, 512);
+        if (ret)
+        {
+            printf("InitLicense: %s\n", errorMsgBuffer);
+        }
         return ret;
     }
 
-    EncodableList DecodeFile(const char * filename) 
-    {
-        EncodableList out;   
-        if (reader == NULL) return out;
-        int ret = reader->DecodeFile(filename, "");
-
-        if (ret == DBRERR_FILE_NOT_FOUND)
-        {
-            printf("Error code %d. %s\n", ret, CBarcodeReader::GetErrorString(ret));
-            return out;
-        }
-
-        return WrapResults();
-    }
-
-    EncodableList DecodeFileBytes(const unsigned char * bytes, int size) 
+    EncodableList DecodeFile(const char *filename)
     {
         EncodableList out;
-        if (reader == NULL) return out;
-        reader->DecodeFileInMemory(bytes, size, "");
-        return WrapResults();
+        if (handler == NULL)
+            return out;
+
+        CCapturedResult *result = handler->Capture(filename, "");
+        return WrapResults(result);
     }
 
-    void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>& pendingResult, const unsigned char * buffer, int width, int height, int stride, int format) 
+    EncodableList DecodeFileBytes(const unsigned char *bytes, int size)
+    {
+        EncodableList out;
+        if (handler == NULL)
+            return out;
+        CCapturedResult *result = handler->Capture(bytes, size);
+        return WrapResults(result);
+    }
+
+    void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> &pendingResult, const unsigned char *buffer, int width, int height, int stride, int format)
     {
         pendingResults.push_back(std::move(pendingResult));
-        queueTask((unsigned char*)buffer, width, height, stride, format, stride * height);
+        queueTask((unsigned char *)buffer, width, height, stride, format, stride * height);
     }
 
-    int SetFormats(int formats) 
+    int SetFormats(unsigned long long formats)
     {
-        if (reader == NULL) return -1;
+        if (handler == NULL)
+            return -1;
 
-        int ret = 0;
-        char sError[512];
-        PublicRuntimeSettings* runtimeSettings = new PublicRuntimeSettings();
-        reader->GetRuntimeSettings(runtimeSettings);
-        runtimeSettings->barcodeFormatIds = formats; 
-        reader->UpdateRuntimeSettings(runtimeSettings, sError, 512);
-        delete runtimeSettings;
+        SimplifiedCaptureVisionSettings pSettings = {};
+        handler->GetSimplifiedSettings("", &pSettings);
+        pSettings.barcodeSettings.barcodeFormatIds = formats;
 
+        char errorMessage[256];
+        int ret = handler->UpdateSettings("", &pSettings, errorMessage, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMessage);
+        }
         return ret;
     }
 
     EncodableValue GetParameters()
     {
         EncodableValue out;
-        if (reader == NULL) return out;
+        if (handler == NULL)
+            return out;
 
-        char* content = NULL;
-        reader->OutputSettingsToStringPtr(&content, "currentRuntimeSettings");
-        EncodableValue params = EncodableValue((const char*)content);
-        reader->FreeSettingsString(&content);
+        char *content = handler->OutputSettings("");
+        EncodableValue params = EncodableValue((const char *)content);
+        CCaptureVisionRouter::FreeString(content);
         return EncodableValue(params);
     }
 
     int SetParameters(const char *params)
     {
-        if (reader == NULL) return -1;
+        if (handler == NULL)
+            return -1;
         char errorMessage[256];
-        int ret = reader->InitRuntimeSettingsWithString(params, CM_IGNORE, errorMessage, 256);
+        int ret = handler->InitSettings(params, errorMessage, 256);
+        if (ret)
+        {
+            printf("InitSettings: %s\n", errorMessage);
+        }
         return ret;
     }
 
-    private:
-        CBarcodeReader *reader; 
-        WorkerThread *worker;
-        vector<std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>> pendingResults = {};
+private:
+    CCaptureVisionRouter *handler;
+    WorkerThread *worker;
+    vector<std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>> pendingResults = {};
 };
 
-#endif 
+#endif

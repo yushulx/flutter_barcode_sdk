@@ -59,17 +59,18 @@ class MobileState extends State<Mobile> {
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
     await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
-    await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ALL);
-    // Get all current parameters.
-    // Refer to: https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
-    String params = await _barcodeReader!.getParameters();
-    // Convert parameters to a JSON object.
-    dynamic obj = json.decode(params);
-    // Modify parameters.
-    obj['ImageParameter']['DeblurLevel'] = 5;
-    // Update the parameters.
-    int ret = await _barcodeReader!.setParameters(json.encode(obj));
-    print('Parameter update: $ret');
+    // await _barcodeReader!.setBarcodeFormats(BarcodeFormat.CODE_39 |
+    //     BarcodeFormat.CODABAR |
+    //     BarcodeFormat.QR_CODE |
+    //     BarcodeFormat.DATAMATRIX);
+    // String params = await _barcodeReader!.getParameters();
+    // // Convert parameters to a JSON object.
+    // dynamic obj = json.decode(params);
+    // // Modify parameters.
+    // obj['ImageParameter']['DeblurLevel'] = 5;
+    // // Update the parameters.
+    // int ret = await _barcodeReader!.setParameters(json.encode(obj));
+    // print('Parameter update: $ret');
   }
 
   void pictureScan() async {

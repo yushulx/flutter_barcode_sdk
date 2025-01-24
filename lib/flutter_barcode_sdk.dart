@@ -48,12 +48,6 @@ class FlutterBarcodeSdk {
   static const MethodChannel _channel =
       const MethodChannel('flutter_barcode_sdk');
 
-  /// Returns a [String] containing the version of the platform.
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   /// Set Dynamsoft Barcode Reader License Key
   /// Apply for a 30-day FREE trial license: https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
   Future<int> setLicense(String license) async {
