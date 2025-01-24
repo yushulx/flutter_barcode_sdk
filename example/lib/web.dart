@@ -1,14 +1,13 @@
-import 'dart:convert';
-import 'dart:ui' as ui;
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'license.dart';
+import 'overlay_painter.dart';
 import 'scanner_screen.dart';
 
 class Web extends StatefulWidget {
@@ -18,10 +17,11 @@ class Web extends StatefulWidget {
 
 class _WebState extends State<Web> {
   FlutterBarcodeSdk? _barcodeReader;
-  String? _file;
+  String? _fileUrl; // Store the file URL for web
   String _barcodeResults = '';
   final picker = ImagePicker();
   bool _isSDKLoaded = false;
+  List<BarcodeResult> _barcodeResultsList = [];
 
   @override
   void initState() {
@@ -33,10 +33,6 @@ class _WebState extends State<Web> {
     _barcodeReader = FlutterBarcodeSdk();
     await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
-    // await _barcodeReader!.setBarcodeFormats(BarcodeFormat.CODE_39 |
-    //     BarcodeFormat.CODABAR |
-    //     BarcodeFormat.QR_CODE |
-    //     BarcodeFormat.DATAMATRIX);
 
     setState(() {
       _isSDKLoaded = true;
@@ -44,8 +40,6 @@ class _WebState extends State<Web> {
   }
 
   void updateResults(List<BarcodeResult> results) {
-    // if (results.length > 0) _barcodeReader.closeVideo();
-
     setState(() {
       _barcodeResults = getBarcodeResults(results);
     });
@@ -71,96 +65,166 @@ class _WebState extends State<Web> {
     );
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // For web, pickedFile.path returns a URL
+      setState(() {
+        _fileUrl = pickedFile.path; // Use the file URL for web
+        _barcodeResults = '';
+      });
+
+      if (_fileUrl != null) {
+        _barcodeResultsList =
+            await _barcodeReader!.decodeFile(_fileUrl!); // Pass the URL
+        updateResults(_barcodeResultsList);
+      }
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  Widget getDefaultImageWithOverlay() {
+    if (_fileUrl == null) {
+      return Center(
+        child: Text(
+          'No image loaded',
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    } else {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return FutureBuilder<Image>(
+            future: Future.value(Image.network(_fileUrl!)), // Use Image.network
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              final Image image = snapshot.data!;
+
+              return Stack(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Stack(
+                        children: [
+                          image, // Display the image
+                          Positioned.fill(
+                            child: _barcodeResultsList.isEmpty
+                                ? Container(
+                                    color: Colors.black.withOpacity(0.1),
+                                    child: const Center(
+                                      child: Text(
+                                        'No barcode detected',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : createOverlay(_barcodeResultsList),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+  }
+
+  Widget _buildImageWithOverlay(BoxConstraints constraints) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight * 0.7,
+            child: getDefaultImageWithOverlay(),
+          ),
+          SizedBox(height: 10),
+          SelectableText(
+            _barcodeResults,
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _file == null
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            children: [
+              Expanded(
+                child: _fileUrl == null
                     ? Image.asset('images/default.png')
-                    : Image.network(_file!),
-                Text(
-                  _barcodeResults,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          height: 100,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                MaterialButton(
-                    child: Text('Barcode Reader'),
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: () async {
-                      if (_isSDKLoaded == false) {
-                        _showDialog('Error', 'Barcode SDK is not loaded.');
-                        return;
-                      }
+                    : _buildImageWithOverlay(constraints),
+              ),
+              Container(
+                height: 100,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      MaterialButton(
+                        child: Text('Image File'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          if (_isSDKLoaded == false) {
+                            _showDialog('Error', 'Barcode SDK is not loaded.');
+                            return;
+                          }
 
-                      final pickedFile =
-                          await picker.pickImage(source: ImageSource.gallery);
+                          await _pickImage();
+                        },
+                      ),
+                      MaterialButton(
+                        child: Text('Camera Stream'),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: () async {
+                          if (_isSDKLoaded == false) {
+                            _showDialog('Error', 'Barcode SDK is not loaded.');
+                            return;
+                          }
 
-                      setState(() {
-                        if (pickedFile != null) {
-                          _file = pickedFile.path;
-                        } else {
-                          print('No image selected.');
-                        }
-
-                        _barcodeResults = '';
-                      });
-
-                      if (_file != null) {
-                        // Uint8List fileBytes =
-                        //     await pickedFile.readAsBytes();
-
-                        // ui.Image image =
-                        //     await decodeImageFromList(fileBytes);
-
-                        // ByteData byteData = await image.toByteData(
-                        //     format: ui.ImageByteFormat.rawRgba);
-                        // List<BarcodeResult> results =
-                        //     await _barcodeReader.decodeImageBuffer(
-                        //         byteData.buffer.asUint8List(),
-                        //         image.width,
-                        //         image.height,
-                        //         byteData.lengthInBytes ~/ image.height,
-                        //         ImagePixelFormat.IPF_ARGB_8888.index);
-
-                        List<BarcodeResult> results =
-                            await _barcodeReader!.decodeFile(_file!);
-                        updateResults(results);
-                      }
-                    }),
-                MaterialButton(
-                    child: Text('Barcode Scanner'),
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: () async {
-                      if (_isSDKLoaded == false) {
-                        _showDialog('Error', 'Barcode SDK is not loaded.');
-                        return;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScannerScreen(
-                                  barcodeReader: _barcodeReader!,
-                                )),
-                      );
-                    }),
-              ]),
-        ),
-      ]),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ScannerScreen(
+                                barcodeReader: _barcodeReader!,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ]),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

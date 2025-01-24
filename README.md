@@ -239,7 +239,7 @@ cd example
 flutter run -d chrome
 ```
 
-![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-web-barcode-sdk.png)
+![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-web.png)
 
 
 
