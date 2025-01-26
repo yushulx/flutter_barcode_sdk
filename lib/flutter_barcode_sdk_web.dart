@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html' as html show window;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/barcode_manager.dart';
