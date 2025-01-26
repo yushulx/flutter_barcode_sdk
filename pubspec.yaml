@@ -1,6 +1,6 @@
 name: flutter_barcode_sdk
 description: The only Flutter barcode SDK that covers Android, iOS, Web, Windows, Linux and macOS. Support various 1D/2D barcodes, including Code39, Code128, EAN13, QR Code, DataMatrix, MaxiCode, PDF417, and more.
-version: 2.3.0
+version: 2.4.0
 homepage: https://www.dynamsoft.com/barcode-reader/overview/
 repository: https://github.com/yushulx/flutter_barcode_sdk
 

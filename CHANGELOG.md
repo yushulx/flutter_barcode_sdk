@@ -1,3 +1,6 @@
+## 2.4.0
+* Update SDK for Windows and Linux.
+
 ## 2.3.0
 * Update SDK for macOS plugin.
 
