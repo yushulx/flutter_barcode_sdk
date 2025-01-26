@@ -57,7 +57,7 @@ class BarcodeResult {
       };
 }
 
-/// Convert List<Map<dynamic, dynamic>> to List<BarcodeResult>
+/// Convert `List<Map<dynamic, dynamic>>` to `List<BarcodeResult>`
 List<BarcodeResult> convertResults(List<Map<dynamic, dynamic>> ret) {
   return ret.map((data) => BarcodeResult.fromJson(data)).toList();
 }
