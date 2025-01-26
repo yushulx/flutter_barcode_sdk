@@ -1,3 +1,6 @@
+## 2.4.1
+* Minor updates.
+
 ## 2.4.0
 * Update SDK for Windows and Linux.
 
