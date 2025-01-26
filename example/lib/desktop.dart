@@ -98,7 +98,7 @@ class _DesktopState extends State<Desktop> {
                               left: 0.0,
                               child: _barcodeResultsList.isEmpty
                                   ? Container(
-                                      color: Colors.black.withOpacity(0.1),
+                                      color: Color.fromARGB(26, 0, 0, 0),
                                       child: const Center(
                                         child: Text(
                                           'No barcode detected',

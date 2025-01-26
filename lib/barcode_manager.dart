@@ -73,7 +73,7 @@ class BarcodeManager {
         _barcodeReader!.updateRuntimeSettings(json.encode(obj)));
   }
 
-  /// Convert List<dynamic> to List<Map<dynamic, dynamic>>.
+  /// Convert `List<dynamic>` to `List<Map<dynamic, dynamic>>`.
   List<Map<dynamic, dynamic>> _resultWrapper(List<dynamic> barcodeResults) {
     List<Map<dynamic, dynamic>> results = [];
 
