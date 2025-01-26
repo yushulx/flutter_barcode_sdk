@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <mutex>
 
 #include <flutter_linux/flutter_linux.h>
 #include <gtk/gtk.h>
@@ -44,11 +45,13 @@ FlValue *CreateBarcodeResultMap(const CBarcodeResultItem *barcodeResultItem)
 class MyCapturedResultReceiver : public CCapturedResultReceiver
 {
 public:
-    vector<CDecodedBarcodesResult *> results;
+    std::vector<CDecodedBarcodesResult *> results;
+    std::mutex results_mutex;
 
     void OnDecodedBarcodesReceived(CDecodedBarcodesResult *pResult) override
     {
         pResult->Retain();
+        std::lock_guard<std::mutex> lock(results_mutex);
         results.push_back(pResult);
     }
 };
@@ -64,7 +67,13 @@ public:
     MyImageSourceStateListener(CCaptureVisionRouter *router, MyCapturedResultReceiver *receiver)
         : m_router(router), m_receiver(receiver), m_method_call(nullptr) {}
 
-    
+    ~MyImageSourceStateListener()
+    {
+        if (m_method_call)
+        {
+            g_object_unref(m_method_call);
+        }
+    }
 
     void OnImageSourceStateReceived(ImageSourceState state) override
     {
@@ -73,6 +82,7 @@ public:
             m_router->StopCapturing();
 
             FlValue *out = fl_value_new_list();
+
             for (auto *result : m_receiver->results)
             {
                 if (!result || result->GetItemsCount() == 0)
@@ -90,18 +100,30 @@ public:
                 result->Release();
             }
 
+            m_receiver->results.clear();
+
             g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(out));
-            fl_method_call_respond(m_method_call, response, nullptr);
+            if (m_method_call)
+            {
+                fl_method_call_respond(m_method_call, response, nullptr);
+                g_object_unref(m_method_call); // Release the method call
+                m_method_call = nullptr;
+            }
         }
     }
 
     void SetMethodCall(FlMethodCall *method_call)
     {
+        if (m_method_call)
+        {
+            g_object_unref(m_method_call);
+        }
         m_method_call = method_call;
+        if (m_method_call)
+        {
+            g_object_ref(m_method_call); // Retain the method call
+        }
     }
-
-    
-
 };
 
 class BarcodeManager
@@ -185,7 +207,7 @@ public:
 
         char errorMsg[512] = {0};
         listener->SetMethodCall(method_call);
-        int errorCode = handler->StartCapturing("", true, errorMsg, 512);
+        int errorCode = handler->StartCapturing("", false, errorMsg, 512);
         if (errorCode != 0)
         {
             printf("StartCapturing: %s\n", errorMsg);
