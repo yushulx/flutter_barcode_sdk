@@ -5,8 +5,12 @@ import 'package:flutter_barcode_sdk/barcode_manager.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 /// A web implementation of the FlutterBarcodeSdk plugin.
+///
+/// This class acts as the web interface for barcode scanning, providing
+/// barcode decoding capabilities using the [BarcodeManager].
 class FlutterBarcodeSdkWeb {
-  BarcodeManager _barcodeManager = BarcodeManager();
+  /// Manages barcode decoding operations.
+  final BarcodeManager _barcodeManager = BarcodeManager();
 
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
@@ -19,9 +23,6 @@ class FlutterBarcodeSdkWeb {
     channel.setMethodCallHandler(pluginInstance.handleMethodCall);
   }
 
-  /// Handles method calls over the MethodChannel of this plugin.
-  /// Note: Check the "federated" architecture for a new way of doing this:
-  /// https://flutter.dev/go/federated-plugins
   Future<dynamic> handleMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'decodeFile':
@@ -47,44 +48,74 @@ class FlutterBarcodeSdkWeb {
         throw PlatformException(
           code: 'Unimplemented',
           details:
-              'flutter_barcode_sdk for web doesn\'t implement \'${call.method}\'',
+              'flutter_barcode_sdk for web does not implement method: \'${call.method}\'',
         );
     }
   }
 
-  /// Decode barcodes from an image file.
+  /// Decodes barcodes from an image file.
+  ///
+  /// - [file]: The path to the image file.
+  ///
+  /// Returns a list of detected barcodes.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String file) async {
     return _barcodeManager.decodeFile(file);
   }
 
-  /// Decode barcodes from real-time video stream.
+  /// Sets the barcode formats to be detected.
+  ///
+  /// - [formats]: A bitwise OR combination of barcode format constants.
+  ///
+  /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
     return _barcodeManager.setBarcodeFormats(formats);
   }
 
-  /// Get all current parameters configured for barcode detection algorithm.
-  /// https://www.dynamsoft.com/barcode-reader/parameters/reference/image-parameter/?ver=latest
+  /// Retrieves the current barcode detection settings as a JSON string.
+  ///
+  /// Returns a JSON string containing the detection parameters.
   Future<String> getParameters() async {
     return _barcodeManager.getParameters();
   }
 
-  /// Set parameters to adjust barcode detection algorithm.
+  /// Updates the barcode detection parameters.
+  ///
+  /// - [params]: A JSON string representing the new detection settings.
+  ///
+  /// Returns `0` on success, or an error code on failure.
   Future<int> setParameters(String params) async {
     return _barcodeManager.setParameters(params);
   }
 
-  /// Initialize barcode reader and scanner.
+  /// Initializes the barcode SDK.
+  ///
+  /// This method must be called before performing any barcode detection operations.
+  ///
+  /// Returns `0` on success, or an error code on failure.
   Future<int> initBarcodeSDK() async {
     return await _barcodeManager.initBarcodeSDK();
   }
 
-  /// Set license key.
+  /// Sets the license key for the barcode SDK.
+  ///
+  /// A valid license is required to use barcode detection features.
+  ///
+  /// Returns `0` on success, or an error code on failure.
   Future<int> setLicense(String license) async {
-    int ret = await _barcodeManager.setLicense(license);
-    return ret;
+    return await _barcodeManager.setLicense(license);
   }
 
-  /// Decode barcodes from an image buffer.
+  /// Decodes barcodes from an image buffer.
+  ///
+  /// - [bytes]: The raw image data.
+  /// - [width]: The width of the image.
+  /// - [height]: The height of the image.
+  /// - [stride]: The number of bytes per row.
+  /// - [format]: The pixel format (see [ImagePixelFormat]).
+  ///
+  /// Typically used for **real-time barcode scanning** from a camera stream.
+  ///
+  /// Returns a list of detected barcodes.
   Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
       Uint8List bytes, int width, int height, int stride, int format) async {
     return _barcodeManager.decodeImageBuffer(
