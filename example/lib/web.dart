@@ -119,7 +119,7 @@ class _WebState extends State<Web> {
                           Positioned.fill(
                             child: _barcodeResultsList.isEmpty
                                 ? Container(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Color.fromARGB(26, 0, 0, 0),
                                     child: const Center(
                                       child: Text(
                                         'No barcode detected',

@@ -157,7 +157,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                             left: 0.0,
                             child: _results == null || _results!.isEmpty
                                 ? Container(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Color.fromARGB(26, 0, 0, 0),
                                     child: const Center(
                                       child: Text(
                                         'No barcode detected',

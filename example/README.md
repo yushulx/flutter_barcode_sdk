@@ -5,3 +5,8 @@
     ```dart
     String LICENSE_KEY = 'LICENSE-KEY';
     ```
+3. Run the example:
+
+    ```bash
+    flutter run
+    ```

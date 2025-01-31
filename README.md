@@ -201,11 +201,11 @@ flutter run -d <device>
 
 - **Camera Stream**
 
-    ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2021/flutter-barcode-scanner-camera.gif)
+    ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-scanner.jpg)
 
 - **Image File**
 
-    ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2021/flutter-picture-barcode-scan.jpg)
+    ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg)
 
 
 ### Windows, Linux and macOS
