@@ -186,8 +186,8 @@ class BarcodeManager {
       'bytes': bytes,
       'width': width,
       'height': height,
-      'stride': width * 4, // RGBA8888 (4 bytes per pixel)
-      'format': 10 // RGBA8888 format in Dynamsoft SDK
+      'stride': stride,
+      'format': format
     };
 
     CapturedResult barcodeResults =
