@@ -34,6 +34,12 @@ class _WebState extends State<Web> {
     await _barcodeReader!.setLicense(LICENSE_KEY);
     await _barcodeReader!.init();
 
+    // Get all current parameters.
+    String params = await _barcodeReader!.getParameters();
+    // Update the parameters.
+    int ret = await _barcodeReader!.setParameters(params);
+    print('Parameter update: $ret');
+
     setState(() {
       _isSDKLoaded = true;
     });

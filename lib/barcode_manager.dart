@@ -4,9 +4,50 @@ library dynamsoft;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:js/js.dart';
 import 'utils.dart';
+
+@JS()
+@anonymous
+class CapturedResult {
+  external List<CapturedItem> get items;
+}
+
+@JS()
+@anonymous
+class CapturedItem {
+  external String get type;
+  external String get text;
+  external String get formatString;
+  external Location get location;
+  external int get angle;
+  external Uint8List get bytes;
+  external int get confidence;
+}
+
+@JS()
+@anonymous
+class Location {
+  external List<Point> get points;
+}
+
+@JS()
+@anonymous
+class Point {
+  external num get x;
+  external num get y;
+}
+
+@JS('License.LicenseManager')
+class LicenseManager {
+  external static PromiseJsImpl<void> initLicense(
+      String license, bool executeNow);
+}
+
+@JS('Core.CoreModule')
+class CoreModule {
+  external static PromiseJsImpl<void> loadWasm(List<String> modules);
+}
 
 /// Represents the JavaScript Barcode Reader class from Dynamsoft Barcode SDK.
 ///
@@ -14,41 +55,30 @@ import 'utils.dart';
 /// It is accessed via JavaScript interop (`@JS`) and interacts with the underlying
 /// Dynamsoft Barcode Reader (DBR) Web SDK.
 ///
-@JS('DBR.BarcodeReader')
-class BarcodeReader {
-  /// Creates a new instance of [BarcodeReader].
+@JS('CVR.CaptureVisionRouter')
+class CaptureVisionRouter {
+  /// Creates a new instance of [CaptureVisionRouter].
   ///
   /// This method returns a `PromiseJsImpl` that must be handled asynchronously.
-  external static PromiseJsImpl<BarcodeReader> createInstance();
+  external static PromiseJsImpl<CaptureVisionRouter> createInstance();
 
-  /// Decodes barcodes from an image file.
+  /// Decodes barcodes from a source.
   ///
-  /// The [file] parameter can be an image URL or a `File` object.
-  external PromiseJsImpl<List<dynamic>> decode(dynamic file);
+  /// The [data] parameter can be a file object or a DSImageData object.
+  external PromiseJsImpl<CapturedResult> capture(dynamic data, String template);
 
-  /// Decodes barcodes from an image buffer.
-  ///
-  /// The [bytes] parameter contains the raw pixel data, and [width], [height], and [stride]
-  /// define the dimensions and memory layout of the image. The [format] specifies the pixel format.
-  external PromiseJsImpl<List<dynamic>> decodeBuffer(
-      Uint8List bytes, int width, int height, int stride, int format);
+  /// Retrieves the simplified runtime settings for barcode decoding.
+  external PromiseJsImpl<dynamic> getSimplifiedSettings(String templateName);
 
-  /// Retrieves the current runtime settings for barcode decoding.
-  external PromiseJsImpl<dynamic> getRuntimeSettings();
-
-  /// Updates runtime settings with a JSON string.
-  ///
-  /// The [settings] string should be formatted according to Dynamsoft's runtime settings structure.
-  external PromiseJsImpl<void> updateRuntimeSettings(String settings);
+  /// Updates simplified runtime settings with a JSON string.
+  external PromiseJsImpl<void> updateSettings(
+      String templateName, String settings);
 
   /// Outputs the current runtime settings as a JSON string.
-  external PromiseJsImpl<dynamic> outputRuntimeSettingsToString();
+  external PromiseJsImpl<dynamic> outputSettings(String templateName);
 
   /// Initializes runtime settings from a JSON string.
-  external PromiseJsImpl<void> initRuntimeSettingsWithString(String settings);
-
-  /// Sets the license key for the barcode reader.
-  external static set license(String license);
+  external PromiseJsImpl<void> initSettings(String settings);
 }
 
 /// Manages barcode decoding operations using the [BarcodeReader] instance.
@@ -56,20 +86,21 @@ class BarcodeReader {
 /// This class provides methods for initializing the barcode reader, configuring settings,
 /// and decoding barcodes from various sources (file, buffer).
 class BarcodeManager {
-  BarcodeReader? _barcodeReader;
+  CaptureVisionRouter? _barcodeReader;
+  String templateName = 'ReadBarcodes_ReadRateFirst';
 
-  /// Converts raw barcode results into a list of [BarcodeResult] objects.
-  ///
-  /// This function maps the dynamically structured JSON results into a Dart-friendly format.
-  List<BarcodeResult> callbackResults(List<Map<dynamic, dynamic>> results) {
-    return convertResults(results);
-  }
-
-  /// Creates and initializes a new instance of [BarcodeReader].
+  /// Creates and initializes a new instance of [CaptureVisionRouter].
   ///
   /// This function is required before performing barcode scans.
   Future<int> initBarcodeSDK() async {
-    _barcodeReader = await handleThenable(BarcodeReader.createInstance());
+    try {
+      _barcodeReader =
+          await handleThenable(CaptureVisionRouter.createInstance());
+    } catch (e) {
+      print(e);
+      return -1;
+    }
+
     return 0;
   }
 
@@ -79,7 +110,8 @@ class BarcodeManager {
   /// Returns `0` on success, `-1` on failure.
   Future<int> setLicense(String license) async {
     try {
-      BarcodeReader.license = license;
+      await handleThenable(LicenseManager.initLicense(license, true));
+      await handleThenable(CoreModule.loadWasm(['dbr']));
     } catch (e) {
       print(e);
       return -1;
@@ -92,20 +124,18 @@ class BarcodeManager {
   /// The [formats] parameter specifies the barcode types to detect.
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
-    updateSettings(formats);
+    try {
+      dynamic settings = await handleThenable(
+          _barcodeReader!.getSimplifiedSettings(templateName));
+      Map obj = json.decode(stringify(settings));
+      obj['barcodeSettings']['barcodeFormatIds'] = formats;
+      await handleThenable(
+          _barcodeReader!.updateSettings(templateName, json.encode(obj)));
+    } catch (e) {
+      print(e);
+      return -1;
+    }
     return 0;
-  }
-
-  /// Updates runtime settings for barcode decoding.
-  ///
-  /// This method modifies the barcode format settings and applies them to the [BarcodeReader].
-  Future<void> updateSettings(int formats) async {
-    dynamic settings =
-        await handleThenable(_barcodeReader!.getRuntimeSettings());
-    Map obj = json.decode(stringify(settings));
-    obj['barcodeFormatIds'] = formats;
-    await handleThenable(
-        _barcodeReader!.updateRuntimeSettings(json.encode(obj)));
   }
 
   /// Converts raw barcode scan results from a JavaScript array into a Dart-compatible structure.
@@ -114,22 +144,22 @@ class BarcodeManager {
   List<Map<dynamic, dynamic>> _resultWrapper(List<dynamic> barcodeResults) {
     List<Map<dynamic, dynamic>> results = [];
 
-    for (dynamic result in barcodeResults) {
-      Map value = json.decode(stringify(result));
+    for (CapturedItem result in barcodeResults) {
+      if (result.type != 2) continue;
 
       var tmp = <dynamic, dynamic>{};
-      tmp['format'] = value['barcodeFormatString'];
-      tmp['text'] = value['barcodeText'];
-      tmp['x1'] = value['localizationResult']['x1'];
-      tmp['y1'] = value['localizationResult']['y1'];
-      tmp['x2'] = value['localizationResult']['x2'];
-      tmp['y2'] = value['localizationResult']['y2'];
-      tmp['x3'] = value['localizationResult']['x3'];
-      tmp['y3'] = value['localizationResult']['y3'];
-      tmp['x4'] = value['localizationResult']['x4'];
-      tmp['y4'] = value['localizationResult']['y4'];
-      tmp['angle'] = value['localizationResult']['angle'];
-      tmp['barcodeBytes'] = value['barcodeBytes'];
+      tmp['format'] = result.formatString;
+      tmp['text'] = result.text;
+      tmp['x1'] = result.location.points[0].x;
+      tmp['y1'] = result.location.points[0].y;
+      tmp['x2'] = result.location.points[1].x;
+      tmp['y2'] = result.location.points[1].y;
+      tmp['x3'] = result.location.points[2].x;
+      tmp['y3'] = result.location.points[2].y;
+      tmp['x4'] = result.location.points[3].x;
+      tmp['y4'] = result.location.points[3].y;
+      tmp['angle'] = result.angle;
+      tmp['barcodeBytes'] = result.bytes;
       results.add(tmp);
     }
 
@@ -140,10 +170,10 @@ class BarcodeManager {
   ///
   /// The [filename] parameter should be the path or URL of the image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
-    List<dynamic> barcodeResults =
-        await handleThenable(_barcodeReader!.decode(filename));
+    CapturedResult barcodeResults =
+        await handleThenable(_barcodeReader!.capture(filename, templateName));
 
-    return _resultWrapper(barcodeResults);
+    return _resultWrapper(barcodeResults.items);
   }
 
   /// Decodes barcodes from an image buffer.
@@ -152,10 +182,18 @@ class BarcodeManager {
   /// define the dimensions and structure of the image.
   Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
       Uint8List bytes, int width, int height, int stride, int format) async {
-    List<dynamic> barcodeResults = await handleThenable(
-        _barcodeReader!.decodeBuffer(bytes, width, height, stride, format));
+    final dsImage = {
+      'bytes': bytes,
+      'width': width,
+      'height': height,
+      'stride': width * 4, // RGBA8888 (4 bytes per pixel)
+      'format': 10 // RGBA8888 format in Dynamsoft SDK
+    };
 
-    return _resultWrapper(barcodeResults);
+    CapturedResult barcodeResults =
+        await handleThenable(_barcodeReader!.capture(dsImage, templateName));
+
+    return _resultWrapper(barcodeResults.items);
   }
 
   /// Retrieves the current runtime settings in JSON format.
@@ -163,7 +201,7 @@ class BarcodeManager {
   /// Returns a JSON string containing the current barcode recognition parameters.
   Future<String> getParameters() async {
     dynamic settings =
-        await handleThenable(_barcodeReader!.outputRuntimeSettingsToString());
+        await handleThenable(_barcodeReader!.outputSettings(templateName));
     return stringify(settings);
   }
 
@@ -173,7 +211,7 @@ class BarcodeManager {
   ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> setParameters(String params) async {
-    await handleThenable(_barcodeReader!.initRuntimeSettingsWithString(params));
+    await handleThenable(_barcodeReader!.initSettings(params));
     return 0;
   }
 }

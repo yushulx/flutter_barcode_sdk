@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
-import 'dart:ui' as ui;
 import 'overlay_painter.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -37,7 +36,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     _isCameraReady = false;
     if (_controller != null) _controller!.dispose();
 
-    _controller = CameraController(_cameras![index], ResolutionPreset.max);
+    _controller = CameraController(_cameras![index], ResolutionPreset.high);
     _controller!.initialize().then((_) {
       if (!mounted) {
         return;

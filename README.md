@@ -122,7 +122,7 @@ To make the demo app work on macOS:
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.42/dist/dbr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-capture-vision-bundle@2.6.1000/dist/dcv.bundle.min.js"></script>
 ```
 
 ## **API Compatibility**
