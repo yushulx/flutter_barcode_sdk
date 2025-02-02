@@ -16,7 +16,7 @@ class CapturedResult {
 @JS()
 @anonymous
 class CapturedItem {
-  external String get type;
+  external int get type;
   external String get text;
   external String get formatString;
   external Location get location;

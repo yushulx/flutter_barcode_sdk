@@ -1,3 +1,6 @@
+## 2.5.1
+* Minor updates.
+
 ## 2.5.0
 * Update SDK for web.
 
