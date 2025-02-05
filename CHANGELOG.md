@@ -1,3 +1,6 @@
+## 3.0.0
+* Update iOS SDK to v10.x.
+
 ## 2.6.0
 * Update Android SDK to v10.x.
 

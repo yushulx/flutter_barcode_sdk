@@ -1,12 +1,26 @@
 PODS:
   - camera_avfoundation (0.0.1):
     - Flutter
-  - DynamsoftBarcodeReader (9.6.40)
+  - DynamsoftBarcodeReader (10.4.20)
+  - DynamsoftBarcodeReaderBundle (10.4.2003):
+    - DynamsoftBarcodeReader (= 10.4.20)
+    - DynamsoftCameraEnhancer (= 4.2.20)
+    - DynamsoftCaptureVisionRouter (= 2.4.21)
+    - DynamsoftCore (= 3.4.20)
+    - DynamsoftImageProcessing (= 2.4.20)
+    - DynamsoftLicense (= 3.4.40)
+    - DynamsoftUtility (= 1.4.20)
+  - DynamsoftCameraEnhancer (4.2.20)
+  - DynamsoftCaptureVisionRouter (2.4.21)
+  - DynamsoftCore (3.4.20)
+  - DynamsoftImageProcessing (2.4.20)
+  - DynamsoftLicense (3.4.40)
+  - DynamsoftUtility (1.4.20)
   - file_selector_ios (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_barcode_sdk (2.2.0):
-    - DynamsoftBarcodeReader (= 9.6.40)
+    - DynamsoftBarcodeReaderBundle (= 10.4.2003)
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
@@ -25,6 +39,13 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - DynamsoftBarcodeReader
+    - DynamsoftBarcodeReaderBundle
+    - DynamsoftCameraEnhancer
+    - DynamsoftCaptureVisionRouter
+    - DynamsoftCore
+    - DynamsoftImageProcessing
+    - DynamsoftLicense
+    - DynamsoftUtility
 
 EXTERNAL SOURCES:
   camera_avfoundation:
@@ -41,14 +62,21 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
-  DynamsoftBarcodeReader: 42d9ff4c9e1314ab1c600877e7f8c37ac2525bd8
-  file_selector_ios: f0670c1064a8c8450e38145d8043160105d0b97c
+  camera_avfoundation: 04b44aeb14070126c6529e5ab82cc7c9fca107cf
+  DynamsoftBarcodeReader: 263b1e79006c744d0c8176f73f4a0120acf211f0
+  DynamsoftBarcodeReaderBundle: c52ce64a4b3ebae11db63e96d6c35b3cb8d6157f
+  DynamsoftCameraEnhancer: 1596cc10a8a9495dbdaf8a257354aeb06ab8c180
+  DynamsoftCaptureVisionRouter: c8ab2b484e45c9cf58ea86962ea182cd46047302
+  DynamsoftCore: 958f8f530011d20a6b935ec770d483c4668e6929
+  DynamsoftImageProcessing: 36a0ebede82ffebec815465d0a617c33867eb15a
+  DynamsoftLicense: 4eabe8e077a64b38c8fdcf6177236bc018bac9a0
+  DynamsoftUtility: 20af5997992f4ea3b1a8ab3f24cf3121275c52c9
+  file_selector_ios: f92e583d43608aebc2e4a18daac30b8902845502
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_barcode_sdk: 2336474101188a7d7ecc177a770da1212d485e01
-  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  flutter_barcode_sdk: 4ae85d95297ea07d307b153b67120ffd801db927
+  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

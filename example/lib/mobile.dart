@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_example/utils.dart';
-import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
+import 'package:image_picker/image_picker.dart';
 import 'license.dart';
 import 'overlay_painter.dart';
 
@@ -45,7 +45,7 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
   Future<void> _initializeCameraController() async {
     _controller = CameraController(
       widget.camera,
-      ResolutionPreset.max,
+      ResolutionPreset.high,
     );
 
     _initializeControllerFuture = _controller!.initialize().then((_) {
@@ -69,23 +69,18 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
   void pictureScan() async {
     if (_isScanRunning) stopVideo();
 
-    final typeGroup = XTypeGroup(
-      label: 'images',
-      extensions: ['jpg', 'png'],
-    );
     try {
-      final files = await FileSelectorPlatform.instance
-          .openFiles(acceptedTypeGroups: [typeGroup]);
-      if (files.isNotEmpty) {
-        final file = files[0];
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
         List<BarcodeResult> results =
-            await _barcodeReader!.decodeFile(file.path);
+            await _barcodeReader!.decodeFile(image.path);
 
         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => DisplayPictureScreen(
-                  imagePath: file.path, barcodeResults: results),
+                  imagePath: image.path, barcodeResults: results),
             ));
         setState(() {});
       }
