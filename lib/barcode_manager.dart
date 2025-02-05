@@ -4,7 +4,6 @@ library dynamsoft;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_barcode_sdk/template.dart';
 import 'package:js/js.dart';
 import 'utils.dart';
 
