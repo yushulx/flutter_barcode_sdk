@@ -199,11 +199,11 @@ cd example
 flutter run -d <device>
 ```
 
-- **Camera Stream**
+- **Barcode Scanner**
 
     ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-scanner.jpg)
 
-- **Image File**
+- **Barcode Reader**
 
     ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg)
 
@@ -223,11 +223,11 @@ flutter run -d linux
 flutter run -d macos
 ```
 
-- **Image File**
+- **Barcode Reader**
 
     ![flutter desktop barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-reader-windows-linux-macos.png)
 
-- **Camera Stream**
+- **Barcode Scanner**
 
     ![flutter desktop barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-windows-linux-macos.png)
 
