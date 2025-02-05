@@ -4,6 +4,7 @@ library dynamsoft;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_barcode_sdk/template.dart';
 import 'package:js/js.dart';
 import 'utils.dart';
 
@@ -87,7 +88,6 @@ class CaptureVisionRouter {
 /// and decoding barcodes from various sources (file, buffer).
 class BarcodeManager {
   CaptureVisionRouter? _barcodeReader;
-  String templateName = 'ReadBarcodes_ReadRateFirst';
 
   /// Creates and initializes a new instance of [CaptureVisionRouter].
   ///
@@ -125,12 +125,12 @@ class BarcodeManager {
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
     try {
-      dynamic settings = await handleThenable(
-          _barcodeReader!.getSimplifiedSettings(templateName));
+      dynamic settings =
+          await handleThenable(_barcodeReader!.getSimplifiedSettings(""));
       Map obj = json.decode(stringify(settings));
       obj['barcodeSettings']['barcodeFormatIds'] = formats;
       await handleThenable(
-          _barcodeReader!.updateSettings(templateName, json.encode(obj)));
+          _barcodeReader!.updateSettings("", json.encode(obj)));
     } catch (e) {
       print(e);
       return -1;
@@ -171,7 +171,7 @@ class BarcodeManager {
   /// The [filename] parameter should be the path or URL of the image file.
   Future<List<Map<dynamic, dynamic>>> decodeFile(String filename) async {
     CapturedResult barcodeResults =
-        await handleThenable(_barcodeReader!.capture(filename, templateName));
+        await handleThenable(_barcodeReader!.capture(filename, ""));
 
     return _resultWrapper(barcodeResults.items);
   }
@@ -191,7 +191,7 @@ class BarcodeManager {
     };
 
     CapturedResult barcodeResults =
-        await handleThenable(_barcodeReader!.capture(dsImage, templateName));
+        await handleThenable(_barcodeReader!.capture(dsImage, ""));
 
     return _resultWrapper(barcodeResults.items);
   }
@@ -200,8 +200,7 @@ class BarcodeManager {
   ///
   /// Returns a JSON string containing the current barcode recognition parameters.
   Future<String> getParameters() async {
-    dynamic settings =
-        await handleThenable(_barcodeReader!.outputSettings(templateName));
+    dynamic settings = await handleThenable(_barcodeReader!.outputSettings(""));
     return stringify(settings);
   }
 

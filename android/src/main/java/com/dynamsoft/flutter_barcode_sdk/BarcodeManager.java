@@ -1,19 +1,17 @@
 package com.dynamsoft.flutter_barcode_sdk;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 
-import com.dynamsoft.dbr.BarcodeReaderException;
-import com.dynamsoft.dbr.DBRLicenseVerificationListener;
-import com.dynamsoft.dbr.EnumBarcodeFormat;
-import com.dynamsoft.dbr.EnumConflictMode;
-import com.dynamsoft.dbr.EnumImagePixelFormat;
-import com.dynamsoft.dbr.EnumIntermediateResultType;
-import com.dynamsoft.dbr.IntermediateResult;
-import com.dynamsoft.dbr.LocalizationResult;
-import com.dynamsoft.dbr.PublicRuntimeSettings;
-import com.dynamsoft.dbr.TextResult;
-import com.dynamsoft.dbr.BarcodeReader;
+import com.dynamsoft.cvr.CapturedResult;
+import com.dynamsoft.core.basic_structures.CapturedResultItem;
+import com.dynamsoft.cvr.CaptureVisionRouter;
+import com.dynamsoft.cvr.SimplifiedCaptureVisionSettings;
+import com.dynamsoft.dbr.BarcodeResultItem;
+import com.dynamsoft.license.LicenseManager;
+import com.dynamsoft.core.basic_structures.ImageData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,75 +22,35 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 public class BarcodeManager {
     private static final String TAG = "DynamsoftBarcodeReader";
-    private BarcodeReader mBarcodeReader;
+    private CaptureVisionRouter mRouter;
 
-    // public BarcodeManager() {
-    // try {
-    // mBarcodeReader = new BarcodeReader();
-    // //Best Coverage settings
-    // //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}",
-    // EnumConflictMode.CM_OVERWRITE);
-    // //Best Speed settings
-    // //mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}",
-    // EnumConflictMode.CM_OVERWRITE);
-    // //Balance settings
-    // mBarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}",
-    // EnumConflictMode.CM_OVERWRITE);
-    // PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
-    // settings.intermediateResultTypes =
-    // EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE;
-    // settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED |
-    // EnumBarcodeFormat.BF_DATAMATRIX | EnumBarcodeFormat.BF_QR_CODE |
-    // EnumBarcodeFormat.BF_PDF417;
-    // settings.barcodeFormatIds_2 = 0;
-    // mBarcodeReader.updateRuntimeSettings(settings);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
 
-    private void wrapResults(TextResult[] results, List<Map<String, Object>> out) {
-        if (results != null) {
-
-            for (TextResult result : results) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("format", result.barcodeFormatString);
-                // data.put("text", result.barcodeText);
-                data.put("x1", result.localizationResult.resultPoints[0].x);
-                data.put("y1", result.localizationResult.resultPoints[0].y);
-                data.put("x2", result.localizationResult.resultPoints[1].x);
-                data.put("y2", result.localizationResult.resultPoints[1].y);
-                data.put("x3", result.localizationResult.resultPoints[2].x);
-                data.put("y3", result.localizationResult.resultPoints[2].y);
-                data.put("x4", result.localizationResult.resultPoints[3].x);
-                data.put("y4", result.localizationResult.resultPoints[3].y);
-                data.put("angle", result.localizationResult.angle);
-                data.put("barcodeBytes", result.barcodeBytes);
-                out.add(data);
-            }
+    private void wrapResults(CapturedResult result, List<Map<String, Object>> out) {
+        CapturedResultItem[] items = result.getItems();
+        for (CapturedResultItem item : items) {
+            Map<String, Object> data = new HashMap<>();
+            BarcodeResultItem barcodeItem = (BarcodeResultItem)item;
+            data.put("format", barcodeItem.getFormatString());
+            data.put("text", barcodeItem.getText());
+            Point[] points = barcodeItem.getLocation().points;
+            data.put("x1", points[0].x);
+            data.put("y1", points[0].y);
+            data.put("x2", points[1].x);
+            data.put("y2", points[1].y);
+            data.put("x3", points[2].x);
+            data.put("y3", points[2].y);
+            data.put("x4", points[3].x);
+            data.put("y4", points[3].y);
+            data.put("angle", barcodeItem.getAngle());
+            data.put("barcodeBytes", barcodeItem.getBytes());
+            out.add(data);
         }
     }
 
-    public int init() {
-        if (mBarcodeReader == null) {
+    public int init(Context context) {
+        if (mRouter == null) {
             try {
-                mBarcodeReader = new BarcodeReader();
-                // Best Coverage settings
-                // mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestCoverage\",\"DeblurLevel\":9,\"ExpectedBarcodesCount\":512,\"ScaleDownThreshold\":100000,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"},{\"Mode\":\"LM_STATISTICS\"},{\"Mode\":\"LM_LINES\"},{\"Mode\":\"LM_STATISTICS_MARKS\"}],\"GrayscaleTransformationModes\":[{\"Mode\":\"GTM_ORIGINAL\"},{\"Mode\":\"GTM_INVERTED\"}]}}",
-                // EnumConflictMode.CM_OVERWRITE);
-                // Best Speed settings
-                // mbarcodeReader.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"BestSpeed\",\"DeblurLevel\":3,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_SCAN_DIRECTLY\"}],\"TextFilterModes\":[{\"MinImageDimension\":262144,\"Mode\":\"TFM_GENERAL_CONTOUR\"}]}}",
-                // EnumConflictMode.CM_OVERWRITE);
-                // Balance settings
-                mBarcodeReader.initRuntimeSettingsWithString(
-                        "{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}",
-                        EnumConflictMode.CM_OVERWRITE);
-                PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
-                settings.intermediateResultTypes = EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE;
-                settings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED | EnumBarcodeFormat.BF_DATAMATRIX
-                        | EnumBarcodeFormat.BF_QR_CODE | EnumBarcodeFormat.BF_PDF417;
-                settings.barcodeFormatIds_2 = 0;
-                mBarcodeReader.updateRuntimeSettings(settings);
+                mRouter = new CaptureVisionRouter(context);
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
@@ -102,27 +60,21 @@ public class BarcodeManager {
         return 0;
     }
 
-    public void setLicense(String license, final Result result) {
-        BarcodeReader.initLicense(
-            license,
-                new DBRLicenseVerificationListener() {
-                    @Override
-                    public void DBRLicenseVerificationCallback(boolean isSuccessful, Exception e) {
-                        if (isSuccessful)
-                        {
-                            result.success(0);
-                        }
-                        else {
-                            result.success(-1);
-                        }
-                    }
-                });
+    public void setLicense(String license, final Result result, Context context) {
+        LicenseManager.initLicense(license, context, (isSuccess, error) -> {
+            if (!isSuccess) {
+                result.success(-1);
+            }
+            else {
+                result.success(0);
+            }
+        });
     }
 
     public List<Map<String, Object>> decodeFile(String filename) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         try {
-            TextResult[] results = mBarcodeReader.decodeFile(filename, "");
+            CapturedResult results = mRouter.capture(filename, "");
             wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +87,7 @@ public class BarcodeManager {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes != null ? bytes.length : 0);
         try {
-            TextResult[] results = mBarcodeReader.decodeBufferedImage(bitmap, "");
+            CapturedResult results = mRouter.capture(bitmap, "");
             wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +98,13 @@ public class BarcodeManager {
     public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         try {
-            TextResult[] results = mBarcodeReader.decodeBuffer(bytes, width, height, stride, format, "");
+            ImageData imageData = new ImageData();
+            imageData.bytes = bytes;
+            imageData.width = width;
+            imageData.height = height;
+            imageData.stride = stride;
+            imageData.format = format;
+            CapturedResult results = mRouter.capture(imageData, "");
             wrapResults(results, ret);
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,9 +114,9 @@ public class BarcodeManager {
 
     public int setBarcodeFormats(int formats) {
         try {
-            PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
-            settings.barcodeFormatIds = formats;
-            mBarcodeReader.updateRuntimeSettings(settings);
+            SimplifiedCaptureVisionSettings settings = mRouter.getSimplifiedSettings("");
+            settings.barcodeSettings.barcodeFormatIds = formats;
+            mRouter.updateSettings("", settings);
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,7 +126,7 @@ public class BarcodeManager {
 
     public String getParameters() {
         try {
-            return mBarcodeReader.outputSettingsToString("currentRuntimeSettings");
+            return mRouter.outputSettings("");
         } catch (Exception e) {
             return e.toString();
         }
@@ -176,8 +134,7 @@ public class BarcodeManager {
 
     public int setParameters(String params) {
         try {
-            PublicRuntimeSettings settings = mBarcodeReader.getRuntimeSettings();
-            mBarcodeReader.initRuntimeSettingsWithString(params, EnumConflictMode.CM_OVERWRITE);
+            mRouter.initSettings(params);
             return 0;
         } catch (Exception e) {
             return -1;

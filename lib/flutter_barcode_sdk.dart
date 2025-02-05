@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
+import 'template.dart';
+
 /// Defines the supported image pixel formats.
 enum ImagePixelFormat {
   /// Binary format (0: Black, 1: White).
@@ -132,6 +134,8 @@ class FlutterBarcodeSdk {
   ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> init() async {
-    return await _channel.invokeMethod('init');
+    int ret = await _channel.invokeMethod('init');
+    ret = await setParameters(template);
+    return ret;
   }
 }

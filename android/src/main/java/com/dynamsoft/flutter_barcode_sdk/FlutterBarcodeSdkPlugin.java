@@ -1,5 +1,6 @@
 package com.dynamsoft.flutter_barcode_sdk;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -26,11 +27,14 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
+    private Context context;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_barcode_sdk");
         channel.setMethodCallHandler(this);
+
+        context = flutterPluginBinding.getApplicationContext();
     }
 
     private BarcodeManager mBarcodeManager;
@@ -48,13 +52,13 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "init": {
-                int ret = mBarcodeManager.init();
+                int ret = mBarcodeManager.init(context);
                 result.success(ret);
             }
             break;
             case "setLicense": {
                 final String license = call.argument("license");
-                mBarcodeManager.setLicense(license, result);
+                mBarcodeManager.setLicense(license, result, context);
             }
             break;
             case "decodeFile": {
@@ -115,5 +119,6 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
+        context = null;
     }
 }
