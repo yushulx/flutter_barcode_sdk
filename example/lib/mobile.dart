@@ -23,7 +23,7 @@ class Mobile extends StatefulWidget {
   MobileState createState() => MobileState();
 }
 
-class MobileState extends State<Mobile> {
+class MobileState extends State<Mobile> with WidgetsBindingObserver {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
   FlutterBarcodeSdk? _barcodeReader;
@@ -35,22 +35,28 @@ class MobileState extends State<Mobile> {
   @override
   void initState() {
     super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
-    _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      widget.camera,
-      // Define the resolution to use.
-      ResolutionPreset.medium,
-    );
+    WidgetsBinding.instance.addObserver(this); // Add observer for app lifecycle
 
-    // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller!.initialize().then((_) {
-      _previewSize = _controller!.value.previewSize!;
-      setState(() {});
-    });
+    _initializeCameraController();
     // Initialize Dynamsoft Barcode Reader
     initBarcodeSDK();
+  }
+
+  Future<void> _initializeCameraController() async {
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.max,
+    );
+
+    _initializeControllerFuture = _controller!.initialize().then((_) {
+      if (mounted) {
+        setState(() {
+          _previewSize = _controller!.value.previewSize!;
+        });
+      }
+    }).catchError((error) {
+      print("Error initializing camera: $error");
+    });
   }
 
   Future<void> initBarcodeSDK() async {
@@ -190,8 +196,24 @@ class MobileState extends State<Mobile> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final CameraController? cameraController = _controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      stopVideo();
+    } else if (state == AppLifecycleState.resumed) {
+      startVideo();
+    }
+  }
+
+  @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
+    WidgetsBinding.instance.removeObserver(this); // Remove observer
     _controller?.dispose();
     super.dispose();
   }
