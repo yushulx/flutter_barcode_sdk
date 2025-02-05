@@ -37,7 +37,7 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this); // Add observer for app lifecycle
 
-    _initializeCameraController();
+    // _initializeCameraController();
     // Initialize Dynamsoft Barcode Reader
     initBarcodeSDK();
   }
@@ -48,15 +48,16 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
       ResolutionPreset.high,
     );
 
-    _initializeControllerFuture = _controller!.initialize().then((_) {
-      if (mounted) {
-        setState(() {
-          _previewSize = _controller!.value.previewSize!;
-        });
-      }
-    }).catchError((error) {
-      print("Error initializing camera: $error");
-    });
+    try {
+      await _controller!.initialize();
+      _previewSize = _controller!.value.previewSize!;
+    } on CameraException catch (e) {
+      print(e);
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> initBarcodeSDK() async {
@@ -67,8 +68,6 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
   }
 
   void pictureScan() async {
-    if (_isScanRunning) stopVideo();
-
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -124,6 +123,7 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
   }
 
   void startVideo() async {
+    await _initializeCameraController();
     setState(() {
       _buttonText = 'Stop Video Scan';
     });
@@ -179,7 +179,11 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
       _results = [];
     });
     _isScanRunning = false;
-    await _controller!.stopImageStream();
+    if (_controller != null && _controller!.value.isInitialized) {
+      await _controller!.stopImageStream();
+      _controller?.dispose();
+      _controller = null;
+    }
   }
 
   void videoScan() async {
@@ -209,7 +213,7 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this); // Remove observer
-    _controller?.dispose();
+    stopVideo();
     super.dispose();
   }
 
