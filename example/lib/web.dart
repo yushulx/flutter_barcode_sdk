@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
@@ -9,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'license.dart';
 import 'overlay_painter.dart';
 import 'scanner_screen.dart';
+
+import 'dart:ui' as ui;
 
 class Web extends StatefulWidget {
   @override
@@ -82,8 +85,23 @@ class _WebState extends State<Web> {
       });
 
       if (_fileUrl != null) {
-        _barcodeResultsList =
-            await _barcodeReader!.decodeFile(_fileUrl!); // Pass the URL
+        // _barcodeResultsList =
+        //     await _barcodeReader!.decodeFile(_fileUrl!); // Pass the URL
+        Uint8List fileBytes = await pickedFile.readAsBytes();
+
+        ui.Image image = await decodeImageFromList(fileBytes);
+        ByteData? byteData =
+            await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+
+        if (byteData != null) {
+          _barcodeResultsList = await _barcodeReader!.decodeImageBuffer(
+              byteData.buffer.asUint8List(),
+              image.width,
+              image.height,
+              byteData.lengthInBytes ~/ image.height,
+              ImagePixelFormat.IPF_ARGB_8888.index);
+        }
+
         updateResults(_barcodeResultsList);
       }
     } else {

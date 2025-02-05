@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:js/js.dart';
 import 'utils.dart';
+import 'dart:js_util';
 
 @JS()
 @anonymous
@@ -181,13 +182,13 @@ class BarcodeManager {
   /// define the dimensions and structure of the image.
   Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
       Uint8List bytes, int width, int height, int stride, int format) async {
-    final dsImage = {
+    final dsImage = jsify({
       'bytes': bytes,
       'width': width,
       'height': height,
       'stride': stride,
-      'format': format
-    };
+      'format': format,
+    });
 
     CapturedResult barcodeResults =
         await handleThenable(_barcodeReader!.capture(dsImage, ""));

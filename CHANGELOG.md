@@ -1,3 +1,6 @@
+## 3.0.1
+* Fix decodeImageBuffer() for web.
+
 ## 3.0.0
 * Update iOS SDK to v10.x.
 
