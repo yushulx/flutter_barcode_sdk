@@ -1,7 +1,7 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can read various barcode types such as linear barcode, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. The project is actively maintained by community contributors.
+The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can decode various barcode types such as linear barcodes, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. It empowers developers to effortlessly build 1D/2D barcode readers and scanners. The project is actively maintained by community contributors.
 
 > **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
