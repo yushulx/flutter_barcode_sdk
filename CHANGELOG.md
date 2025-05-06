@@ -1,3 +1,7 @@
+## 3.0.2
+* Fix setBarcodeFormats() for Web.
+* Update dependencies for Andriod and iOS.
+
 ## 3.0.1
 * Fix decodeImageBuffer() for web.
 
