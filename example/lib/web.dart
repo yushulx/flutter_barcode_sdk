@@ -43,6 +43,9 @@ class _WebState extends State<Web> {
     int ret = await _barcodeReader!.setParameters(params);
     print('Parameter update: $ret');
 
+    // ret = await _barcodeReader!.setBarcodeFormats(BarcodeFormat.ONED);
+    // print('setBarcodeFormats: $ret');
+
     setState(() {
       _isSDKLoaded = true;
     });

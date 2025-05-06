@@ -2,7 +2,6 @@
 library dynamsoft;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:js/js.dart';
 import 'utils.dart';
@@ -73,7 +72,7 @@ class CaptureVisionRouter {
 
   /// Updates simplified runtime settings with a JSON string.
   external PromiseJsImpl<void> updateSettings(
-      String templateName, String settings);
+      String templateName, dynamic settings);
 
   /// Outputs the current runtime settings as a JSON string.
   external PromiseJsImpl<dynamic> outputSettings(String templateName);
@@ -125,17 +124,29 @@ class BarcodeManager {
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
     try {
-      dynamic settings =
+      dynamic rawSettings =
           await handleThenable(_barcodeReader!.getSimplifiedSettings(""));
-      Map obj = json.decode(stringify(settings));
+      dynamic dartSettings = dartify(rawSettings);
+      Map obj = convertBigIntsToInts(dartSettings);
       obj['barcodeSettings']['barcodeFormatIds'] = formats;
-      await handleThenable(
-          _barcodeReader!.updateSettings("", json.encode(obj)));
+      await handleThenable(_barcodeReader!.updateSettings("", jsify(obj)));
     } catch (e) {
       print(e);
       return -1;
     }
     return 0;
+  }
+
+  // Recursively convert all BigInt values to int
+  dynamic convertBigIntsToInts(dynamic data) {
+    if (data is Map) {
+      return data.map((k, v) => MapEntry(k, convertBigIntsToInts(v)));
+    } else if (data is List) {
+      return data.map(convertBigIntsToInts).toList();
+    } else if (data is BigInt) {
+      return data.toInt();
+    }
+    return data;
   }
 
   /// Converts raw barcode scan results from a JavaScript array into a Dart-compatible structure.
