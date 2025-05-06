@@ -29,26 +29,26 @@ packages:
     dependency: transitive
     description:
       name: camera_android
-      sha256: "007c57cdcace4751014071e3d42f2eb8a64a519254abed35b714223d81d66234"
+      sha256: bd9737671a00d979e0310a946e5be2fdc621b6a36b95378755cb3e4498e61485
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.10"
+    version: "0.10.10+2"
   camera_avfoundation:
     dependency: transitive
     description:
       name: camera_avfoundation
-      sha256: "55eb9c216f25339a3faa55fc42826e2c4a45becefa1387fd50fce6ae9dd0c574"
+      sha256: ca36181194f429eef3b09de3c96280f2400693f9735025f90d1f4a27465fdd72
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.18+1"
+    version: "0.9.19"
   camera_platform_interface:
     dependency: transitive
     description:
       name: camera_platform_interface
-      sha256: "953e7baed3a7c8fae92f7200afeb2be503ff1a17c3b4e4ed7b76f008c2810a31"
+      sha256: "2f757024a48696ff4814a789b0bd90f5660c0fb25f393ab4564fb483327930e2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.0"
+    version: "2.10.0"
   camera_web:
     dependency: transitive
     description:
@@ -125,10 +125,10 @@ packages:
     dependency: transitive
     description:
       name: file_selector_android
-      sha256: "98ac58e878b05ea2fdb204e7f4fc4978d90406c9881874f901428e01d3b18fbc"
+      sha256: "6bba3d590ee9462758879741abc132a19133600dd31832f55627442f1ebd7b54"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.1+12"
+    version: "0.5.1+14"
   file_selector_ios:
     dependency: transitive
     description:
@@ -173,10 +173,10 @@ packages:
     dependency: transitive
     description:
       name: file_selector_windows
-      sha256: "8f5d2f6590d51ecd9179ba39c64f722edc15226cc93dcc8698466ad36a4a85a4"
+      sha256: "320fcfb6f33caa90f0b58380489fc5ac05d99ee94b61aa96ec2bff0ba81d3c2b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+3"
+    version: "0.9.3+4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -188,7 +188,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.6.0"
+    version: "3.0.1"
   flutter_lite_camera:
     dependency: "direct main"
     description:
@@ -201,10 +201,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "615a505aef59b151b46bbeef55b36ce2b6ed299d160c51d84281946f0aa0ce0e"
+      sha256: f948e346c12f8d5480d2825e03de228d0eb8c3a737e4cdaa122267b89c022b5e
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.24"
+    version: "2.0.28"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -219,10 +219,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: fe7ab022b76f3034adc518fb6ea04a82387620e19977665ea18d30a1cf43442f
+      sha256: "2c11f3f94c687ee9bad77c171151672986360b2b001d109814ee7140b2cf261b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
   http_parser:
     dependency: transitive
     description:
@@ -243,10 +243,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: b62d34a506e12bb965e824b6db4fbf709ee4589cf5d3e99b45ab2287b008ee0c
+      sha256: "317a5d961cec5b34e777b9252393f2afbd23084aa6e60fcf601dcf6341b9ebeb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+20"
+    version: "0.8.12+23"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -267,10 +267,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_linux
-      sha256: "4ed1d9bb36f7cd60aa6e6cd479779cc56a4cb4e4de8f49d487b1aaad831300fa"
+      sha256: "34a65f6740df08bbbeb0a1abd8e6d32107941fd4868f67a507b25601651022c9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.1+1"
+    version: "0.2.1+2"
   image_picker_macos:
     dependency: transitive
     description:
@@ -379,10 +379,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "4adf4fd5423ec60a29506c76581bc05854c55e3a0b72d35bb28d661c9686edf2"
+      sha256: d0d310befe2c8ab9e7f393288ccbb11b60c019c6b5afc21973eeee4dda2b35e9
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.15"
+    version: "2.2.17"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -520,10 +520,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
+      sha256: "868d88a33d8a87b18ffc05f9f030ba328ffefba92d6c127917a2ba740f9cfe4a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -534,4 +534,4 @@ packages:
     version: "1.1.0"
 sdks:
   dart: ">=3.6.0 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.27.0"
