@@ -1,3 +1,6 @@
+## 3.0.3
+* Updated C++ SDK for Windows and Linux.
+
 ## 3.0.2
 * Fix setBarcodeFormats() for Web.
 * Update dependencies for Andriod and iOS.
