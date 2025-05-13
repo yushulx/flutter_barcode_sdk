@@ -20,9 +20,7 @@
 
 #include "DynamsoftCore.h"
 
-#define DLR_VERSION                  "3.4.20.2248"
-
-/**Enumeration section*/
+#define DLR_VERSION                  "4.0.10.3895"
 
 /**
 * @enum RawTextLineStatus
@@ -46,29 +44,29 @@ typedef enum RawTextLineStatus
 /**Structures section*/
 
 #pragma pack(push)
-#pragma pack(1)
+#pragma pack(4)
 
 /**
 * The SimplifiedLabelRecognizerSettings struct contains settings for label recognition. It is a sub-parameter of SimplifiedCaptureVisionSettings.
 */
 typedef struct tagSimplifiedLabelRecognizerSettings
 {
-	/**Set the grayscale transformation modes with an array of enumeration GrayscaleTransformationMode.*/
+	/**Sets the grayscale transformation modes with an array of enumeration GrayscaleTransformationMode.*/
 	GrayscaleTransformationMode grayscaleTransformationModes[8];
 
-	/**Set the grayscale enhancement modes with an array of enumeration GrayscaleEnhancementMode.*/
+	/**Sets the grayscale enhancement modes with an array of enumeration GrayscaleEnhancementMode.*/
 	GrayscaleEnhancementMode grayscaleEnhancementModes[8];
 
-	/**Specify a character model by its name.*/
+	/**Specifies a character model by its name.*/
 	char characterModelName[64];
 
-	/**Set the RegEx pattern of the text line string for error correction and filtering.*/
+	/**Sets the RegEx pattern of the text line string for error correction and filtering.*/
 	char lineStringRegExPattern[1024];
 
-	/**Set the maximum available threads count in one label recognition task.*/
+	/**Sets the maximum available threads count in one label recognition task.*/
 	int maxThreadsInOneTask;
 
-	/**Set the threshold for image shrinking. If the shorter edge size exceeds the specified threshold value,
+	/**Sets the threshold for image shrinking. If the shorter edge size exceeds the specified threshold value,
 	* the library will calculate the resized height and width of the image and and perform shrinking.
 	*/
 	int scaleDownThreshold;
@@ -89,6 +87,8 @@ namespace dynamsoft
 {
 	namespace dlr
 	{
+#pragma pack(push)
+#pragma pack(4)
 
 		/**
 		* The `CCharacterResult` class represents the result of a character recognition process. It contains the characters recognized (high, medium, and low confidence), their respective confidences, and the location of the character in a quadrilateral shape.
@@ -168,6 +168,14 @@ namespace dynamsoft
 				*
 				*/
 				virtual int GetRowNumber() const = 0;
+
+				/**
+				 * Sets the location of the localized text line element.
+				 *
+				 * @param location The location of the localized text line element.
+				 * @return Returns 0 if success, otherwise an error code.
+				 */
+				virtual int SetLocation(const CQuadrilateral& location) = 0;
 			};
 
 			/**
@@ -246,6 +254,14 @@ namespace dynamsoft
 				*
 				*/
 				virtual const char* GetRawText() const = 0;
+
+				/**
+				 * Sets the location of the recognized text line element.
+				 *
+				 * @param location The location of the recognized text line element.
+				 * @return Returns 0 if success, otherwise an error code.
+				 */
+				virtual int SetLocation(const CQuadrilateral& location) = 0;
 			};
 
 			/**
@@ -324,9 +340,9 @@ namespace dynamsoft
 			};
 
 			/**
-			* The `CRecognizedTextLinesUnit` class represents an intermediate result unit containing recognized text lines. It inherits from the `CIntermediateResultUnit` class.
-			*
-			*/
+						* The `CRecognizedTextLinesUnit` class represents an intermediate result unit containing recognized text lines. It inherits from the `CIntermediateResultUnit` class.
+						*
+						*/
 			class DLR_API CRecognizedTextLinesUnit : public CIntermediateResultUnit
 			{
 			protected:
@@ -501,7 +517,7 @@ namespace dynamsoft
 				virtual void Release() = 0;
 
 				/**
-				* Clone the CRawTextLine object.
+				* Clones the CRawTextLine object.
 				*
 				* @return Returns a pointer to a copy of the CRawTextLine object.
 				*
@@ -525,6 +541,16 @@ namespace dynamsoft
 				*
 				*/
 				virtual int SetSpecificationName(const char* specificationName) = 0;
+
+				/**
+				* Sets the character recognition results.
+				*
+				* @param [in] charArray The character result array.
+				* @param [in] charArrayLength The length of the character result array.
+				* @return Returns 0 if success, otherwise an error code.
+				*
+				*/
+				virtual int SetCharacterResults(const CCharacterResult* charArray, int charArrayLength) = 0;
 			};
 
 			/**
@@ -690,7 +716,7 @@ namespace dynamsoft
 		* The `CRecognizedTextLinesResult` class represents the result of a text recognition process. It provides access to information about the recognized text lines, the source image, and any errors that occurred during the recognition process.
 		*
 		*/
-		class DLR_API CRecognizedTextLinesResult
+		class DLR_API CRecognizedTextLinesResult : public CCapturedResultBase
 		{
 		protected:
 			/**
@@ -699,30 +725,6 @@ namespace dynamsoft
 			virtual ~CRecognizedTextLinesResult() {};
 
 		public:
-			/**
-			* Gets the hash ID of the original image.
-			*
-			* @return Returns a pointer to a null-terminated string containing the hash ID of the original image.
-			*
-			*/
-			virtual const char* GetOriginalImageHashId() const = 0;
-
-			/**
-			* Gets the tag of the original image.
-			*
-			* @return Returns a pointer to a CImageTag object representing the tag of the original image.
-			*
-			*/
-			virtual const CImageTag* GetOriginalImageTag() const = 0;
-
-			/**
-			 * Get the rotation transformation matrix of the original image relative to the rotated image.
-			 *
-			 * @param [out] matrix A double array which represents the rotation transform matrix.
-			 *
-			 */
-			virtual void GetRotationTransformMatrix(double matrix[9]) const = 0;
-
 			/**
 			* Gets the number of text line result items in the recognition result.
 			*
@@ -742,7 +744,7 @@ namespace dynamsoft
 			virtual const CTextLineResultItem* GetItem(int index) const = 0;
 
 			/**
-			 * Remove a specific item from the array in the recognition result.
+			 * Removes a specific item from the array in the recognition result.
 			 *
 			 * @param [in] item The specific item to remove.
 			 *
@@ -752,7 +754,7 @@ namespace dynamsoft
 			virtual int RemoveItem(const CTextLineResultItem* item) = 0;
 
 			/**
-			 * Check if the item is present in the array.
+			 * Checks if the item is present in the array.
 			 *
 			 * @param [in] item The specific item to check.
 			 *
@@ -760,22 +762,6 @@ namespace dynamsoft
 			 *
 			 */
 			virtual bool HasItem(const CTextLineResultItem* item) const = 0;
-
-			/**
-			* Gets the error code of the recognition result, if an error occurred.
-			*
-			* @return Returns the error code of the recognition result, or 0 if no error occurred.
-			*
-			*/
-			virtual int GetErrorCode() const = 0;
-
-			/**
-			* Gets the error message of the recognition result, if an error occurred.
-			*
-			* @return Returns a pointer to a null-terminated string containing the error message of the recognition result, or a pointer to an empty string if no error occurred.
-			*
-			*/
-			virtual const char* GetErrorString() const = 0;
 
 			/**
 			* Gets the text line result item at the specified index.
@@ -825,21 +811,21 @@ namespace dynamsoft
 			static const char* GetVersion();
 
 			/**
-			 * @brief Create a Recognized Text Line Element object
+			 * @brief Creates a Recognized Text Line Element object
 			 *
 			 * @return An instance of CRecognizedTextLineElement
 			 */
 			static intermediate_results::CRecognizedTextLineElement* CreateRecognizedTextLineElement();
 
 			/**
-			 * @brief Create a Localized Text Line Element object
+			 * @brief Creates a Localized Text Line Element object
 			 *
 			 * @return An instance of CLocalizedTextLineElement
 			 */
 			static intermediate_results::CLocalizedTextLineElement* CreateLocalizedTextLineElement();
-
+			
 			/**
-			 * @brief Create a Raw Text Line object
+			 * @brief Creates a Raw Text Line object
 			 *
 			 * @return An instance of CRawTextLine
 			 */
@@ -992,7 +978,7 @@ namespace dynamsoft
 			*/
 			virtual const CCharacterCluster* GetCharacterCluster(int index) const = 0;
 		};
-
+#pragma pack(pop)
 	}
 }
 #endif

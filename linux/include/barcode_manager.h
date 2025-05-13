@@ -3,7 +3,6 @@
 
 #include "DynamsoftCaptureVisionRouter.h"
 #include "DynamsoftUtility.h"
-#include "template.h"
 
 #include <vector>
 #include <iostream>
@@ -146,13 +145,6 @@ public:
     int Init()
     {
         handler = new CCaptureVisionRouter;
-        char errorMsgBuffer[256];
-        int ret = handler->InitSettings(jsonString.c_str(), errorMsgBuffer, 256);
-        if (ret)
-        {
-            printf("InitSettings: %s\n", errorMsgBuffer);
-            return ret;
-        }
 
         fileFetcher = new CFileFetcher();
         handler->SetInput(fileFetcher);

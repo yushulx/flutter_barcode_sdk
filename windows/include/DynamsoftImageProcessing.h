@@ -13,12 +13,14 @@
 #endif
 #include "DynamsoftCore.h"
 
-#define DIP_VERSION                  "2.4.20.2248"
+#define DIP_VERSION                  "3.0.10.3895"
 
 namespace dynamsoft
 {
 	namespace dip
 	{
+#pragma pack(push)
+#pragma pack(4)
 		/**
 		 * The CImageProcessingModule class defines general functions in the image processing module.
 		 */
@@ -39,5 +41,6 @@ namespace dynamsoft
 			 */
 			static intermediate_results::CPredetectedRegionElement* CreatePredetectedRegionElement();
 		};
+#pragma pack(pop)
 	}
 }

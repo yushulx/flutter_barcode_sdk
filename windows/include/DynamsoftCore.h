@@ -1,5 +1,5 @@
 #pragma once
-#define DYNAMSOFT_CORE_VERSION "3.4.20.2248"
+#define DYNAMSOFT_CORE_VERSION "4.0.10.3895"
 
 /**Enumeration section*/
 
@@ -155,7 +155,7 @@ typedef enum ErrorCode {
 	/**DynamsoftDocumentNormalizer*/
 	EC_MODULE_NOT_FOUND = -10065,
 	
-	/**The api does not support multi-page files. Please use FileFetcher instead.*/
+	/**The api does not support multi-page files. Please use CaptureMultiPages instead.*/
 	EC_MULTI_PAGES_NOT_SUPPORTED = -10066,
 
 	/**The file already exists but overwriting is disabled.*/
@@ -176,7 +176,7 @@ typedef enum ErrorCode {
 
 	/**The section level result is irreplaceable.*/
 	EC_SECTION_LEVEL_RESULT_IRREPLACEABLE = -10072,
-
+		
 	/**The axis definition is incorrect.*/
 	EC_AXIS_DEFINITION_INCORRECT = -10073,
 
@@ -188,6 +188,19 @@ typedef enum ErrorCode {
 
 	/**The license is initialized successfully but detected invalid content in your key.*/
 	EC_LICENSE_WARNING = -10076,
+	
+	/**One or more unsupported JSON keys were encountered and ignored from the template.*/
+	EC_UNSUPPORTED_JSON_KEY_WARNING = -10077,
+	
+	/**Model file is not found.*/
+	EC_MODEL_FILE_NOT_FOUND = -10078,
+
+	/**[PDF] No license found.*/
+	EC_PDF_LICENSE_NOT_FOUND = -10079,
+
+	/**The rectangle is invalid.*/
+	EC_RECT_INVALID = -10080,
+
 	/** -20000~-29999: DLS license error code. */
 	/**No license.*/
 	EC_NO_LICENSE = -20000,
@@ -201,7 +214,7 @@ typedef enum ErrorCode {
 	/**Failed to synchronize license info with license server. */
 	EC_LICENSE_SYNC_FAILED = -20003,
 
-	/**Device dose not match with buffer. */
+	/**Device does not match with buffer. */
 	EC_DEVICE_NOT_MATCH = -20004,
 
 	/**Failed to bind device. */
@@ -284,17 +297,20 @@ typedef enum ErrorCode {
 	/**The barcode license is not found.*/
 	EC_BARCODE_READER_LICENSE_NOT_FOUND = -30063,
 
+
 	/**-40000~-49999: DLR error code*/
 	/**Character Model file is not found*/
 	EC_CHARACTER_MODEL_FILE_NOT_FOUND = -40100,
 
 	/**There is a conflict in the layout of TextLineGroup. */
 	EC_TEXT_LINE_GROUP_LAYOUT_CONFLICT = -40101,
+
 	/**There is a conflict in the regex of TextLineGroup. */
 	EC_TEXT_LINE_GROUP_REGEX_CONFLICT = -40102,
 
 	/**The label recognizer license is not found.*/
 	EC_LABEL_RECOGNIZER_LICENSE_NOT_FOUND = -40103,
+
 
 	/**-50000~-59999: DDN error code*/
 	/*The quardrilateral is invalid*/
@@ -302,6 +318,7 @@ typedef enum ErrorCode {
 
 	/**The document normalizer license is not found.*/
 	EC_DOCUMENT_NORMALIZER_LICENSE_NOT_FOUND = -50058,
+
 
 	/**-60000~-69999: DCE error code*/
 	/**-70000~-79999: Panorama error code*/
@@ -395,7 +412,7 @@ typedef enum ImagePixelFormat
 	IPF_BGR_888,
 
 	/**0:Black, 255:White */
-	IPF_BINARY_8,	
+	IPF_BINARY_8,
 
 	/**NV12 */
 	IPF_NV12,
@@ -424,10 +441,13 @@ typedef enum GrayscaleTransformationMode
 	/**Reserved setting for grayscale transformation mode.*/
 #if defined(_WIN32) || defined(_WIN64)
 	GTM_REV = 0x80000000,
+	/**Placeholder value with no functional meaning.*/
+	GTM_END = 0xFFFFFFFF,
 #else
 	GTM_REV = -2147483648,
+	/**Placeholder value with no functional meaning.*/
+	GTM_END = -1,
 #endif
-
 	/**Skips grayscale transformation. */
 	GTM_SKIP = 0x00
 
@@ -458,10 +478,13 @@ typedef enum GrayscaleEnhancementMode
 	/**Reserved setting for image preprocessing mode.*/
 #if defined(_WIN32) || defined(_WIN64)
 	GEM_REV = 0x80000000,
+	/**Placeholder value with no functional meaning.*/
+	GEM_END = 0xFFFFFFFF,
 #else
 	GEM_REV = -2147483648,
+	/**Placeholder value with no functional meaning.*/
+	GEM_END = -1,
 #endif
-
 	/**Skips image preprocessing. */
 	GEM_SKIP = 0x00
 } GrayscaleEnhancementMode;
@@ -524,11 +547,14 @@ typedef enum CapturedResultItemType
 	/** The type of the CapturedResultItem is "detected quad". */
 	CRIT_DETECTED_QUAD = 8,
 
-	/** The type of the CapturedResultItem is "normalized image". */
-	CRIT_NORMALIZED_IMAGE = 16,
-
+	/** The type of the CapturedResultItem is "deskewed image". */
+	CRIT_DESKEWED_IMAGE = 16,
+	
 	/** The type of the CapturedResultItem is "parsed result". */
-	CRIT_PARSED_RESULT = 32
+	CRIT_PARSED_RESULT = 32,
+
+	/** The type of the CapturedResultItem is "enhanced image". */
+	CRIT_ENHANCED_IMAGE = 64
 } CapturedResultItemType;
 
 /**
@@ -625,8 +651,11 @@ typedef enum SectionType
 	/**The result is output by "document detection" section.*/
 	ST_DOCUMENT_DETECTION,
 
-	/**The result is output by "document normalization" section.*/
-	ST_DOCUMENT_NORMALIZATION,
+	/**The result is output by "document deskewing" section.*/
+	ST_DOCUMENT_DESKEWING,
+
+	/**The result is output by "image enhancement" section.*/
+	ST_IMAGE_ENHANCEMENT
 } SectionType;
 
 /**
@@ -643,8 +672,8 @@ enum IntermediateResultUnitType : unsigned long long
 	/**The type of the IntermediateResult is "colour image".*/
 	IRUT_COLOUR_IMAGE = 1,
 
-	/**The type of the IntermediateResult is "scaled down colour image".*/
-	IRUT_SCALED_DOWN_COLOUR_IMAGE = 1 << 1,
+	/**The type of the IntermediateResult is "scaled colour image".*/
+	IRUT_SCALED_COLOUR_IMAGE = 1 << 1,
 
 	/**The type of the IntermediateResult is "grayscale image".*/
 	IRUT_GRAYSCALE_IMAGE = 1 << 2,
@@ -688,8 +717,8 @@ enum IntermediateResultUnitType : unsigned long long
 	/**The type of the IntermediateResult is "localized barcodes".*/
 	IRUT_LOCALIZED_BARCODES = 1 << 15,
 
-	/**The type of the IntermediateResult is "scale up barcode image".*/
-	IRUT_SCALED_UP_BARCODE_IMAGE = 1 << 16,
+	/**The type of the IntermediateResult is "scaled barcode image".*/
+	IRUT_SCALED_BARCODE_IMAGE = 1 << 16,
 
 	/**The type of the IntermediateResult is "deformation resisted barcode image".*/
 	IRUT_DEFORMATION_RESISTED_BARCODE_IMAGE = 1 << 17,
@@ -718,14 +747,20 @@ enum IntermediateResultUnitType : unsigned long long
 	/**The type of the IntermediateResult is "recognized text lines".*/
 	IRUT_RECOGNIZED_TEXT_LINES = 1 << 25,
 
-	/**The type of the IntermediateResult is "normalized image".*/
-	IRUT_NORMALIZED_IMAGES = 1 << 26,
-
+	/**The type of the IntermediateResult is "deskewed image".*/
+	IRUT_DESKEWED_IMAGE = 1 << 26,
+	
 	/**The type of the IntermediateResult is "short lines".*/
 	IRUT_SHORT_LINES = 1 << 27,
 
 	/**The type of the IntermediateResult is "text line groups".*/
-	IRUT_RAW_TEXT_LINES = 1LL << 28,
+	IRUT_RAW_TEXT_LINES = 1 << 28,
+
+	/**The type of the IntermediateResult is "logic line segment".*/
+	IRUT_LOGIC_LINES = 1 << 29,
+
+	/**The type of the IntermediateResult is "enhanced image".*/
+	IRUT_ENHANCED_IMAGE = 1ULL << 30,
 
 	/**The type of the IntermediateResult is "all".*/
 	IRUT_ALL = 0xFFFFFFFFFFFFFFFF
@@ -756,14 +791,17 @@ typedef enum RegionObjectElementType
 	/**The type of subclass DetectedQuadElement.*/
 	ROET_DETECTED_QUAD,
 
-	/**The type of subclass NormalizedImageElement.*/
-	ROET_NORMALIZED_IMAGE,
+	/**The type of subclass DeskewedImageElement.*/
+	ROET_DESKEWED_IMAGE,
 
 	/**The type of subclass SourceImageElement.*/
 	ROET_SOURCE_IMAGE,
 
 	/**The type of subclass TargetROIElement.*/
 	ROET_TARGET_ROI,
+
+	/**The type of subclass EnhancedImageElement.*/
+	ROET_ENHANCED_IMAGE
 } RegionObjectElementType;
 
 /**
@@ -824,13 +862,54 @@ typedef enum TransformMatrixType
 	TMT_ROTATED_TO_ORIGINAL_IMAGE,
 
 	/**Represents a transformation matrix that converts coordinates from the original image to the rotated image.*/
-	TMT_ORIGINAL_TO_ROTATED_IMAGE
+	TMT_ORIGINAL_TO_ROTATED_IMAGE,
+
+	/**Represents a transformation matrix that converts coordinates from the local image to the section image.*/
+	TMT_LOCAL_TO_SECTION_IMAGE,
+
+	/**Represents a transformation matrix that converts coordinates from the section image to the local image.*/
+	TMT_SECTION_TO_LOCAL_IMAGE
 
 }TransformMatrixType;
 
+/**
+* @enum CrossVerificationStatus
+*/
+typedef enum CrossVerificationStatus
+{
+	/**The cross verification has not been performed yet.*/
+	CVS_NOT_VERIFIED,
+
+	/**The cross verification has been passed successfully.*/
+	CVS_PASSED,
+
+	/**The cross verification has failed.*/
+	CVS_FAILED
+
+}CrossVerificationStatus;
+
+/**
+* @enum ImageFileFormat
+*/
+typedef enum ImageFileFormat
+{
+	/** JPEG image format.*/
+	IFF_JPEG = 0,
+
+	/** PNG image format.*/
+	IFF_PNG = 1,
+
+	/** BMP (Bitmap) image format.*/
+	IFF_BMP = 2,
+
+	/** PDF (portable Document Format) image format.*/
+	IFF_PDF = 3
+
+}ImageFileFormat;
+
 /**Structures section*/
 #pragma pack(push)
-#pragma pack(1)
+#pragma pack(4)
 
 /**
 * @struct IntermediateResultExtraInfo
@@ -909,7 +988,7 @@ namespace dynamsoft
 	{
 
 #pragma pack(push)
-#pragma pack(1)
+#pragma pack(4)
 
 		/**
 		 * A 3x3 matrix that represents an identity matrix.
@@ -931,12 +1010,29 @@ namespace dynamsoft
 		class DS_API CCoreModule
 		{
 		public:
+			
 			/**
 			 * Returns the version of the core module.
 			 *
 			 * @return Returns a const char pointer representing the version of the core module.
 			 */
 			static const char* GetVersion();
+
+			/**
+			* Allocates a block of memory.
+			*
+			* @param [in] length The number of bytes to allocate.
+			*
+			* @return Returns a pointer to the allocated memory.
+			*/
+			static void* AllocateBytes(size_t length);
+
+			/**
+			* Frees a block of memory.
+			*
+			* @param [in] ptr A pointer to the memory to free.
+			*/
+			static void FreeBytes(void* ptr);
 		};
 
 		/**
@@ -1082,7 +1178,7 @@ namespace dynamsoft
 		/**
 		 * The CPoint class represents a point in 2D space. It contains an array of two integers, which represent the coordinates of the point.
 		 */
-		//template class DS_API DMPoint_<int>;
+		template class DS_API DMPoint_<int>;
 		typedef DMPoint_<int> CPoint;
 
 		/**
@@ -1268,6 +1364,11 @@ namespace dynamsoft
 			*/
 			CPoint endPoint;
 
+			/**
+			* The ID of the line segment.
+			*/
+			int id;
+
 			virtual void Init();
 
 		public:
@@ -1284,6 +1385,16 @@ namespace dynamsoft
 			*
 			*/
 			CLineSegment(const CPoint& p1, const CPoint& p2);
+
+			/**
+			* Constructor
+			*
+			* @param [in] p1 The start point of the line segment.
+			* @param [in] p2 The end point of the line segment.
+			* @param [in] lineId The identifier of the line segment.
+			*
+			*/
+			CLineSegment(const CPoint& p1, const CPoint& p2, int lineId);
 
 			/**
 			* Destructor.
@@ -1315,6 +1426,14 @@ namespace dynamsoft
 			const CPoint& GetEndPoint() const { return endPoint; }
 
 			/**
+			* Retrieves the ID of the line segment.
+			*
+			* @return Returns the ID of the line segment.
+			*
+			*/
+			int GetId() const { return id; }
+
+			/**
 			* Sets the start point of the line segment.
 			*
 			* @param [in] pt The start point of the line segment.
@@ -1329,6 +1448,14 @@ namespace dynamsoft
 			*
 			*/
 			void SetEndPoint(const CPoint& pt);
+
+			/**
+			* Sets the ID of the line segment.
+			*
+			* @param [in] lineId The new ID to assign to the line segment.
+			*
+			*/
+			void SetId(int lineId);
 		};
 
 		/**
@@ -1377,36 +1504,6 @@ namespace dynamsoft
 		};
 
 		/**
-		* The CQuadrilateral class represents a quadrilateral shape in 2D space. It contains an array of four CPoint objects, which represent the vertices of the quadrilateral.
-		*/
-		class DS_API CQuadrilateral
-		{
-		public:
-			/**
-			* The point array of the quadrilateral.
-			*/
-			CPoint points[4];
-
-			/**
-			* Determines whether a point is inside the quadrilateral.
-			*
-			* @param [in] point The point to test.
-			*
-			* @return Returns true if the point inside the quadrilateral, false otherwise.
-			*
-			*/
-			bool Contains(const CPoint* point) const;
-
-			/**
-			* Gets the area of the quadrilateral.
-			*
-			* @return Returns the area of the quadrilateral.
-			*
-			*/
-			int GetArea() const;
-		};
-
-		/**
 		* The CRect class represents a rectangle in 2D space. It contains four integer values that specify the top, left, right, and bottom edges of the rectangle.
 		*/
 		class DS_API CRect
@@ -1431,6 +1528,54 @@ namespace dynamsoft
 			* The bottom edge of the rectangle.
 			*/
 			int bottom;
+
+			/**
+			* The ID of the rectangle.
+			*/
+			int id;
+		};
+
+		/**
+		* The CQuadrilateral class represents a quadrilateral shape in 2D space. It contains an array of four CPoint objects, which represent the vertices of the quadrilateral.
+		*/
+		class DS_API CQuadrilateral
+		{
+		public:
+			/**
+			* The point array of the quadrilateral.
+			*/
+			CPoint points[4];
+
+			/**
+			* The ID of the quadrilateral.
+			*/
+			int id;
+
+			/**
+			* Determines whether a point is inside the quadrilateral.
+			*
+			* @param [in] point The point to test.
+			*
+			* @return Returns true if the point inside the quadrilateral, false otherwise.
+			*
+			*/
+			bool Contains(const CPoint* point) const;
+
+			/**
+			* Gets the area of the quadrilateral.
+			*
+			* @return Returns the area of the quadrilateral.
+			*
+			*/
+			int GetArea() const;
+
+			/**
+			* Gets the bounding rectangle of the quadrilateral.
+			*
+			* @return Returns the bounding rectangle of the quadrilateral.
+			*
+			*/
+			CRect GetBoundingRect() const;
 		};
 
 		/**
@@ -1443,7 +1588,7 @@ namespace dynamsoft
 			ImageCaptureDistanceMode mode;
 		protected:
 			CImageTag();
-		public:
+		public:			
 			/**
 			* Destructor
 			*/
@@ -1680,35 +1825,35 @@ namespace dynamsoft
 			/**
 			* Constructs an image data object with the specified parameters.
 			*
-			* @param [in] _bytesLength The length of the image byte array.
-			* @param [in] _bytes The image byte array.
-			* @param [in] _width The width of the image.
-			* @param [in] _height The height of the image.
-			* @param [in] _stride The stride of the image.
-			* @param [in] _format The pixel format of the image.
-			* @param [in] _orientation The orientation of the image.
-			* @param [in] _tag The tag of the image.
+			* @param [in] bytesLength The length of the image byte array.
+			* @param [in] bytes The image byte array.
+			* @param [in] width The width of the image.
+			* @param [in] height The height of the image.
+			* @param [in] stride The stride of the image.
+			* @param [in] format The pixel format of the image.
+			* @param [in] orientation The orientation of the image.
+			* @param [in] tag The tag of the image.
 			*
 			*/
-			CImageData(unsigned long long _bytesLength, const unsigned char* _bytes, int _width, int _height, int _stride,
-				ImagePixelFormat _format, int _orientation = 0, const CImageTag* _tag = NULL);
+			CImageData(unsigned long long bytesLength, const unsigned char* bytes, int width, int height, int stride,
+				ImagePixelFormat format, int orientation = 0, const CImageTag* tag = NULL);
 
 			/**
 			* Constructs an image data object with the specified parameters.
 			*
-			* @param [in] _bytesLength The length of the image byte array.
-			* @param [in] _bytes The image byte array.
-			* @param [in] _freeBytesFunc The function to free the image byte array.
-			* @param [in] _width The width of the image.
-			* @param [in] _height The height of the image.
-			* @param [in] _stride The stride of the image.
-			* @param [in] _format The pixel format of the image.
-			* @param [in] _orientation The orientation of the image.
-			* @param [in] _tag The tag of the image.
+			* @param [in] bytesLength The length of the image byte array.
+			* @param [in] bytes The image byte array.
+			* @param [in] freeBytesFunc The function to free the image byte array.
+			* @param [in] width The width of the image.
+			* @param [in] height The height of the image.
+			* @param [in] stride The stride of the image.
+			* @param [in] format The pixel format of the image.
+			* @param [in] orientation The orientation of the image.
+			* @param [in] tag The tag of the image.
 			*
 			*/
-			CImageData(unsigned long long _bytesLength, const unsigned char* _bytes, FreeBytesFunc _freeBytesFunc, int _width, int _height, int _stride,
-				ImagePixelFormat _format, int _orientation = 0, const CImageTag* _tag = NULL);
+			CImageData(unsigned long long bytesLength, const unsigned char* bytes, FreeBytesFunc freeBytesFunc, int width, int height, int stride,
+				ImagePixelFormat format, int orientation = 0, const CImageTag* tag = NULL);
 
 			/**
 			* Destructs the image data object and frees the allocated memory.
@@ -1788,8 +1933,8 @@ namespace dynamsoft
 			void SetImageTag(const CImageTag* _tag);
 			
 		private:
-			//CImageData(const CImageData&);
-			//CImageData& operator=(const CImageData&);
+			CImageData(const CImageData&);
+			CImageData& operator=(const CImageData&);
 		};
 
 		/**
@@ -1841,7 +1986,7 @@ namespace dynamsoft
 			 * @return An object of CCapturedResultItem.
 			 */
 			virtual CCapturedResultItem* Retain() = 0;
-			
+
 			/**
 			* Decreases the reference count of the CCapturedResultItem object.
 			*
@@ -1849,7 +1994,7 @@ namespace dynamsoft
 			virtual void Release() = 0;
 
 			/**
-			 * Clone the captured result item.
+			 * Clones the captured result item.
 			 *
 			 * @return Returns a pointer to a copy of the captured result item.
 			 */
@@ -1875,6 +2020,60 @@ namespace dynamsoft
 			*
 			*/
 			virtual const CImageData* GetImageData() const = 0;
+		};
+
+		class DS_API CCapturedResultBase
+		{
+		protected:
+			/**
+			* Destructor
+			*/
+			virtual ~CCapturedResultBase() {}
+
+		public:
+			/**
+			 * Gets the hash ID of the original image.
+			 *
+			 * @return Returns a pointer to a null-terminated string that represents the hash ID of the original image.
+			 *
+			 */
+			virtual const char* GetOriginalImageHashId()const = 0;
+
+			/**
+			 * Gets the tag of the original image.
+			 *
+			 * @return Returns a pointer to a CImageTag object that represents the tag of the original image.
+			 *
+			 * @see CImageTag
+			 *
+			 */
+			virtual const CImageTag* GetOriginalImageTag()const = 0;
+
+			/**
+			 * Gets the rotation transformation matrix of the original image relative to the rotated image.
+			 *
+			 * @param [out] matrix A double array which represents the rotation transform matrix.
+			 *
+			 */
+			virtual void GetRotationTransformMatrix(double matrix[9]) const = 0;
+
+			/**
+			 * Gets the error code of the detection operation.
+			 *
+			 * @return Returns the error code.
+			 *
+			 * @see ErrorCode
+			 *
+			 */
+			virtual int GetErrorCode()const = 0;
+
+			/**
+			 * Gets the error message of the detection operation.
+			 *
+			 * @return Returns a pointer to a null-terminated string that represents the error message.
+			 *
+			 */
+			virtual const char* GetErrorString()const = 0;
 		};
 
 		/**
@@ -1928,7 +2127,7 @@ namespace dynamsoft
 			* Destructor
 			*/
 			virtual ~CImageSourceAdapter();
-
+			
 			/**
 			* Determines whether there are more images left to fetch.
 			*
@@ -2078,14 +2277,14 @@ namespace dynamsoft
 				rasterDataSource = RDS_RASTERIZED_PAGES;
 			}
 		};
-
-		
 #pragma pack(pop)
 	}
 
 	namespace intermediate_results {
 		using namespace basic_structures;
 
+#pragma pack(push)
+#pragma pack(4)
 		/**
 		* The CRegionObjectElement class represents an element of a region object in 2D space. It is an abstract class that provides the interface for region object elements.
 		*
@@ -2100,7 +2299,7 @@ namespace dynamsoft
 
 		public:
 			/**
-			* Get the location of the region object element.
+			* Gets the location of the region object element.
 			*
 			* @return Returns a CQuadrilateral object which represents the location of the region object element.
 			*
@@ -2108,7 +2307,7 @@ namespace dynamsoft
 			virtual CQuadrilateral GetLocation() const = 0;
 
 			/**
-			* Get a pointer to a referenced region object element.
+			* Gets a pointer to a referenced region object element.
 			*
 			* @return Returns a const pointer to a referenced CRegionObjectElement object.
 			*
@@ -2116,7 +2315,7 @@ namespace dynamsoft
 			virtual const CRegionObjectElement* GetReferencedElement() const = 0;
 
 			/**
-			* Get the type of the region object element.
+			* Gets the type of the region object element.
 			*
 			* @return Returns a RegionObjectElementType enum value which represents the type of the region object element.
 			*
@@ -2124,15 +2323,7 @@ namespace dynamsoft
 			virtual RegionObjectElementType GetElementType() const = 0;
 
 			/**
-			 * Set the location of the region object element.
-			 *
-			 * @param location The location of the region object element.
-			 * @return Returns 0 if success, otherwise an error code.
-			 */
-			virtual int SetLocation(const CQuadrilateral& location) = 0;
-
-			/**
-			 * Clone the region object element.
+			 * Clones the region object element.
 			 *
 			 * @return Returns a pointer to a copy of the region object element.
 			 */
@@ -2150,6 +2341,14 @@ namespace dynamsoft
 			*
 			*/
 			virtual void Release() = 0;
+
+			/**
+			* Gets the image data for the CRegionObjectElement.
+			*
+			* @return Returns a const pointer to the CImageData object that contains the image data for the CRegionObjectElement.
+			*
+			*/
+			virtual const CImageData* GetImageData() const = 0;
 		};
 
 		/**
@@ -2172,6 +2371,28 @@ namespace dynamsoft
 			*
 			*/
 			virtual const char* GetModeName() const = 0;
+
+			/**
+			 * Sets the location of the predetected region element.
+			 *
+			 * @param location The location of the predetected region element.
+			 * @return Returns 0 if success, otherwise an error code.
+			 */
+			virtual int SetLocation(const CQuadrilateral& location) = 0;
+
+			/**
+			 * Gets the label id of the predetected region element.
+			 *
+			 * @return Returns the label id of the predetected region element.
+			 */
+			virtual int GetLabelId() const = 0;
+
+			/**
+			 * Gets the label name of the predetected region element.
+			 *
+			 * @return Returns the label name of the predetected region element.
+			 */
+			virtual const char* GetLabelName() const = 0;
 		};
 
 		/**
@@ -2185,6 +2406,8 @@ namespace dynamsoft
 			CImageTag* originalImageTag;
 			double localToOriginalMatrix[9];
 			double rotatedToOriginalMatrix[9];
+			double localToSectionMatrix[9];
+			int usageCount;
 
 			/**
 			* Constructor
@@ -2299,6 +2522,10 @@ namespace dynamsoft
 			 * @return Returns 0 if succeeds, nonzero otherwise.
 			 */
 			virtual int Replace(CIntermediateResultUnit* unit) = 0;
+
+			int GetUsageCount() const;
+
+			void SetUsageCount(int usageCount);
 		};
 
 		/**
@@ -2364,15 +2591,15 @@ namespace dynamsoft
 		};
 
 		/**
-		* The CScaledDownColourImageUnit class represents an intermediate result unit that contains scaled down color image. It is derived from the CIntermediateResultUnit class.
+		* The CScaledColourImageUnit class represents an intermediate result unit that contains scaled color image. It is derived from the CIntermediateResultUnit class.
 		*/
-		class DS_API CScaledDownColourImageUnit : public CIntermediateResultUnit
+		class DS_API CScaledColourImageUnit : public CIntermediateResultUnit
 		{
 		protected:
 			/**
 			* Destructor
 			*/
-			virtual ~CScaledDownColourImageUnit() {};
+			virtual ~CScaledColourImageUnit() {};
 
 		public:
 			/**
@@ -2384,7 +2611,7 @@ namespace dynamsoft
 			virtual const CImageData* GetImageData() const = 0;
 
 			/**
-			 * Sets the image data of the scaled down color image unit.
+			 * Sets the image data of the scaled color image unit.
 			 *
 			 * @param imgData The image data to set.
 			 * @return Returns 0 if succeeds, nonzero otherwise.
@@ -2720,6 +2947,21 @@ namespace dynamsoft
 			 * @param charContoursCount The count of the character contours
 			 */
 			CTextZone(const CQuadrilateral& loc, const int charContoursIndices[], int charContoursCount);
+
+			/**
+			 * Copy constructor for CTextZone.
+			 *
+			 * @param textzone The reference to another CTextZone object.
+			 */
+			CTextZone(const CTextZone& textzone);
+
+			/**
+			 * Copy assignment operator for CTextZone.
+			 *
+			 * @param textzone The reference to another CTextZone object.
+			 * @return A reference to the copied CTextZone object.
+			 */
+			CTextZone& operator=(const CTextZone& textzone);
 
 			/**
 			 * Gets the location of the text zone
@@ -3089,7 +3331,7 @@ namespace dynamsoft
 			virtual bool IsTaskObserved(const char* taskName) const = 0;
 
 			/**
-			* Set the type of intermediate result unit that indicates skipping default calculations and replacing with input data units.
+			* Sets the type of intermediate result unit that indicates skipping default calculations and replacing with input data units.
 			*
 			* @param types The type of intermediate result unit that serves as the combination value of IntermediateResultUnitType.
 			*/
@@ -3167,6 +3409,7 @@ namespace dynamsoft
 			*/
 			virtual void OnTaskResultsReceivedInner(CIntermediateResult *pResult, const IntermediateResultExtraInfo* info) = 0;
 		};
+#pragma pack(pop)
 	}
 }
 

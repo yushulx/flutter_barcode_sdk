@@ -21,8 +21,23 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter DynamsoftCore DynamsoftLicense DynamsoftCaptureVisionRouter DynamsoftUtility)
 target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
 
+set_target_properties(${PLUGIN_NAME} PROPERTIES
+  INSTALL_RPATH "$ORIGIN"
+  BUILD_RPATH "$ORIGIN"
+)
+
 # List of absolute paths to libraries that should be bundled with the plugin
 set(flutter_barcode_sdk_bundled_libraries
   ""
   PARENT_SCOPE
+)
+
+install(DIRECTORY 
+  "${PROJECT_SOURCE_DIR}/../linux/lib/"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/"
+)
+
+install(DIRECTORY 
+  "${PROJECT_SOURCE_DIR}/../resources/Templates"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/"
 )

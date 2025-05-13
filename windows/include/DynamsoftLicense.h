@@ -1,6 +1,6 @@
 #pragma once
 
-#define DYNAMSOFT_LICENSE_VERSION "3.4.20.2248"
+#define DYNAMSOFT_LICENSE_VERSION "4.0.10.3895"
 
 #if !defined(_WIN32) && !defined(_WIN64)
 #define LIC_API __attribute__((visibility("default")))
@@ -19,6 +19,8 @@ namespace dynamsoft
 {
 	namespace license
 	{
+#pragma pack(push)
+#pragma pack(4)
 		/**
 		* The CLicenseManager class provides a set of APIs to manage SDK licensing.
 		*
@@ -88,6 +90,7 @@ namespace dynamsoft
 		 */
 			static const char* GetVersion();
 		};
+#pragma pack(pop)
 	}
 }
 #endif

@@ -19,7 +19,7 @@
 #endif
 #include "DynamsoftCore.h"
 
-#define DDN_VERSION                  "2.4.20.2248"
+#define DDN_VERSION                  "3.0.10.3895"
 
 /**Enums section*/
 
@@ -43,43 +43,43 @@ typedef enum ImageColourMode
 /**Structures section*/
 
 #pragma pack(push)
-#pragma pack(1)
+#pragma pack(4)
 
 /**
 * The SimplifiedDocumentNormalizerSettings struct contains settings for document normalization. It is a sub-parameter of SimplifiedCaptureVisionSettings.
 */
 typedef struct SimplifiedDocumentNormalizerSettings
 {
-	/**Set the grayscale transformation modes with an array of enumeration GrayscaleTransformationMode.*/
+	/**Sets the grayscale transformation modes with an array of enumeration GrayscaleTransformationMode.*/
 	GrayscaleTransformationMode grayscaleTransformationModes[8];
 
-	/**Set the grayscale enhancement modes with an array of enumeration GrayscaleEnhancementMode.*/
+	/**Sets the grayscale enhancement modes with an array of enumeration GrayscaleEnhancementMode.*/
 	GrayscaleEnhancementMode grayscaleEnhancementModes[8];
 
-	/**Set the output image colour mode. Default value is ICM_COLOUR.*/
+	/**Sets the output image colour mode. Default value is ICM_COLOUR.*/
 	ImageColourMode colourMode;
 
-	/**Set the page size (width by height in pixels) of the normalized image.*/
+	/**Sets the page size (width by height in pixels) of the normalized image.*/
 	int pageSize[2];
 
-	/**Set the brightness of the normalized image. Value range: [-100,100], default value: 0.*/
+	/**Sets the brightness of the normalized image. Value range: [-100,100], default value: 0.*/
 	int brightness;
 
-	/**Set the contrast of the normalized image. Value range: [-100,100], default value: 0.*/
+	/**Sets the contrast of the normalized image. Value range: [-100,100], default value: 0.*/
 	int contrast;
 
-	/**Set the maximum available threads count in one document normalization task.*/
+	/**Sets the maximum available threads count in one document normalization task.*/
 	int maxThreadsInOneTask;
 
-	/**Set the threshold for image shrinking. If the shorter edge size exceeds the specified threshold value,
+	/**Sets the threshold for image shrinking. If the shorter edge size exceeds the specified threshold value,
 	* the library will calculate the resized height and width of the image and and perform shrinking.
 	*/
 	int scaleDownThreshold;
 
-	/** The minimum ratio between the target quadrilateral area and the total image area. Only those exceeding this value (measured in percentages) will be outputted.*/
+	/** The minimum ratio between the target quadrilateral area and the total image area. Only those exceeding this value (measured in percentages) will be output.*/
 	int minQuadrilateralAreaRatio;
 
-	/**Set the number of documents expected to be detected.*/
+	/**Sets the number of documents expected to be detected.*/
 	int expectedDocumentsCount;
 
 	/**Reserved for future use.*/
@@ -99,6 +99,8 @@ namespace dynamsoft
 	{
 		namespace intermediate_results
 		{
+#pragma pack(push)
+#pragma pack(4)
 			/**
 			 * The `CDetectedQuadElement` class stores an intermediate result whose type is detected quad.
 			 */
@@ -118,29 +120,63 @@ namespace dynamsoft
 				 *
 				 */
 				virtual int GetConfidenceAsDocumentBoundary() const = 0;
+
+				/**
+				 * Sets the location of the detected quad element.
+				 *
+				 * @param location The location of the detected quad element.
+				 * @return Returns 0 if success, otherwise an error code.
+				 */
+				virtual int SetLocation(const CQuadrilateral& location) = 0;
 			};
 
 			/**
-			 * The `CNormalizedImageElement` class stores an intermediate result whose type is normalized image.
+			 * The `CDeskewedImageElement` class stores an intermediate result whose type is deskewed image.
 			 */
-			class DDN_API CNormalizedImageElement : public CRegionObjectElement
+			class DDN_API CDeskewedImageElement : public CRegionObjectElement
 			{
 			protected:
 				/**
 				 * Destructor
 				 */
-				virtual ~CNormalizedImageElement() {};
+				virtual ~CDeskewedImageElement() {};
 
 			public:
 				/**
-				 * Gets the ImageData of current object.
+				 * Sets the image data of the deskewed image element.
 				 *
-				 * @return The image data.
+				 * @param imgData The image data to set.
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 */
+				virtual int SetImageData(const CImageData* imgData) = 0;
+
+				/**
+				 * Gets the quadrilateral used for deskewing the image.
 				 *
-				 * @see [CImageData]()
+				 * @return A CQuadrilateral object representing the four corners of the quadrilateral used to deskew the image.
 				 *
 				 */
-				virtual const CImageData* GetImageData() const = 0;
+				virtual CQuadrilateral GetSourceDeskewQuad() const = 0;
+
+			};
+
+			class DDN_API CEnhancedImageElement : public CRegionObjectElement
+			{
+			protected:
+				/**
+				 * Destructor
+				 */
+				virtual ~CEnhancedImageElement() {};
+
+			public:
+				/**
+				 * Sets the image data of the enhanced image element.
+				 *
+				 * @param imgData The image data to set.
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 */
+				virtual int SetImageData(const CImageData* imgData) = 0;
+
 			};
 
 			/**
@@ -215,6 +251,85 @@ namespace dynamsoft
 				 * @return Returns 0 if successful, otherwise returns a negative value.
 				 */
 				virtual int SetLongLine(int index, const CLineSegment& line, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+			};
+
+			/**
+			 * The `CLogicLinesUnit` class represents an intermediate result unit containing logic lines.
+			 */
+			class DDN_API CLogicLinesUnit : public CIntermediateResultUnit
+			{
+			protected:
+				/**
+				 * Destructor
+				 */
+				virtual ~CLogicLinesUnit() {};
+
+			public:
+				/**
+				 * Gets the number of logic lines in the unit.
+				 *
+				 * @return Returns the number of logic lines in the unit.
+				 */
+				virtual int GetCount() const = 0;
+
+				/**
+				 * Gets a logic line at the specified index.
+				 *
+				 * @param [in] index The index of the logic line.
+				 *
+				 * @return Returns a pointer to the CLineSegment object at the specified index.
+				 *
+				 */
+				virtual const CLineSegment* GetLogicLine(int index) const = 0;
+
+				/**
+				 * Gets a logic line at the specified index.
+				 *
+				 * @param [in] index The index of the logic line.
+				 *
+				 * @return Returns a pointer to the CLineSegment object at the specified index.
+				 *
+				 */
+				virtual const CLineSegment* operator[](int index) const = 0;
+
+				/**
+				 * Removes all logic lines.
+				 *
+				 */
+				virtual void RemoveAllLogicLines() = 0;
+
+				/**
+				 * Removes the logic line at the specified index.
+				 *
+				 * @param [in] index The index of the logic line to remove.
+				 *
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 *
+				 */
+				virtual int RemoveLogicLine(int index) = 0;
+
+				/**
+				 * Adds a logic line.
+				 *
+				 * @param [in] logicline The logic line to add.
+				 * @param [in] matrixToOriginalImage The matrix to original image.
+				 *
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 *
+				 */
+				virtual int AddLogicLine(const CLineSegment& logicline, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+
+				/**
+				 * Sets the logic line at the specified index.
+				 *
+				 * @param [in] index The index of the logic line to set.
+				 * @param [in] logicline The logic line to set.
+				 * @param [in] matrixToOriginalImage The matrix to original image.
+				 *
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 *
+				 */
+				virtual int SetLogicLine(int index, const CLineSegment& logicline, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
 			};
 
 			/**
@@ -421,60 +536,61 @@ namespace dynamsoft
 			};
 
 			/**
-			 * The `CNormalizedImagesUnit` class represents an intermediate result unit whose type is normalized images.
+			 * The `CDeskewedImageUnit` class represents an intermediate result unit whose type is deskewed images.
 			 */
-			class DDN_API CNormalizedImagesUnit : public CIntermediateResultUnit
+			class DDN_API CDeskewedImageUnit : public CIntermediateResultUnit
 			{
 			protected:
 				/**
 				 * Destructor
 				 */
-				virtual ~CNormalizedImagesUnit() {};
+				virtual ~CDeskewedImageUnit() {};
 
 			public:
 				/**
-				 * Gets the count of CNormalizedImageElement objects in current object.
+				 * Gets a CDeskewedImageElement object from current unit.
 				 *
-				 * @return Returns the count of CNormalizedImageElement objects in current object.
+				 * @return Returns the CDeskewedImageElement object.
 				 *
+				 * @see CDeskewedImageElement
 				 */
-				virtual int GetCount() const = 0;
+				virtual const CDeskewedImageElement* GetDeskewedImage() const = 0;
 
 				/**
-				 * Gets a NormalizedImage object from current object by specifying a index.
+				 * Sets the deskewed image.
 				 *
-				 * @param index The index of the NormalizedImage object.
-				 *
-				 * @return Returns the NormalizedImage object got by the specific index.
-				 *
-				 * @see CNormalizedImageElement
-				 */
-				virtual const CNormalizedImageElement* GetNormalizedImage(int index) const = 0;
-
-				/**
-				 * Gets a NormalizedImage object from current object by specifying a index.
-				 *
-				 * @param index The index of the NormalizedImage object.
-				 *
-				 * @return Returns the NormalizedImage object got by the specific index.
-				 *
-				 */
-				virtual const CNormalizedImageElement* operator[](int index) const = 0;
-
-				/**
-				 * Removes all the normalized images in current object.
-				 *
-				 */
-				virtual void RemoveAllNormalizedImages() = 0;
-
-				/**
-				 * Sets the normalized image.
-				 *
-				 * @param element The normalized image to be set.
+				 * @param element The deskewed image to be set.
 				 * @param matrixToOriginalImage The matrix to the original image.
 				 * @return Returns 0 if successful, otherwise returns a negative value.
 				 */
-				virtual int SetNormalizedImage(const CNormalizedImageElement* element, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+				virtual int SetDeskewedImage(const CDeskewedImageElement* element, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+			};
+
+			class DDN_API CEnhancedImageUnit : public CIntermediateResultUnit
+			{
+			protected:
+				/**
+				 * Destructor
+				 */
+				virtual ~CEnhancedImageUnit() {};
+
+			public:
+				/**
+				 * Gets a CEnhancedImage object from current object.
+				 *
+				 * @return Returns the CEnhancedImage object.
+				 *
+				 * @see CEnhancedImageElement
+				 */
+				virtual const CEnhancedImageElement* GetEnhancedImage() const = 0;
+
+				/**
+				 * Sets the enhanced image.
+				 *
+				 * @param element The enhanced image to be set.
+				 * @return Returns 0 if successful, otherwise returns a negative value.
+				 */
+				virtual int SetEnhancedImage(const CEnhancedImageElement* element) = 0;
 			};
 		}
 
@@ -508,19 +624,34 @@ namespace dynamsoft
 			 */
 			virtual int GetConfidenceAsDocumentBoundary() const = 0;
 
+			/**
+			 * Gets the status of current object as a verified document boundary.
+			 *
+			 * @return Return the CrossVerificationStatus of the detected quad result.
+			 *
+			 */
+			virtual CrossVerificationStatus GetCrossVerificationStatus() const = 0;
+
+			/**
+			 * Sets the status of current object.
+			 *
+			 * @param status The CrossVerificationStatus to be set.
+			 *
+			 */
+			virtual void SetCrossVerificationStatus(CrossVerificationStatus status) = 0;
 		};
 
 		/**
-		 * The `CNormalizedImageResultItem` class stores a captured result item whose type is normalized image.
+		 * The `CDeskewedImageResultItem` class stores a captured result item whose type is deskewed image.
 		 *
 		 */
-		class DDN_API CNormalizedImageResultItem : public CCapturedResultItem
+		class DDN_API CDeskewedImageResultItem : public CCapturedResultItem
 		{
 		protected:
 			/**
 			 * Destructor
 			 */
-			virtual ~CNormalizedImageResultItem() {};
+			virtual ~CDeskewedImageResultItem() {};
 
 		public:
 			/**
@@ -534,77 +665,140 @@ namespace dynamsoft
 			virtual const CImageData* GetImageData() const = 0;
 
 			/**
-			 * Gets the location of current object.
+			 * Gets the quadrilateral used for deskewing the image.
 			 *
-			 * @return Return Value: The location of current object.
+			 * @return A CQuadrilateral object representing the four corners of the quadrilateral used to deskew the image.
 			 *
-			 * @see CQuadrilateral
 			 */
-			virtual CQuadrilateral GetLocation() const = 0;
+			virtual CQuadrilateral GetSourceDeskewQuad() const = 0;
 
+			/**
+			 * Gets the status of current object as a verified deskewed image.
+			 *
+			 * @return Return the CrossVerificationStatus of the deskewed image result.
+			 *
+			 */
+			virtual CrossVerificationStatus GetCrossVerificationStatus() const = 0;
+
+			/**
+			 * Sets the status of current object.
+			 *
+			 * @param status The CrossVerificationStatus to be set.
+			 *
+			 */
+			virtual void SetCrossVerificationStatus(CrossVerificationStatus status) = 0;
+
+			/**
+			 * Gets the transformation matrix from the original image coordinate system to the local coordinate system.
+			 *
+			 * @param [out] matrix A double array of size 9, representing the 3x3 transformation matrix that converts
+			 *                     coordinates from the original image to the local image.
+			 */
+			virtual void GetOriginalToLocalMatrix(double matrix[9]) const = 0;
 		};
 
 		/**
-		 * The `CDetectedQuadsResult` class stores a collection of captured result items whose type is detected quads.
+		 * The `CEnhancedImageResultItem` class stores a captured result item whose type is enhanced image.
 		 *
 		 */
-		class DDN_API CDetectedQuadsResult
+		class DDN_API CEnhancedImageResultItem : public CCapturedResultItem
 		{
 		protected:
 			/**
 			 * Destructor
 			 */
-			virtual ~CDetectedQuadsResult() {}
+			virtual ~CEnhancedImageResultItem() {};
 
 		public:
 			/**
-			 * Gets the hash ID of the original image.
+			 * Gets the ImageData of current object.
 			 *
-			 * @return Returns a pointer to a null-terminated string that represents the hash ID of the original image.
+			 * @return The image data.
 			 *
-			 */
-			virtual const char* GetOriginalImageHashId()const = 0;
-
-			/**
-			 * Gets the tag of the original image.
-			 *
-			 * @return Returns a pointer to a CImageTag object that represents the tag of the original image.
-			 *
-			 * @see CImageTag
+			 * @see CImageData
 			 *
 			 */
-			virtual const CImageTag* GetOriginalImageTag()const = 0;
+			virtual const CImageData* GetImageData() const = 0;
 
 			/**
-			 * Get the rotation transformation matrix of the original image relative to the rotated image.
+			 * Gets the transformation matrix from the original image coordinate system to the local coordinate system.
 			 *
-			 * @param [out] matrix A double array which represents the rotation transform matrix.
+			 * @param [out] matrix A double array of size 9, representing the 3x3 transformation matrix that converts
+			 *                     coordinates from the original image to the local image.
+			 */
+			virtual void GetOriginalToLocalMatrix(double matrix[9]) const = 0;
+		};
+
+		/**
+		 * The `CDocumentResult` class stores a collection of captured result items.
+		 *
+		 */
+		class DDN_API CProcessedDocumentResult : public CCapturedResultBase
+		{
+		protected:
+			/**
+			 * Destructor
+			 */
+			virtual ~CProcessedDocumentResult() {};
+
+		public:
+
+			/**
+			 * Gets the count of detected quad result items.
+			 *
+			 * @return The number of detected quad result items.
 			 *
 			 */
-			virtual void GetRotationTransformMatrix(double matrix[9]) const = 0;
+			virtual int GetDetectedQuadResultItemsCount()const = 0;
 
 			/**
-			 * Gets the number of detected quadrilaterals.
+			 * Gets the count of deskewed image result items.
 			 *
-			 * @return Returns the number of detected quadrilaterals.
+			 * @return The number of deskewed image result items.
 			 *
 			 */
-			virtual int GetItemsCount()const = 0;
+			virtual int GetDeskewedImageResultItemsCount()const = 0;
 
 			/**
-			 * Gets the detected quadrilateral item at a specified index.
+			 * Gets the count of enhanced image result items.
 			 *
-			 * @param [in] index The index of the detected quadrilateral to retrieve.
-			 *
-			 * @return Returns a pointer to a CDetectedQuadResultItem object that represents the detected quadrilateral at the specified index.
-			 *
-			 * @see CDetectedQuadResultItem
+			 * @return The number of enhanced image result items.
 			 *
 			 */
-			virtual const CDetectedQuadResultItem* GetItem(int index)const = 0;
+			virtual int GetEnhancedImageResultItemsCount()const = 0;
 
 			/**
-			 * Remove a specific item from the array in the detected quads.
+			 * Retrieves the detected quad result item at the specified index.
+			 *
+			 * @param [in] index The index of the detected quad result item.
+			 *
+			 * @return A CDetectedQuadResultItem object representing the detected quad result at the specified index.
+			 *
+			 */
+			virtual const CDetectedQuadResultItem* GetDetectedQuadResultItem(int index)const = 0;
+
+			/**
+			 * Retrieves the deskewed image result item at the specified index.
+			 *
+			 * @param [in] index The index of the deskewed image result item.
+			 *
+			 * @return A CDeskewedImageResultItem object representing the deskewed image result at the specified index.
+			 *
+			 */
+			virtual const CDeskewedImageResultItem* GetDeskewedImageResultItem(int index)const = 0;
+
+			/**
+			 * Retrieves the enhanced image result item at the specified index.
+			 *
+			 * @param [in] index The index of the enhanced image result item.
+			 *
+			 * @return A CEnhancedImageResultItem object representing the deskewed image result at the specified index.
+			 *
+			 */
+			virtual const CEnhancedImageResultItem* GetEnhancedImageResultItem(int index)const = 0;
+
+			/**
+			 * Removes the DetectedQuadResultItem from the array in the recognition result.
 			 *
 			 * @param [in] item The specific item to remove.
 			 *
@@ -614,7 +808,7 @@ namespace dynamsoft
 			virtual int RemoveItem(const CDetectedQuadResultItem* item) = 0;
 
 			/**
-			 * Check if the item is present in the array.
+			 * Checks if the DetectedQuadResultItem is present in the array.
 			 *
 			 * @param [in] item The specific item to check.
 			 *
@@ -624,167 +818,60 @@ namespace dynamsoft
 			virtual bool HasItem(const CDetectedQuadResultItem* item) const = 0;
 
 			/**
-			 * Gets the error code of the detection operation.
-			 *
-			 * @return Returns the error code.
-			 *
-			 * @see ErrorCode
-			 *
-			 */
-			virtual int GetErrorCode()const = 0;
-
-			/**
-			 * Gets the error message of the detection operation.
-			 *
-			 * @return Returns a pointer to a null-terminated string that represents the error message.
-			 *
-			 */
-			virtual const char* GetErrorString()const = 0;
-
-			/**
-			 * Gets the detected quadrilateral item at a specified index.
-			 *
-			 * @param [in] index The index of the detected quadrilateral to retrieve.
-			 *
-			 * @return Returns a pointer to a CDetectedQuadResultItem object that represents the detected quadrilateral at the specified index.
-			 *
-			 */
-			virtual const CDetectedQuadResultItem* operator[](int index) const = 0;
-
-			/**
-			 * Increases the reference count of the CDetectedQuadsResult object.
-			 *
-			 * @return An object of CDetectedQuadsResult.
-			 */
-			virtual CDetectedQuadsResult* Retain() = 0;
-
-			/**
-			 * Decreases the reference count of the CDetectedQuadsResult object.
-			 *
-			 */
-			virtual void Release() = 0;
-		};
-
-		/**
-		 * The `CNormalizedImagesResult` class stores a collection of captured result items whose type is normalized image.
-		 *
-		 */
-		class DDN_API CNormalizedImagesResult
-		{
-		protected:
-			/**
-			 * Destructor
-			 */
-			virtual ~CNormalizedImagesResult() {};
-
-		public:
-			/**
-			 * Gets the hash ID of the original image that was normalized.
-			 *
-			 * @return Returns the hash ID of the original image that was normalized.
-			 *
-			 */
-			virtual const char* GetOriginalImageHashId()const = 0;
-
-			/**
-			 * Gets the tag of the original image that was normalized.
-			 *
-			 * @return Returns a pointer to the tag of the original image that was normalized.
-			 *
-			 * @see CImageTag
-			 *
-			 */
-			virtual const CImageTag* GetOriginalImageTag()const = 0;
-
-			/**
-			 * Get the rotation transformation matrix of the original image relative to the rotated image.
-			 *
-			 * @param [out] matrix A double array which represents the rotation transform matrix.
-			 *
-			 */
-			virtual void GetRotationTransformMatrix(double matrix[9]) const = 0;
-
-			/**
-			 * Gets the number of normalized images in the result.
-			 *
-			 * @return Returns the number of normalized images in the result.
-			 *
-			 */
-			virtual int GetItemsCount()const = 0;
-
-			/**
-			 * Gets a specific normalized image from the result.
-			 *
-			 * @param [in] index The index of the normalized image to get.
-			 *
-			 * @return Returns a pointer to the normalized image at the specified index. If the index is out of range, returns nullptr.
-			 *
-			 * @see CNormalizedImageResultItem
-			 *
-			 */
-			virtual const CNormalizedImageResultItem* GetItem(int index)const = 0;
-
-			/**
-			 * Remove a specific item from the array in the normalized images.
+			 * Removes the DeskewedImageResultItem from the array in the recognition result.
 			 *
 			 * @param [in] item The specific item to remove.
 			 *
 			 * @return Returns value indicating whether the deletion was successful or not.
 			 *
 			 */
-			virtual int RemoveItem(const CNormalizedImageResultItem* item) = 0;
+			virtual int RemoveItem(const CDeskewedImageResultItem* item) = 0;
 
 			/**
-			 * Check if the item is present in the array.
+			 * Checks if the DeskewedImageResultItem is present in the array.
 			 *
 			 * @param [in] item The specific item to check.
 			 *
 			 * @return Returns a bool value indicating whether the item is present in the array or not.
 			 *
 			 */
-			virtual bool HasItem(const CNormalizedImageResultItem* item) const = 0;
+			virtual bool HasItem(const CDeskewedImageResultItem* item) const = 0;
 
 			/**
-			 * Gets the error code of the operation.
+			 * Removes the EnhancedImageResultItem from the array in the recognition result.
 			 *
-			 * @return Returns the error code of the operation. A non-zero value indicates an error occurred.
+			 * @param [in] item The specific item to remove.
 			 *
-			 * @see ErrorCode
+			 * @return Returns value indicating whether the deletion was successful or not.
 			 *
 			 */
-			virtual int GetErrorCode()const = 0;
+			virtual int RemoveItem(const CEnhancedImageResultItem* item) = 0;
 
 			/**
-			 * Gets the error message of the operation.
+			 * Checks if the EnhancedImageResultItem is present in the array.
 			 *
-			 * @return Returns the error message of the operation.
+			 * @param [in] item The specific item to check.
+			 *
+			 * @return Returns a bool value indicating whether the item is present in the array or not.
 			 *
 			 */
-			virtual const char* GetErrorString()const = 0;
+			virtual bool HasItem(const CEnhancedImageResultItem* item) const = 0;
 
 			/**
-			 * Gets a specific normalized image from the result.
+			 * Increases the reference count of the CProcessedDocumentResult object.
 			 *
-			 * @param [in] index The index of the normalized image to get.
-			 *
-			 * @return Returns a pointer to the normalized image at the specified index. If the index is out of range, returns nullptr.
-			 *
+			 * @return An object of CProcessedDocumentResult.
 			 */
-			virtual const CNormalizedImageResultItem* operator[](int index) const = 0;
+			virtual CProcessedDocumentResult* Retain() = 0;
 
 			/**
-			 * Increases the reference count of the CNormalizedImagesResult object.
-			 *
-			 * @return An object of CNormalizedImagesResult.
-			 */
-			virtual CNormalizedImagesResult* Retain() = 0;
-
-			/**
-			 * Decreases the reference count of the CNormalizedImagesResult object.
+			 * Decreases the reference count of the CProcessedDocumentResult object.
 			 *
 			 */
 			virtual void Release() = 0;
+
 		};
+
 
 		/**
 		 * The CDocumentNormalizerModule class defines general functions in the document normalizer module.
@@ -800,20 +887,27 @@ namespace dynamsoft
 			static const char* GetVersion();
 
 			/**
-			 * Create a Normalized Image Element object
+			 * Creates a CDeskewedImageElement object
 			 *
-			 * @return An object of CNormalizedImageElement
+			 * @return An object of CDeskewedImageElement
 			 */
-			static intermediate_results::CNormalizedImageElement* CreateNormalizedImageElement();
+			static intermediate_results::CDeskewedImageElement* CreateDeskewedImageElement();
 
 			/**
-			 * Create a Detected Quad Element object
+			 * Creates a CDetectedQuadElement object
 			 *
 			 * @return An object of CDetectedQuadElement
 			 */
 			static intermediate_results::CDetectedQuadElement* CreateDetectedQuadElement();
+
+			/**
+			 * Creates a CEnhancedImageElement object
+			 *
+			 * @return An object of CEnhancedImageElement
+			 */
+			static intermediate_results::CEnhancedImageElement* CreateEnhancedImageElement();
 		};
-		
+#pragma pack(pop)
 	}
 }
 #endif
