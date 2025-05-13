@@ -37,6 +37,8 @@ inline void printf_to_cerr(const char *format, ...)
     std::cerr << buffer;
 }
 
+#define printf printf_to_cerr
+
 class Task
 {
 public:

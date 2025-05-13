@@ -29,6 +29,8 @@ inline void printf_to_cerr(const char *format, ...)
     std::cerr << buffer;
 }
 
+#define printf printf_to_cerr
+
 FlValue *CreateBarcodeResultMap(const CBarcodeResultItem *barcodeResultItem)
 {
     FlValue *map = fl_value_new_map();
