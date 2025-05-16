@@ -1,36 +1,14 @@
 PODS:
   - camera_avfoundation (0.0.1):
     - Flutter
-  - DynamsoftBarcodeReader (10.4.30)
-  - DynamsoftCameraEnhancer (4.2.24)
-  - DynamsoftCaptureVisionBundle (2.6.1004):
-    - DynamsoftBarcodeReader (= 10.4.30)
-    - DynamsoftCameraEnhancer (= 4.2.24)
-    - DynamsoftCaptureVisionRouter (= 2.4.30)
-    - DynamsoftCodeParser (= 2.4.30)
-    - DynamsoftCodeParserDedicator (= 1.2.30)
-    - DynamsoftCore (= 3.4.30)
-    - DynamsoftDocumentNormalizer (= 2.6.10)
-    - DynamsoftImageProcessing (= 2.4.30)
-    - DynamsoftLabelRecognizer (= 3.4.30)
-    - DynamsoftLicense (= 3.4.40)
-    - DynamsoftNeuralNetwork (= 1.0.20)
-    - DynamsoftUtility (= 1.4.30)
-  - DynamsoftCaptureVisionRouter (2.4.30)
-  - DynamsoftCodeParser (2.4.30)
-  - DynamsoftCodeParserDedicator (1.2.30)
-  - DynamsoftCore (3.4.30)
-  - DynamsoftDocumentNormalizer (2.6.10)
-  - DynamsoftImageProcessing (2.4.30)
-  - DynamsoftLabelRecognizer (3.4.30)
-  - DynamsoftLicense (3.4.40)
-  - DynamsoftNeuralNetwork (1.0.20)
-  - DynamsoftUtility (1.4.30)
+  - DynamsoftBarcodeReaderBundle (11.0.3000):
+    - DynamsoftCaptureVisionBundle (= 3.0.3000)
+  - DynamsoftCaptureVisionBundle (3.0.3000)
   - file_selector_ios (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_barcode_sdk (3.0.0):
-    - DynamsoftCaptureVisionBundle (= 2.6.1004)
+    - DynamsoftBarcodeReaderBundle (= 11.0.3000)
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
@@ -48,19 +26,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - DynamsoftBarcodeReader
-    - DynamsoftCameraEnhancer
+    - DynamsoftBarcodeReaderBundle
     - DynamsoftCaptureVisionBundle
-    - DynamsoftCaptureVisionRouter
-    - DynamsoftCodeParser
-    - DynamsoftCodeParserDedicator
-    - DynamsoftCore
-    - DynamsoftDocumentNormalizer
-    - DynamsoftImageProcessing
-    - DynamsoftLabelRecognizer
-    - DynamsoftLicense
-    - DynamsoftNeuralNetwork
-    - DynamsoftUtility
 
 EXTERNAL SOURCES:
   camera_avfoundation:
@@ -78,22 +45,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   camera_avfoundation: be3be85408cd4126f250386828e9b1dfa40ab436
-  DynamsoftBarcodeReader: b1925cf91cea404444c8eccf9045f5bd78a65d51
-  DynamsoftCameraEnhancer: 18628b6cd6169d35b5579424cdfab37e1b8ca7a4
-  DynamsoftCaptureVisionBundle: bb5d6c044784ce56b8b3615eed6cb88db695aa67
-  DynamsoftCaptureVisionRouter: 4e2fb20b7f0aae3b8709b6ff56713decb599e4ea
-  DynamsoftCodeParser: 7a8118c0bcd21bc849aaf7427f4088c2ea15d9a6
-  DynamsoftCodeParserDedicator: baa514940d7f5310e4a5f5d04eb59bb8282c1c8a
-  DynamsoftCore: 7b4ba6658f14d99aab9cc8e6ff2bc847909103ff
-  DynamsoftDocumentNormalizer: 5aa9f3c0465face2159862398970142a8b451b29
-  DynamsoftImageProcessing: 9c8e8deae9165693ec4ba4499a835a5609659fbb
-  DynamsoftLabelRecognizer: e05eed966b67d99dc8189ef74383a7454de37377
-  DynamsoftLicense: 4eabe8e077a64b38c8fdcf6177236bc018bac9a0
-  DynamsoftNeuralNetwork: 281373d04b236f4616f2f607b6266f0393d906e5
-  DynamsoftUtility: 0cea6058495725a9bdfff664f952785d81ab274e
+  DynamsoftBarcodeReaderBundle: 578c27daeda029a5a5aeb0fdda63dddb3fc5fc29
+  DynamsoftCaptureVisionBundle: 1935e3efc70db1b7c6cab19dfe420c3e43dbe1a0
   file_selector_ios: f92e583d43608aebc2e4a18daac30b8902845502
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_barcode_sdk: bca24475c96ee5d4de0210014086168a78e377da
+  flutter_barcode_sdk: 82cec9bdb0d4e88b81c4ff1351a82dda6a9f9acb
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
 

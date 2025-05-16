@@ -1,7 +1,4 @@
-import DynamsoftBarcodeReader
-import DynamsoftCaptureVisionRouter
-import DynamsoftCore
-import DynamsoftLicense
+import DynamsoftBarcodeReaderBundle
 import Flutter
 import UIKit
 
@@ -80,7 +77,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
     }
 
     func getParameters() -> String {
-        let ret = try! cvr.outputSettings("", false)
+        let ret = try! cvr.outputSettings("", includeDefaultValues: false)
         return ret
     }
 
