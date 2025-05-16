@@ -126,7 +126,7 @@ public class BarcodeManager {
 
     public String getParameters() {
         try {
-            return mRouter.outputSettings("");
+            return mRouter.outputSettings("", false);
         } catch (Exception e) {
             return e.toString();
         }

@@ -1,3 +1,6 @@
+## 3.0.4
+* Updated SDKs for Android and iOS.
+
 ## 3.0.3
 * Updated C++ SDK for Windows and Linux.
 

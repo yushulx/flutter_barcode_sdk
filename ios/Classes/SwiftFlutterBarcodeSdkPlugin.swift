@@ -80,7 +80,7 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
     }
 
     func getParameters() -> String {
-        let ret = try! cvr.outputSettings("")
+        let ret = try! cvr.outputSettings("", false)
         return ret
     }
 
