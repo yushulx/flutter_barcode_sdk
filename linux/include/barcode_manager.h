@@ -31,6 +31,30 @@ inline void printf_to_cerr(const char *format, ...)
 
 #define printf printf_to_cerr
 
+FlValue *WrapError(int errorCode, const char *errorMsg)
+{
+    FlValue *out = fl_value_new_list();
+    FlValue *data_map = fl_value_new_map();
+    fl_value_set_string_take(data_map, "format", fl_value_new_string(""));
+    fl_value_set_string_take(data_map, "text", fl_value_new_string(""));
+    fl_value_set_string_take(data_map, "angle", fl_value_new_int(0));
+
+    for (int i = 0; i < 4; ++i)
+    {
+        std::string x_key = "x" + std::to_string(i + 1);
+        std::string y_key = "y" + std::to_string(i + 1);
+        fl_value_set_string_take(data_map, x_key.c_str(), fl_value_new_int(0));
+        fl_value_set_string_take(data_map, y_key.c_str(), fl_value_new_int(0));
+    }
+
+    fl_value_set_string_take(data_map, "barcodeBytes", fl_value_new_uint8_list(NULL, 0));
+    fl_value_set_string_take(data_map, "errorCode", fl_value_new_int(errorCode));
+    fl_value_set_string_take(data_map, "errorMsg", fl_value_new_string(errorMsg));
+
+    fl_value_append_take(out, data_map);
+    return out;
+}
+
 FlValue *CreateBarcodeResultMap(const CBarcodeResultItem *barcodeResultItem)
 {
     FlValue *map = fl_value_new_map();
@@ -50,6 +74,8 @@ FlValue *CreateBarcodeResultMap(const CBarcodeResultItem *barcodeResultItem)
     }
 
     fl_value_set_string_take(map, "barcodeBytes", fl_value_new_uint8_list(barcodeResultItem->GetBytes(), barcodeResultItem->GetBytesLength()));
+    fl_value_set_string_take(map, "errorCode", fl_value_new_int(0));
+    fl_value_set_string_take(map, "errorMsg", fl_value_new_string(""));
     return map;
 }
 
@@ -96,16 +122,23 @@ public:
 
             for (auto *result : m_receiver->results)
             {
-                if (!result || result->GetItemsCount() == 0)
+                if (result->GetErrorCode())
                 {
-                    continue;
+                    out = WrapError(result->GetErrorCode(), result->GetErrorString());
                 }
-
-                int barcodeResultItemCount = result->GetItemsCount();
-                for (int j = 0; j < barcodeResultItemCount; ++j)
+                else
                 {
-                    const CBarcodeResultItem *barcodeResultItem = result->GetItem(j);
-                    fl_value_append_take(out, CreateBarcodeResultMap(barcodeResultItem));
+                    if (!result || result->GetItemsCount() == 0)
+                    {
+                        continue;
+                    }
+
+                    int barcodeResultItemCount = result->GetItemsCount();
+                    for (int j = 0; j < barcodeResultItemCount; ++j)
+                    {
+                        const CBarcodeResultItem *barcodeResultItem = result->GetItem(j);
+                        fl_value_append_take(out, CreateBarcodeResultMap(barcodeResultItem));
+                    }
                 }
 
                 result->Release();
@@ -183,20 +216,38 @@ public:
 
     FlValue *DecodeFile(const char *filename)
     {
+        FlValue *results;
         if (!handler)
             return fl_value_new_list();
 
-        CCapturedResult *result = handler->Capture(filename, "");
-        return WrapResults(result);
+        CCapturedResult *capturedResult = handler->Capture(filename, "");
+        if (capturedResult->GetErrorCode())
+        {
+            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+        }
+        else
+        {
+            results = WrapResults(capturedResult);
+        }
+        return results;
     }
 
     FlValue *DecodeFileBytes(const unsigned char *bytes, int size)
     {
+        FlValue *results;
         if (!handler)
             return fl_value_new_list();
 
-        CCapturedResult *result = handler->Capture(bytes, size);
-        return WrapResults(result);
+        CCapturedResult *capturedResult = handler->Capture(bytes, size);
+        if (capturedResult->GetErrorCode())
+        {
+            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+        }
+        else
+        {
+            results = WrapResults(capturedResult);
+        }
+        return results;
     }
 
     void DecodeImageBuffer(FlMethodCall *method_call, const unsigned char *buffer, int width, int height, int stride, int format)
