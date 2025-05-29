@@ -160,14 +160,14 @@ In `index.html`, include:
   ```
 
 
-## **Try Barcode Decoding Example**
+## Try Barcode Reader & Scanner Examples
 
 ### Android/iOS
 The example demonstrates how to use the Flutter Barcode SDK to read barcodes from an image file and decode the barcode image buffer from the camera stream on Android and iOS.
 
 ```
 cd example
-flutter run -d <device>
+flutter run 
 ```
 
 - **Barcode Scanner**
@@ -192,7 +192,7 @@ flutter run -d linux
 ```
 
 
-### Web Browser
+### Web Barcode Scanner
 
 ```bash
 cd example
