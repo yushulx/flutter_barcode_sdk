@@ -1,3 +1,7 @@
+## 3.0.5
+* Added `errorCode` and `errorMsg` properties to `BarcodeResult`.
+* Removed support for the macOS plugin.
+
 ## 3.0.4
 * Updated SDKs for Android and iOS.
 
