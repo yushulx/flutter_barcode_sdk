@@ -11,6 +11,8 @@ import 'dart:js_util';
 @anonymous
 class CapturedResult {
   external List<CapturedItem> get items;
+  external int get errorCode;
+  external String get errorString;
 }
 
 @JS()
@@ -171,8 +173,33 @@ class BarcodeManager {
       tmp['y4'] = result.location.points[3].y;
       tmp['angle'] = result.angle;
       tmp['barcodeBytes'] = result.bytes;
+      tmp['errorCode'] = 0;
+      tmp['errorMsg'] = '';
       results.add(tmp);
     }
+
+    return results;
+  }
+
+  List<Map<dynamic, dynamic>> _errorWrapper(int errorCode, String errorMsg) {
+    List<Map<dynamic, dynamic>> results = [];
+
+    var tmp = <dynamic, dynamic>{};
+    tmp['format'] = 0;
+    tmp['text'] = '';
+    tmp['x1'] = 0;
+    tmp['y1'] = 0;
+    tmp['x2'] = 0;
+    tmp['y2'] = 0;
+    tmp['x3'] = 0;
+    tmp['y3'] = 0;
+    tmp['x4'] = 0;
+    tmp['y4'] = 0;
+    tmp['angle'] = 0;
+    tmp['barcodeBytes'] = [];
+    tmp['errorCode'] = 0;
+    tmp['errorMsg'] = '';
+    results.add(tmp);
 
     return results;
   }
@@ -184,6 +211,10 @@ class BarcodeManager {
     CapturedResult barcodeResults =
         await handleThenable(_barcodeReader!.capture(filename, ""));
 
+    if (barcodeResults.errorCode != 0) {
+      return _errorWrapper(
+          barcodeResults.errorCode, barcodeResults.errorString);
+    }
     return _resultWrapper(barcodeResults.items);
   }
 
@@ -204,6 +235,10 @@ class BarcodeManager {
     CapturedResult barcodeResults =
         await handleThenable(_barcodeReader!.capture(dsImage, ""));
 
+    if (barcodeResults.errorCode != 0) {
+      return _errorWrapper(
+          barcodeResults.errorCode, barcodeResults.errorString);
+    }
     return _resultWrapper(barcodeResults.items);
   }
 

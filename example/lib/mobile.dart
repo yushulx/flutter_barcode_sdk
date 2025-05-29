@@ -101,6 +101,8 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
       int y2 = result.y2;
       int y3 = result.y3;
       int y4 = result.y4;
+      int errorCode = result.errorCode;
+      String errorMsg = result.errorMsg;
 
       BarcodeResult newResult = BarcodeResult(
           result.format,
@@ -114,7 +116,9 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
           height - y4,
           x4,
           result.angle,
-          result.barcodeBytes);
+          result.barcodeBytes,
+          errorCode,
+          errorMsg);
 
       output.add(newResult);
     }

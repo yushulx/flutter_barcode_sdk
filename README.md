@@ -1,7 +1,7 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, **Linux** and **macOS**, and can decode various barcode types such as linear barcodes, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. It empowers developers to effortlessly build 1D/2D barcode readers and scanners. The project is actively maintained by community contributors.
+The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode various barcode types such as linear barcodes, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. It empowers developers to effortlessly build 1D/2D barcode readers and scanners. The project is actively maintained by community contributors.
 
 > **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
@@ -22,7 +22,6 @@ The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](
 - **iOS**
 - **Windows**
 - **Linux**
-- **macOS**
 - **Web**
 
 ## **Supported Barcode Symbologies**
@@ -89,36 +88,6 @@ minSdkVersion 21
 
 Install `CMake` and `platform-specific C++ compiler`.
 
-**macOS**
-
-Install `Xcode`.
-
-To make the demo app work on macOS:
-- Disable `com.apple.security.app-sandbox` and enable `com.apple.security.files.user-selected.read-write` in `example/macos/Runner/DebugProfile.entitlements`:
-    
-  ```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-  <plist version="1.0">
-  <dict>
-    <key>com.apple.security.app-sandbox</key>
-    <false/>
-    <key>com.apple.security.cs.allow-jit</key>
-    <true/>
-    <key>com.apple.security.network.server</key>
-    <true/>
-    <key>com.apple.security.files.user-selected.read-write</key>
-    <true/>
-  </dict>
-  </plist>
-  ```    
-
-- If `DCV` package is not found, run the command:
-
-  ```bash
-  pod repo add master https://github.com/CocoaPods/Specs
-  ```
-  The command manually adds the CocoaPods `master` spec repository to the local machine to resolve the issue.
 
 ### Web
 In `index.html`, include:
@@ -128,15 +97,15 @@ In `index.html`, include:
 ```
 
 ## **API Compatibility**
-| Methods      | Android |    iOS | Windows | Linux | macOS | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:    |
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:      |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:    |
-| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | :heavy_check_mark:     |
+| Methods      | Android |    iOS | Windows | Linux | Web|
+| ----------- | ----------- | ----------- | ----------- |----------- |----------- |
+| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | 
+| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:    |
+| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | 
 | `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
+| `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | 
 
 ## **Usage**
 - Initialize Flutter barcode SDK and set the license key:
@@ -191,14 +160,14 @@ In `index.html`, include:
   ```
 
 
-## **Try Barcode Decoding Example**
+## Try Barcode Reader & Scanner Examples
 
 ### Android/iOS
 The example demonstrates how to use the Flutter Barcode SDK to read barcodes from an image file and decode the barcode image buffer from the camera stream on Android and iOS.
 
 ```
 cd example
-flutter run -d <device>
+flutter run 
 ```
 
 - **Barcode Scanner**
@@ -210,8 +179,8 @@ flutter run -d <device>
     ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg)
 
 
-### Windows, Linux and macOS
-Run the desktop barcode reader and scanner application on Windows, Linux or macOS:
+### Windows & Linux 
+Run the desktop barcode reader and scanner application on Windows or Linux:
 
 ```bash
 cd example
@@ -220,21 +189,10 @@ flutter run -d windows
 
 # Linux
 flutter run -d linux
-
-# macOS
-flutter run -d macos
 ```
 
-- **Barcode Reader**
 
-    ![flutter desktop barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-reader-windows-linux-macos.png)
-
-- **Barcode Scanner**
-
-    ![flutter desktop barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-windows-linux-macos.png)
-
-
-### Web Browser
+### Web Barcode Scanner
 
 ```bash
 cd example

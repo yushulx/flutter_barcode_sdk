@@ -60,7 +60,14 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
             format: enumImagePixelFormat!, orientation: 0, tag: nil)
 
         let ret = cvr.captureFromBuffer(imageData, templateName: "")
-        return self.wrapResults(result: ret)
+        
+        if ret.errorCode != 0 {
+            return self.wrapError(errorCode: ret.errorCode, errorMsg: ret.errorMessage!)
+        }
+        else {
+            return self.wrapResults(result: ret)
+        }
+        
     }
 
     func setBarcodeFormats(arg: NSDictionary) -> Int {
@@ -95,7 +102,12 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
     func decodeFile(arg: NSDictionary) -> NSArray {
         let path: String = arg.value(forKey: "filename") as! String
         let ret = self.cvr.captureFromFile(path, templateName: "")
-        return self.wrapResults(result: ret)
+        if ret.errorCode != 0 {
+            return self.wrapError(errorCode: ret.errorCode, errorMsg: ret.errorMessage!)
+        }
+        else {
+            return self.wrapResults(result: ret)
+        }
     }
 
     func setLicense(arg: NSDictionary) {
@@ -134,11 +146,34 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
                     subDic.setObject(
                         barcodeItem.angle, forKey: "angle" as NSCopying)
                     subDic.setObject(barcodeItem.bytes, forKey: "barcodeBytes" as NSCopying)
+                    subDic.setObject(0, forKey: "errorCode" as NSCopying)
+                    subDic.setObject("", forKey: "errorMsg" as NSCopying)
                     outResults.add(subDic)
                 }
             }
         }
 
+        return outResults
+    }
+    
+    func wrapError(errorCode: Int, errorMsg: String) -> NSArray {
+        let outResults = NSMutableArray()
+        let subDic = NSMutableDictionary()
+        subDic.setObject("", forKey: "format" as NSCopying)
+        subDic.setObject("", forKey: "text" as NSCopying)
+        subDic.setObject(0, forKey: "x1" as NSCopying)
+        subDic.setObject(0, forKey: "y1" as NSCopying)
+        subDic.setObject(0, forKey: "x2" as NSCopying)
+        subDic.setObject(0, forKey: "y2" as NSCopying)
+        subDic.setObject(0, forKey: "x3" as NSCopying)
+        subDic.setObject(0, forKey: "y3" as NSCopying)
+        subDic.setObject(0, forKey: "x4" as NSCopying)
+        subDic.setObject(0, forKey: "y4" as NSCopying)
+        subDic.setObject(0, forKey: "angle" as NSCopying)
+        subDic.setObject(Data(), forKey: "barcodeBytes" as NSCopying)
+        subDic.setObject(errorCode, forKey: "errorCode" as NSCopying)
+        subDic.setObject(errorMsg, forKey: "errorMsg" as NSCopying)
+        outResults.add(subDic)
         return outResults
     }
 }

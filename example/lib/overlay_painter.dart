@@ -20,6 +20,7 @@ class OverlayPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     for (var result in results) {
+      print(result.toJson());
       double minX = result.x1.toDouble();
       double minY = result.y1.toDouble();
       if (result.x2 < minX) minX = result.x2.toDouble();

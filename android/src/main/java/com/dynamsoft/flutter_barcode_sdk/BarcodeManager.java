@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
+import com.dynamsoft.core.basic_structures.EnumCapturedResultItemType;
 import com.dynamsoft.cvr.CapturedResult;
 import com.dynamsoft.core.basic_structures.CapturedResultItem;
 import com.dynamsoft.cvr.CaptureVisionRouter;
@@ -24,10 +25,29 @@ public class BarcodeManager {
     private static final String TAG = "DynamsoftBarcodeReader";
     private CaptureVisionRouter mRouter;
 
+    private void wrapError(List<Map<String, Object>> out, int errorCode, String errorMsg) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("format", "");
+        data.put("text", "");
+        data.put("x1", 0);
+        data.put("y1", 0);
+        data.put("x2", 0);
+        data.put("y2", 0);
+        data.put("x3", 0);
+        data.put("y3", 0);
+        data.put("x4", 0);
+        data.put("y4", 0);
+        data.put("angle", 0);
+        data.put("barcodeBytes", new byte[0]);
+        data.put("errorCode", errorCode);
+        data.put("errorMsg", errorMsg);
+        out.add(data);
+    }
 
     private void wrapResults(CapturedResult result, List<Map<String, Object>> out) {
         CapturedResultItem[] items = result.getItems();
         for (CapturedResultItem item : items) {
+            if (item.getType() != EnumCapturedResultItemType.CRIT_BARCODE) continue;
             Map<String, Object> data = new HashMap<>();
             BarcodeResultItem barcodeItem = (BarcodeResultItem)item;
             data.put("format", barcodeItem.getFormatString());
@@ -43,6 +63,8 @@ public class BarcodeManager {
             data.put("y4", points[3].y);
             data.put("angle", barcodeItem.getAngle());
             data.put("barcodeBytes", barcodeItem.getBytes());
+            data.put("errorCode", 0);
+            data.put("errorMsg", "");
             out.add(data);
         }
     }
@@ -75,7 +97,16 @@ public class BarcodeManager {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         try {
             CapturedResult results = mRouter.capture(filename, "");
-            wrapResults(results, ret);
+            int errorCode = results.getErrorCode();
+            String errorMsg = results.getErrorMessage();
+
+            if (errorCode != 0) {
+                wrapError(ret, errorCode, errorMsg);
+            }
+            else {
+                wrapResults(results, ret);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +119,15 @@ public class BarcodeManager {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes != null ? bytes.length : 0);
         try {
             CapturedResult results = mRouter.capture(bitmap, "");
-            wrapResults(results, ret);
+            int errorCode = results.getErrorCode();
+            String errorMsg = results.getErrorMessage();
+
+            if (errorCode != 0) {
+                wrapError(ret, errorCode, errorMsg);
+            }
+            else {
+                wrapResults(results, ret);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,7 +144,15 @@ public class BarcodeManager {
             imageData.stride = stride;
             imageData.format = format;
             CapturedResult results = mRouter.capture(imageData, "");
-            wrapResults(results, ret);
+            int errorCode = results.getErrorCode();
+            String errorMsg = results.getErrorMessage();
+
+            if (errorCode != 0) {
+                wrapError(ret, errorCode, errorMsg);
+            }
+            else {
+                wrapResults(results, ret);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,8 +162,11 @@ public class BarcodeManager {
     public int setBarcodeFormats(int formats) {
         try {
             SimplifiedCaptureVisionSettings settings = mRouter.getSimplifiedSettings("");
-            settings.barcodeSettings.barcodeFormatIds = formats;
-            mRouter.updateSettings("", settings);
+            if (settings.barcodeSettings != null) {
+                settings.barcodeSettings.barcodeFormatIds = formats;
+                mRouter.updateSettings("", settings);
+            }
+
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
