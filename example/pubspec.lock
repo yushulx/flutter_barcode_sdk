@@ -188,7 +188,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.0.1"
+    version: "3.0.4"
   flutter_lite_camera:
     dependency: "direct main"
     description:

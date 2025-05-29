@@ -100,6 +100,30 @@ public:
         }
     }
 
+    EncodableList WrapError(int errorCode, const char *errorMsg)
+    {
+        EncodableList out;
+
+        EncodableMap map;
+        map[EncodableValue("format")] = "";
+        map[EncodableValue("text")] = "";
+        map[EncodableValue("x1")] = 0;
+        map[EncodableValue("y1")] = 0;
+        map[EncodableValue("x2")] = 0;
+        map[EncodableValue("y2")] = 0;
+        map[EncodableValue("x3")] = 0;
+        map[EncodableValue("y3")] = 0;
+        map[EncodableValue("x4")] = 0;
+        map[EncodableValue("y4")] = 0;
+        map[EncodableValue("angle")] = 0;
+        std::vector<uint8_t> rawBytes;
+        map[EncodableValue("barcodeBytes")] = rawBytes;
+        map[EncodableValue("errorCode")] = errorCode;
+        map[EncodableValue("errorMsg")] = errorMsg;
+        out.push_back(map);
+        return out;
+    }
+
     EncodableList WrapResults(CCapturedResult *result)
     {
         EncodableList out;
@@ -137,6 +161,8 @@ public:
             map[EncodableValue("angle")] = angle;
             std::vector<uint8_t> rawBytes(raw, raw + barcodeResultItem->GetBytesLength());
             map[EncodableValue("barcodeBytes")] = rawBytes;
+            map[EncodableValue("errorCode")] = 0;
+            map[EncodableValue("errorMsg")] = "";
             out.push_back(map);
         }
 
@@ -228,11 +254,20 @@ public:
         }
 
         CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat);
-        CCapturedResult *captureResult = self->handler->Capture(imageData);
+        CCapturedResult *capturedResult = self->handler->Capture(imageData);
         delete imageData, imageData = NULL;
         free(buffer);
 
-        EncodableList results = self->WrapResults(captureResult);
+        EncodableList results;
+        if (capturedResult->GetErrorCode())
+        {
+            results = self->WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+        }
+        else
+        {
+            results = self->WrapResults(capturedResult);
+        }
+
         std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result = std::move(self->pendingResults.front());
         self->pendingResults.erase(self->pendingResults.begin());
         result->Success(results);
@@ -265,8 +300,19 @@ public:
         if (handler == NULL)
             return out;
 
-        CCapturedResult *result = handler->Capture(filename, "");
-        return WrapResults(result);
+        CCapturedResult *capturedResult = handler->Capture(filename, "");
+
+        EncodableList results;
+        if (capturedResult->GetErrorCode())
+        {
+            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+        }
+        else
+        {
+            results = WrapResults(capturedResult);
+        }
+
+        return results;
     }
 
     EncodableList DecodeFileBytes(const unsigned char *bytes, int size)
@@ -274,8 +320,19 @@ public:
         EncodableList out;
         if (handler == NULL)
             return out;
-        CCapturedResult *result = handler->Capture(bytes, size);
-        return WrapResults(result);
+        CCapturedResult *capturedResult = handler->Capture(bytes, size);
+
+        EncodableList results;
+        if (capturedResult->GetErrorCode())
+        {
+            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+        }
+        else
+        {
+            results = WrapResults(capturedResult);
+        }
+
+        return results;
     }
 
     void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> &pendingResult, const unsigned char *buffer, int width, int height, int stride, int format)

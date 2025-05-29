@@ -47,6 +47,12 @@ class BarcodeResult {
   /// Raw barcode data in bytes.
   final Uint8List barcodeBytes;
 
+  /// Error code.
+  final int errorCode;
+
+  /// Error message.
+  final String errorMsg;
+
   /// Constructs a [BarcodeResult] with the given properties.
   BarcodeResult(
     this.format,
@@ -61,6 +67,8 @@ class BarcodeResult {
     this.y4,
     this.angle,
     this.barcodeBytes,
+    this.errorCode,
+    this.errorMsg,
   );
 
   /// Creates a [BarcodeResult] instance from a JSON object.
@@ -76,6 +84,8 @@ class BarcodeResult {
     int x4 = json['x4'];
     int y4 = json['y4'];
     int angle = json['angle'];
+    int errorCode = json['errorCode'];
+    String errorMsg = json['errorMsg'];
 
     // Convert barcode byte data
     List<Object?> rawBytes = json['barcodeBytes'];
@@ -97,6 +107,8 @@ class BarcodeResult {
       y4,
       angle,
       barcodeBytes,
+      errorCode,
+      errorMsg,
     );
   }
 
@@ -114,6 +126,8 @@ class BarcodeResult {
         'y4': y4,
         'angle': angle,
         'barcodeBytes': barcodeBytes,
+        'errorCode': errorCode,
+        'errorMsg': errorMsg,
       };
 }
 
