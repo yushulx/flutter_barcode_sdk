@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
@@ -135,7 +137,14 @@ class FlutterBarcodeSdk {
   /// Returns `0` on success, or an error code on failure.
   Future<int> init() async {
     int ret = await _channel.invokeMethod('init');
-    ret = await setParameters(template);
+    if (kIsWeb) {
+      ret = await setParameters(template_web);
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      ret = await setParameters(template_mobile);
+    } else {
+      ret = await setParameters(template_desktop);
+    }
+
     return ret;
   }
 }
