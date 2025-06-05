@@ -137,6 +137,14 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
           defaultTargetPlatform == TargetPlatform.iOS);
       int format = ImagePixelFormat.IPF_NV21.index;
 
+      int rotation = 0;
+      if (MediaQuery.of(context).size.width <
+          MediaQuery.of(context).size.height) {
+        if (Platform.isAndroid) {
+          rotation = ImageRotation.rotation90.value;
+        }
+      }
+
       switch (availableImage.format.group) {
         case ImageFormatGroup.yuv420:
           format = ImagePixelFormat.IPF_NV21.index;
@@ -160,13 +168,14 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
               availableImage.width,
               availableImage.height,
               availableImage.planes[0].bytesPerRow,
-              format)
+              format,
+              rotation)
           .then((results) {
         if (_isScanRunning) {
           _results = results;
-          if (Platform.isAndroid && results.isNotEmpty) {
-            _results = rotate90barcode(_results, _previewSize.height.toInt());
-          }
+          // if (Platform.isAndroid && results.isNotEmpty) {
+          //   _results = rotate90barcode(_results, _previewSize.height.toInt());
+          // }
           setState(() {});
         }
 

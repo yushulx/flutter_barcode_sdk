@@ -222,14 +222,15 @@ class BarcodeManager {
   ///
   /// The [bytes] parameter contains raw pixel data, while [width], [height], [stride], and [format]
   /// define the dimensions and structure of the image.
-  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
-      Uint8List bytes, int width, int height, int stride, int format) async {
+  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(Uint8List bytes,
+      int width, int height, int stride, int format, int rotation) async {
     final dsImage = jsify({
       'bytes': bytes,
       'width': width,
       'height': height,
       'stride': stride,
       'format': format,
+      'orientation': rotation
     });
 
     CapturedResult barcodeResults =

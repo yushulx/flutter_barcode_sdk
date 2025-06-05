@@ -134,7 +134,14 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
     }
     int format = fl_value_get_int(value);
 
-    self->manager->DecodeImageBuffer(method_call, bytes, width, height, stride, format);
+    value = fl_value_lookup_string(args, "rotation");
+    if (value == nullptr)
+    {
+      return;
+    }
+    int rotation = fl_value_get_int(value);
+
+    self->manager->DecodeImageBuffer(method_call, bytes, width, height, stride, format, rotation);
   }
   else if (strcmp(method, "setBarcodeFormats") == 0)
   {

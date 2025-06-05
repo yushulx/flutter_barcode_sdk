@@ -43,7 +43,8 @@ class FlutterBarcodeSdkWeb {
             call.arguments['width'],
             call.arguments['height'],
             call.arguments['stride'],
-            call.arguments['format']);
+            call.arguments['format'],
+            call.arguments['rotation']);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -112,13 +113,14 @@ class FlutterBarcodeSdkWeb {
   /// - [height]: The height of the image.
   /// - [stride]: The number of bytes per row.
   /// - [format]: The pixel format (see [ImagePixelFormat]).
+  /// - [rotation]: Rotation angle in degrees (0, 90, 180, 270).
   ///
   /// Typically used for **real-time barcode scanning** from a camera stream.
   ///
   /// Returns a list of detected barcodes.
-  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(
-      Uint8List bytes, int width, int height, int stride, int format) async {
+  Future<List<Map<dynamic, dynamic>>> decodeImageBuffer(Uint8List bytes,
+      int width, int height, int stride, int format, int rotation) async {
     return _barcodeManager.decodeImageBuffer(
-        bytes, width, height, stride, format);
+        bytes, width, height, stride, format, rotation);
   }
 }

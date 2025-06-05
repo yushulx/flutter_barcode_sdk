@@ -134,7 +134,7 @@ public class BarcodeManager {
         return ret;
     }
 
-    public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format) {
+    public List<Map<String, Object>> decodeImageBuffer(byte[] bytes, int width, int height, int stride, int format, int rotation) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         try {
             ImageData imageData = new ImageData();
@@ -143,6 +143,7 @@ public class BarcodeManager {
             imageData.height = height;
             imageData.stride = stride;
             imageData.format = format;
+            imageData.orientation = rotation;
             CapturedResult results = mRouter.capture(imageData, "");
             int errorCode = results.getErrorCode();
             String errorMsg = results.getErrorMessage();

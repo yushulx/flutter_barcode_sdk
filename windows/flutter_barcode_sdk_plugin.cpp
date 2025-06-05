@@ -135,7 +135,7 @@ namespace
     {
       std::vector<unsigned char> bytes;
       EncodableList results;
-      int width = 0, height = 0, stride = 0, format = 0;
+      int width = 0, height = 0, stride = 0, format = 0, rotation = 0;
 
       if (arguments)
       {
@@ -168,7 +168,14 @@ namespace
         {
           format = std::get<int>(format_it->second);
         }
-        manager->DecodeImageBuffer(result, reinterpret_cast<unsigned char *>(bytes.data()), width, height, stride, format);
+
+        auto rotation_it = arguments->find(EncodableValue("rotation"));
+        if (rotation_it != arguments->end())
+        {
+          rotation = std::get<int>(rotation_it->second);
+        }
+
+        manager->DecodeImageBuffer(result, reinterpret_cast<unsigned char *>(bytes.data()), width, height, stride, format, rotation);
       }
 
       // result->Success(results);

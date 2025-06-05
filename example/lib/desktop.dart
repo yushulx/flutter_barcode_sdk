@@ -137,12 +137,12 @@ class _DesktopState extends State<Desktop> {
 
     isDecoding = true;
     _barcodeResultsList = await _barcodeReader.decodeImageBuffer(
-      rgb,
-      width,
-      height,
-      width * 3,
-      ImagePixelFormat.IPF_RGB_888.index,
-    );
+        rgb,
+        width,
+        height,
+        width * 3,
+        ImagePixelFormat.IPF_RGB_888.index,
+        ImageRotation.rotation0.value);
 
     // _barcodeResults = getBarcodeResults(_barcodeResultsList);
 
