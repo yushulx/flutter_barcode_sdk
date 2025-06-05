@@ -174,7 +174,7 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
         if (_isScanRunning) {
           _results = results;
           // if (Platform.isAndroid && results.isNotEmpty) {
-          //   _results = rotate90barcode(_results, _previewSize.height.toInt());
+          //   _results = rotate90barcode(_results, _previewSize_previewSize.height.toInt());
           // }
           setState(() {});
         }
@@ -246,8 +246,14 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
                         'images/default.png',
                       )
                     : SizedBox(
-                        width: _previewSize.height,
-                        height: _previewSize.width,
+                        width: MediaQuery.of(context).size.width <
+                                MediaQuery.of(context).size.height
+                            ? _previewSize.height
+                            : _previewSize.width,
+                        height: MediaQuery.of(context).size.width <
+                                MediaQuery.of(context).size.height
+                            ? _previewSize.width
+                            : _previewSize.height,
                         child: CameraPreview(
                           _controller!,
                         )),
