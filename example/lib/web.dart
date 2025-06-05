@@ -102,7 +102,8 @@ class _WebState extends State<Web> {
               image.width,
               image.height,
               byteData.lengthInBytes ~/ image.height,
-              ImagePixelFormat.IPF_ARGB_8888.index);
+              ImagePixelFormat.IPF_ARGB_8888.index,
+              ImageRotation.rotation0.value);
         }
 
         updateResults(_barcodeResultsList);

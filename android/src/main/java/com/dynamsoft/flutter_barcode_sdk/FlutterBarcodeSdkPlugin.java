@@ -79,11 +79,12 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
                 final int height = call.argument("height");
                 final int stride = call.argument("stride");
                 final int format = call.argument("format");
+                final int rotation = call.argument("rotation");
                 final Result r = result;
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final List<Map<String, Object>> results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format);
+                        final List<Map<String, Object>> results = mBarcodeManager.decodeImageBuffer(bytes, width, height, stride, format, rotation);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {

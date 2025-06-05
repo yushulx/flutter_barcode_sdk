@@ -48,6 +48,16 @@ enum ImagePixelFormat {
   IPF_BGR_888,
 }
 
+enum ImageRotation {
+  rotation0(0),
+  rotation90(90),
+  rotation180(180),
+  rotation270(270);
+
+  final int value;
+  const ImageRotation(this.value);
+}
+
 /// A Flutter plugin for barcode scanning using the Dynamsoft Barcode Reader SDK.
 ///
 /// This class provides methods for setting up the SDK, configuring barcode formats,
@@ -87,19 +97,21 @@ class FlutterBarcodeSdk {
   /// - [height]: The height of the image.
   /// - [stride]: The stride (number of bytes per row).
   /// - [format]: The pixel format (see [ImagePixelFormat]).
+  /// - [rotation]: Rotation angle in degrees (0, 90, 180, 270).
   ///
   /// Typically used for **real-time barcode scanning** from a camera preview.
   ///
   /// Returns a list of recognized barcodes.
   Future<List<BarcodeResult>> decodeImageBuffer(
-      Uint8List bytes, int width, int height, int stride, int format) async {
+      Uint8List bytes, int width, int height, int stride, int format, int rotation) async {
     final List<Map<dynamic, dynamic>> ret = List<Map<dynamic, dynamic>>.from(
         await _channel.invokeMethod('decodeImageBuffer', {
       'bytes': bytes,
       'width': width,
       'height': height,
       'stride': stride,
-      'format': format
+      'format': format,
+      'rotation': rotation
     }));
     return convertResults(ret);
   }

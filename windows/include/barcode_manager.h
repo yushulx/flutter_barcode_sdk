@@ -191,14 +191,14 @@ public:
         }
     }
 
-    void queueTask(unsigned char *barcodeBuffer, int width, int height, int stride, int format, int len)
+    void queueTask(unsigned char *barcodeBuffer, int width, int height, int stride, int format, int len, int rotation)
     {
         unsigned char *data = (unsigned char *)malloc(len);
         memcpy(data, barcodeBuffer, len);
 
         std::unique_lock<std::mutex> lk(worker->m);
         clearTasks();
-        std::function<void()> task_function = std::bind(scan, this, data, width, height, stride, format);
+        std::function<void()> task_function = std::bind(scan, this, data, width, height, stride, format, rotation);
         Task task;
         task.func = task_function;
         task.buffer = data;
@@ -207,7 +207,7 @@ public:
         lk.unlock();
     }
 
-    static void scan(BarcodeManager *self, unsigned char *buffer, int width, int height, int stride, int format)
+    static void scan(BarcodeManager *self, unsigned char *buffer, int width, int height, int stride, int format, int rotation)
     {
         ImagePixelFormat pixelFormat = IPF_BGR_888;
         switch (format)
@@ -253,7 +253,7 @@ public:
             break;
         }
 
-        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat);
+        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat, rotation);
         CCapturedResult *capturedResult = self->handler->Capture(imageData);
         delete imageData, imageData = NULL;
         free(buffer);
@@ -335,10 +335,10 @@ public:
         return results;
     }
 
-    void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> &pendingResult, const unsigned char *buffer, int width, int height, int stride, int format)
+    void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> &pendingResult, const unsigned char *buffer, int width, int height, int stride, int format, int rotation)
     {
         pendingResults.push_back(std::move(pendingResult));
-        queueTask((unsigned char *)buffer, width, height, stride, format, stride * height);
+        queueTask((unsigned char *)buffer, width, height, stride, format, stride * height, rotation);
     }
 
     int SetFormats(unsigned long long formats)

@@ -53,11 +53,12 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
         let h: Int = arguments.value(forKey: "height") as! Int
         let stride: Int = arguments.value(forKey: "stride") as! Int
         let format: Int = arguments.value(forKey: "format") as! Int
+        let rotation: Int = arguments.value(forKey: "rotation") as! Int
         let enumImagePixelFormat = ImagePixelFormat(rawValue: format)
 
         let imageData = ImageData(
             bytes: buffer.data, width: UInt(w), height: UInt(h), stride: UInt(stride),
-            format: enumImagePixelFormat!, orientation: 0, tag: nil)
+            format: enumImagePixelFormat!, orientation: rotation, tag: nil)
 
         let ret = cvr.captureFromBuffer(imageData, templateName: "")
         

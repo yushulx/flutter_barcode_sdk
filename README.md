@@ -1,28 +1,27 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode various barcode types such as linear barcodes, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. It empowers developers to effortlessly build 1D/2D barcode readers and scanners. The project is actively maintained by community contributors.
+The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode a wide range of barcode types such as **linear barcodes**, **QR Code**, **DataMatrix**, **MaxiCode**, **PDF417**, and more. This SDK encapsulates the low-level decoding capabilities of the Dynamsoft Barcode Reader, enabling barcode decoding from both **files and image buffers**. With this package, developers can effortlessly build robust **1D/2D barcode reader** and **scanner** apps. The project is actively maintained with contributions from the community.
 
-> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
+> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
 ## **Table of Contents**
 1. [Getting a License Key](#getting-a-license-key)
 2. [Supported Platforms](#supported-platforms)
 3. [Supported Barcode Symbologies](#supported-barcode-symbologies)
 4. [Build Configuration](#build-configuration)
-5. [API Compatibility](#api-compatibility)
-6. [Usage](#usage)
-7. [Examples](#try-barcode-decoding-example)
+5. [API Reference](#api-reference)
+6. [Examples](#try-barcode-decoding-example)
 
 ## **Getting a License Key**
 [![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
 
 ## **Supported Platforms**
-- **Android**
-- **iOS**
-- **Windows**
-- **Linux**
-- **Web**
+- ✅ **Android**
+- ✅ **iOS**
+- ✅ **Windows**
+- ✅ **Linux**
+- ✅ **Web**
 
 ## **Supported Barcode Symbologies**
 ### **Linear Barcodes (1D)**
@@ -71,16 +70,14 @@ minSdkVersion 21
 ```
 
 ### iOS
-- Add camera usage descriptions to `ios/Runner/Info.plist`:
+Add camera usage descriptions to `ios/Runner/Info.plist`:
 
-    ```xml
-    <key>NSCameraUsageDescription</key>
-    <string>Can I use the camera please?</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Can I use the mic please?</string>
-    ```
-
-- Minimum deployment target: iOS 13.0 or later
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Can I use the camera please?</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Can I use the mic please?</string>
+```
 
 ### Desktop
 
@@ -96,68 +93,17 @@ In `index.html`, include:
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-capture-vision-bundle@2.6.1000/dist/dcv.bundle.min.js"></script>
 ```
 
-## **API Compatibility**
-| Methods      | Android |    iOS | Windows | Linux | Web|
-| ----------- | ----------- | ----------- | ----------- |----------- |----------- |
-| `Future<void> setLicense(String license) async`     | :heavy_check_mark:       | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:      |:heavy_check_mark:      | 
-| `Future<List<BarcodeResult>> decodeFile(String filename) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format) async`     | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      | :heavy_check_mark:     |:heavy_check_mark:    |
-| `Future<int> setBarcodeFormats(int formats) async`     | :heavy_check_mark:       | :heavy_check_mark:       | :heavy_check_mark:       |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<String> getParameters() async`     | :heavy_check_mark:         | :heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:       | 
-| `Future<int> setParameters(String params)` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | :heavy_check_mark:     |
-| `Future<void> init()` async | :heavy_check_mark:         |:heavy_check_mark:   | :heavy_check_mark:       | :heavy_check_mark:        |:heavy_check_mark:      | 
+## API Reference
+| Method                                                                                                                        | Description                                                                             | Parameters                                                                                                                                                                                    | Return Type                   |
+| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `Future<int> setLicense(String license)`                                                                                      | Sets the Dynamsoft Barcode Reader license key.                                          | `license`: The license key string.                                                                                                                                                            | `Future<int>`                 |
+| `Future<int> init()`                                                                                                          | Initializes the barcode reader and applies default parameters for the current platform. | —                                                                                                                                                                                             | `Future<int>`                 |
+| `Future<List<BarcodeResult>> decodeFile(String filename)`                                                                     | Decodes barcodes from an image file.                                                    | `filename`: Path to the image file.                                                                                                                                                           | `Future<List<BarcodeResult>>` |
+| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format, int rotation)` | Decodes barcodes from a raw image buffer (for real-time or camera preview scanning).    | `bytes`: Image buffer (raw bytes)<br>`width`: Image width<br>`height`: Image height<br>`stride`: Bytes per row<br>`format`: Pixel format (see `ImagePixelFormat`)<br>`rotation`: 0/90/180/270 | `Future<List<BarcodeResult>>` |
+| `Future<int> setBarcodeFormats(int formats)`                                                                                  | Sets the barcode formats to be detected.                                                | `formats`: Bitwise combination of barcode formats (see `BarcodeFormat`).                                                                                                                      | `Future<int>`                 |
+| `Future<String> getParameters()`                                                                                              | Retrieves the current barcode detection settings as a JSON string.                      | —                                                                                                                                                                                             | `Future<String>`              |
+| `Future<int> setParameters(String params)`                                                                                    | Updates barcode detection parameters with a JSON string.                                | `params`: JSON string of detection parameters.                                                                                                                                                | `Future<int>`                 |
 
-## **Usage**
-- Initialize Flutter barcode SDK and set the license key:
-    
-  ```dart
-  _barcodeReader = FlutterBarcodeSdk();
-  await _barcodeReader.setLicense('LICENSE-KEY');
-  await _barcodeReader.init();
-  ```
-
-- Read barcodes from an image file:
-
-  ```dart
-  List<BarcodeResult> results = await _barcodeReader.decodeFile(image-path);
-  ```
-
-- Read barcodes from an image buffer:
-
-
-  ```dart
-  import 'dart:ui' as ui;
-  Uint8List fileBytes = await file.readAsBytes();
-  ui.Image image = await decodeImageFromList(fileBytes);
-
-  ByteData byteData = await image.toByteData(
-      format: ui.ImageByteFormat.rawRgba);
-  List<BarcodeResult> results =
-      await _barcodeReader.decodeImageBuffer(
-          byteData.buffer.asUint8List(),
-          image.width,
-          image.height,
-          byteData.lengthInBytes ~/ image.height,
-          ImagePixelFormat.IPF_ARGB_8888.index);
-  ```
-
-- Set barcode formats:
-
-  ```dart
-  int ret = await _barcodeReader.setBarcodeFormats(BarcodeFormat.CODE_39 | BarcodeFormat.CODABAR | BarcodeFormat.QR_CODE | BarcodeFormat.DATAMATRIX);
-  ```
-
-- Get current barcode detection parameters:
-    
-  ```dart
-  String params = await _barcodeReader.getParameters();
-  ```
-
-- Set barcode detection parameters:
-    
-  ```dart
-  int ret = await _barcodeReader.setParameters(params);
-  ```
 
 
 ## Try Barcode Reader & Scanner Examples

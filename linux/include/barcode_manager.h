@@ -250,13 +250,13 @@ public:
         return results;
     }
 
-    void DecodeImageBuffer(FlMethodCall *method_call, const unsigned char *buffer, int width, int height, int stride, int format)
+    void DecodeImageBuffer(FlMethodCall *method_call, const unsigned char *buffer, int width, int height, int stride, int format, int rotation)
     {
         if (!handler)
             return;
 
         ImagePixelFormat pixelFormat = GetImagePixelFormat(format);
-        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat);
+        CImageData *imageData = new CImageData(stride * height, buffer, width, height, stride, pixelFormat, rotation);
         fileFetcher->SetFile(imageData);
         delete imageData;
 

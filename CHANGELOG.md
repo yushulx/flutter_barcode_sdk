@@ -1,3 +1,6 @@
+## 3.1.0
+* Added a `rotation` parameter to `decodeImageBuffer()` method.
+
 ## 3.0.5
 * Added `errorCode` and `errorMsg` properties to `BarcodeResult`.
 * Removed support for the macOS plugin.
