@@ -1,9 +1,9 @@
 # flutter_barcode_sdk
 ![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode various barcode types such as linear barcodes, QR Code, DataMatrix, MaxiCode, PDF417, and more. This SDK encapsulates the low-level decoding functions of the Dynamsoft Barcode Reader, enabling both file and image buffer decoding. It empowers developers to effortlessly build 1D/2D barcode readers and scanners. The project is actively maintained by community contributors.
+The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode a wide range of barcode types such as **linear barcodes**, **QR Code**, **DataMatrix**, **MaxiCode**, **PDF417**, and more. This SDK encapsulates the low-level decoding capabilities of the Dynamsoft Barcode Reader, enabling barcode decoding from both **files and image buffers**. With this package, developers can effortlessly build robust **1D/2D barcode reader** and **scanner** apps. The project is actively maintained with contributions from the community.
 
-> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), as it offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
+> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
 
 ## **Table of Contents**
 1. [Getting a License Key](#getting-a-license-key)
@@ -70,16 +70,14 @@ minSdkVersion 21
 ```
 
 ### iOS
-- Add camera usage descriptions to `ios/Runner/Info.plist`:
+Add camera usage descriptions to `ios/Runner/Info.plist`:
 
-    ```xml
-    <key>NSCameraUsageDescription</key>
-    <string>Can I use the camera please?</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Can I use the mic please?</string>
-    ```
-
-- Minimum deployment target: iOS 13.0 or later
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Can I use the camera please?</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Can I use the mic please?</string>
+```
 
 ### Desktop
 
