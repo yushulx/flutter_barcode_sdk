@@ -1,3 +1,6 @@
+## 3.1.1
+* Updated the JavaScript barcode SDK.
+
 ## 3.1.0
 * Added a `rotation` parameter to `decodeImageBuffer()` method.
 
