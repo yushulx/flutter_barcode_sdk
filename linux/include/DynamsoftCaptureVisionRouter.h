@@ -19,13 +19,15 @@
 #endif
 
 #include "DynamsoftCore.h"
-#include "DynamsoftLabelRecognizer.h"
+#include "DynamsoftLicense.h"
 #include "DynamsoftBarcodeReader.h"
+//#if !defined(ONLY_DBR)
+#include "DynamsoftLabelRecognizer.h"
 #include "DynamsoftDocumentNormalizer.h"
 #include "DynamsoftCodeParser.h"
-#include "DynamsoftLicense.h"
+//#endif
 
-#define DCV_VERSION                  "3.0.10.3895"
+#define DCV_VERSION                  "3.2.50.6558"
 
 /**Enumeration section*/
 
@@ -696,6 +698,10 @@ namespace dynamsoft
 			*
 			*/
 			virtual CImageData* GetOriginalImage(const char* imageHashId) = 0;
+
+			virtual void AddOriginalImageToCache(const char* imageHashId) = 0;
+
+			virtual void RemoveOriginalImageFromCache(const char* imageHashId) = 0;
 		};
 
 		/**
@@ -792,6 +798,7 @@ namespace dynamsoft
 
 		};
 
+		class CVR_API CCaptureVisionRouter;
 		/**
 		* The `CCapturedResultFilter` class is responsible for filtering captured results. It contains several callback functions for different types of results, including original image, decoded barcodes, recognized text lines, detected quads, deskewed images, and parsed results.
 		*/
@@ -882,7 +889,7 @@ namespace dynamsoft
 			* Initializes the filter. It will be called by Capture Vision Router before using the filter.
 			*
 			*/
-			virtual void Init();
+			virtual void Init(CCaptureVisionRouter* router = nullptr);
 
 			virtual const char* GetEncryptedString();
 
@@ -1059,7 +1066,7 @@ namespace dynamsoft
 			* Loads and initializes a template from a string.
 			*
 			* @param [in] content The string containing the template.
-			* @param [in] errorMsgBuffer A buffer for error messages.
+			* @param [in,out] errorMsgBuffer A buffer for error messages.
 			* @param [in] errorMsgBufferLen The length of the error message buffer.
 			*
 			* @return Returns an error code. Zero indicates success.
@@ -1071,7 +1078,7 @@ namespace dynamsoft
 			* Loads and initializes a template from a file.
 			*
 			* @param [in] filePath The path to the file containing the template.
-			* @param [in] errorMsgBuffer A buffer for error messages.
+			* @param [in,out] errorMsgBuffer A buffer for error messages.
 			* @param [in] errorMsgBufferLen The length of the error message buffer.
 			*
 			* @return Returns an error code. Zero indicates success.
@@ -1119,7 +1126,7 @@ namespace dynamsoft
 			*
 			* @param [in] templateName The name of the template to update.
 			* @param [in] settings A pointer to a `SimplifiedCaptureVisionSettings` object.
-			* @param [in] errorMsgBuffer A buffer for error messages.
+			* @param [in,out] errorMsgBuffer A buffer for error messages.
 			* @param [in] errorMsgBufferLen The length of the error message buffer.
 			*
 			* @return Returns an error code. Zero indicates success.
@@ -1295,7 +1302,7 @@ namespace dynamsoft
 			*
 			* @param [in] waitForThreadExit Indicates whether to wait for the capture process to complete before returning. The default value is false.
 			*
-			* @param [out] errorMsgBuffer Stores any error messages generated during the capturing process. If no buffer is provided, the error messages will not be output.
+			* @param [in,out] errorMsgBuffer Stores any error messages generated during the capturing process. If no buffer is provided, the error messages will not be output.
 			*
 			* @param [in] errorMsgBufferLen Specifies the length of the provided error message buffer. If no buffer is provided, this parameter is ignored.
 			*
@@ -1356,7 +1363,7 @@ namespace dynamsoft
 			int GetParameterTemplateName(const int index, char nameBuffer[], int nameBufferLen);
 
 			/**
-			* Appends a model to the model buffer.
+			* Appends a deep learning model to the memory buffer.
 			*
 			* @param [in] modelName The name of the model.
 			* @param [in] modelBytes The bytes of the model.
@@ -1365,7 +1372,39 @@ namespace dynamsoft
 			*
 			* @return Returns 0 if succeeds, nonzero otherwise.
 			*/
+			static int AppendDLModelBuffer(const char* modelName, const unsigned char* modelBytes, int modelBytesLength, int maxModelInstances);
+
+			/**
+			* Clears all deep learning models from buffer to free up memory.
+			*
+			*/
+			static void ClearDLModelBuffers();
+
+			/**
+			* Deprecated. Will be removed in future versions. Use AppendDLModelBuffer instead.
+			*
+			*/
 			static int AppendModelBuffer(const char* modelName, const unsigned char* modelBytes, int modelBytesLength, int maxModelInstances);
+
+			/**
+			* Switch the capturing template during the image processing workflow.
+			*
+			* @param [in] templateName The name of the new capturing template to apply.
+			* @param [in,out] errorMsgBuffer A buffer for error messages.
+			* @param [in] errorMsgBufferLen The length of the error message buffer.
+			*
+			* @return Returns an error code. Zero indicates success.
+			*/
+			int SwitchCapturingTemplate(const char* templateName, char errorMsgBuffer[] = NULL, const int errorMsgBufferLen = 0);
+
+			/*
+			* Sets the global number of threads used internally for model execution.
+			*
+			* @param [in] intraOpNumThreads Number of threads used internally for model execution. Valid range: [0, 256]
+			*                               If the value is outside the range [0, 256], it will be treated as 0 (default).
+			*/
+			static void SetGlobalIntraOpNumThreads(int intraOpNumThreads = 0);
+
 		private:
 			CCaptureVisionRouter(const CCaptureVisionRouter& r);
 			CCaptureVisionRouter& operator=(const CCaptureVisionRouter& r);

@@ -39,5 +39,6 @@ install(DIRECTORY
 
 install(DIRECTORY 
   "${PROJECT_SOURCE_DIR}/../resources/Templates"
+  "${PROJECT_SOURCE_DIR}/../resources/Models"
   DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/"
 )

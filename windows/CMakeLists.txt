@@ -26,5 +26,7 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin Dyna
 set(flutter_barcode_sdk_bundled_libraries
   "${PROJECT_SOURCE_DIR}/bin/"
   "${PROJECT_SOURCE_DIR}/../resources/Templates"
+  "${PROJECT_SOURCE_DIR}/../resources/Models"
+  
   PARENT_SCOPE
 )

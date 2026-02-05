@@ -1,9 +1,10 @@
 #pragma once
+
 #if !defined(_WIN32) && !defined(_WIN64)
 #define UTIL_API __attribute__((visibility("default")))
 #include <stddef.h>
-#else
-#ifdef UTIL_EXPORTS
+#else //windows
+#if defined(UTIL_EXPORTS)
 #define UTIL_API __declspec(dllexport)
 #else
 #define UTIL_API __declspec(dllimport)
@@ -11,9 +12,8 @@
 #include <windows.h>
 #endif
 
-
 #include"DynamsoftCaptureVisionRouter.h"
-#define DISA_VERSION "2.0.10.3895"
+#define DISA_VERSION "2.2.50.6558"
 
 #ifdef __cplusplus
 
@@ -202,7 +202,7 @@ namespace dynamsoft {
 
 			virtual void ClearStatus();
 
-			virtual void Init();
+			virtual void Init(CCaptureVisionRouter* router = nullptr);
 
 			virtual const char* GetEncryptedString();
 
@@ -452,6 +452,31 @@ namespace dynamsoft {
 			* @return Returns 0 if succeeds, nonzero otherwise.
 			*/
 			int SaveToMemory(const CImageData* pImageData, ImageFileFormat imageFormat, unsigned char** imageFileBytes, int* imageFileBytesLength);
+
+
+			/**
+			* Reads an image from a Base64-encoded string.
+			*
+			* @param [in] base64String A null-terminated string containing the Base64-encoded image data.
+			* @param [out] pErrorCode A pointer to an integer to receive the error code, if any. Defaults to NULL.
+			*
+			* @return Returns a pointer to a CImageData object representing the image if successful, or nullptr if an error occurs.
+			* @remarks If the file format is gif, pdf or tiff, we read the first page of the image file.The caller is responsible for freeing the memory allocated for the image.
+			*/
+			CImageData* ReadFromBase64String(const char* base64String, int* pErrorCode = NULL);
+
+
+			/**
+			* Saves an image to a Base64-encoded string.
+			*
+			* @param [in] pImageData A pointer to the image data to be saved.
+			* @param [in] imageFormat The image file format to be saved.
+			* @param [out] base64String A pointer to a char* that will hold the Base64-encoded string.
+			*
+			* @return Returns an integer indicating the success of the operation. 0 indicates success, while a non-zero value indicates an error occurred.
+			* @remarks The caller is responsible for freeing the memory allocated for the Base64-encoded string.
+			*/
+			int SaveToBase64String(const CImageData* pImageData, ImageFileFormat imageFormat, char** base64String);
 		};
 
 		class UTIL_API CImageDrawer {
@@ -501,7 +526,28 @@ namespace dynamsoft {
 			* If the specified rectangle or quadrilateral exceeds the image boundaries, white will be used to fill the exceeding area.
 			*/
 			CImageData* CropImage(const CImageData* pImageData, const CRect& rect, int* pErrorCode = NULL);
+			/**
+			* Announced as deprecated. Use CropAndDeskewImage instead.
+			*/
 			CImageData* CropImage(const CImageData* pImageData, const CQuadrilateral& quad, int* pErrorCode = NULL);
+
+			/**
+			* Crops and deskews a region from the input image based on the specified quadrilateral.
+			* @param [in] imageData The source image to be cropped and deskewed.
+			* @param [in] quad A quadrilateral defining the region of interest to extract.
+			* @param [in] dstWidth (Optional) The width of the output image. If set to 0, the width and height will be automatically calculated.
+			* @param [in] dstHeight (Optional) The height of the output image. If set to 0, the width and height will be automatically calculated.
+			* @param [in] padding (Optional) Extra padding (in pixels) applied to expand the boundaries of the extracted region. Default is 0.
+			* @param [out] errorCode The error code.
+			*
+			* @return Returns a pointer to a new CImageData object containing the cropped and deskewed image.
+			*
+			* @remarks The caller is responsible for freeing the memory allocated for the cropped image.
+			* The function will automatically calculate the perspective transform matrix and use it to crop the image.
+			* If the specified quadrilateral exceeds the image boundaries, white will be used to fill the exceeding area.
+			*/
+			CImageData* CropAndDeskewImage(const CImageData* pImageData, const CQuadrilateral& quad,
+				int dstWidth = 0, int dstHeight = 0, int padding = 0, int* pErrorCode = NULL);
 			/**
 			 * Adjusts the brightness of the image.
 			 * @param pImageData: Input colour image.
@@ -551,6 +597,7 @@ namespace dynamsoft {
 			 * @return: Image after binarization.
 			 */
 			CImageData* ConvertToBinaryLocal(const CImageData* pImageData, int blockSize = 0, int compensation = 0, bool invert = false);
+
 		};
 #pragma pack(pop)
 	}

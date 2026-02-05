@@ -1,12 +1,12 @@
 PODS:
   - camera_avfoundation (0.0.1):
     - Flutter
-  - DynamsoftBarcodeReaderBundle (11.0.3000):
+  - DynamsoftBarcodeReaderBundle (11.2.5000):
     - DynamsoftCaptureVisionBundle (= 3.0.3000)
   - DynamsoftCaptureVisionBundle (3.0.3000)
   - Flutter (1.0.0)
   - flutter_barcode_sdk (3.0.0):
-    - DynamsoftBarcodeReaderBundle (= 11.0.3000)
+    - DynamsoftBarcodeReaderBundle (= 11.2.5000)
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter

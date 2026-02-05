@@ -1,25 +1,21 @@
 #pragma once
 
-#if !defined(_WIN32) && !defined(_WIN64)
 
-#ifdef __EMSCRIPTEN__
-#define DDN_API __attribute__((used))
-#else
+#if !defined(_WIN32) && !defined(_WIN64)
 #define DDN_API __attribute__((visibility("default")))
 #include <stddef.h>
-#endif
-
-#else
-#ifdef DDN_EXPORTS
+#else //windows
+#if defined(DDN_EXPORTS)
 #define DDN_API __declspec(dllexport)
 #else
-#define DDN_API 
+#define DDN_API __declspec(dllimport)
 #endif
 #include <windows.h>
 #endif
+
 #include "DynamsoftCore.h"
 
-#define DDN_VERSION                  "3.0.10.3895"
+#define DDN_VERSION                  "3.2.50.6558"
 
 /**Enums section*/
 
@@ -564,6 +560,8 @@ namespace dynamsoft
 				 * @return Returns 0 if successful, otherwise returns a negative value.
 				 */
 				virtual int SetDeskewedImage(const CDeskewedImageElement* element, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+
+				virtual int RemoveDeskewedImage() = 0;
 			};
 
 			class DDN_API CEnhancedImageUnit : public CIntermediateResultUnit
@@ -591,6 +589,8 @@ namespace dynamsoft
 				 * @return Returns 0 if successful, otherwise returns a negative value.
 				 */
 				virtual int SetEnhancedImage(const CEnhancedImageElement* element) = 0;
+
+				virtual int RemoveEnhancedImage() = 0;
 			};
 		}
 
@@ -869,6 +869,8 @@ namespace dynamsoft
 			 *
 			 */
 			virtual void Release() = 0;
+
+			virtual void CopyTo(CProcessedDocumentResult* result) const = 0;
 
 		};
 

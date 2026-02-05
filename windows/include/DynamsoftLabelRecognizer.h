@@ -1,16 +1,10 @@
 #pragma once
 
 #if !defined(_WIN32) && !defined(_WIN64)
-
-#ifdef __EMSCRIPTEN__
-#define DLR_API __attribute__((used))
-#else
 #define DLR_API __attribute__((visibility("default")))
-#endif
-
 #include <stddef.h>
-#else
-#ifdef DLR_EXPORTS
+#else //windows
+#if defined(DLR_EXPORTS)
 #define DLR_API __declspec(dllexport)
 #else
 #define DLR_API __declspec(dllimport)
@@ -20,7 +14,7 @@
 
 #include "DynamsoftCore.h"
 
-#define DLR_VERSION                  "4.0.10.3895"
+#define DLR_VERSION                  "4.2.50.6558"
 
 /**
 * @enum RawTextLineStatus
@@ -551,6 +545,13 @@ namespace dynamsoft
 				*
 				*/
 				virtual int SetCharacterResults(const CCharacterResult* charArray, int charArrayLength) = 0;
+
+				/**
+				* Increases the reference count of the CRawTextLine object.
+				*
+				* @return An object of CRawTextLine.
+				*/
+				virtual CRawTextLine* Retain() = 0;
 			};
 
 			/**

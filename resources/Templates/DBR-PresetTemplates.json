@@ -268,6 +268,9 @@
                                 },
                                 {
                                     "Mode": "LM_CONNECTED_BLOCKS"
+                                },
+                                {
+                                    "Mode": "LM_NEURAL_NETWORK"
                                 }
                             ]
                         },
@@ -297,6 +300,15 @@
                                 },
                                 {
                                     "Mode": "DM_THRESHOLD_BINARIZATION"
+                                },
+                                {
+                                    "Mode": "DM_DIRECT_BINARIZATION"
+                                },
+                                {
+                                    "Mode": "DM_NEURAL_NETWORK"
+                                },
+                                {
+                                    "Mode": "DM_DEEP_ANALYSIS"
                                 }
                             ]
                         }
@@ -500,8 +512,8 @@
                     "BinarizationModes": [
                         {
                             "Mode": "BM_LOCAL_BLOCK",
-                            "BlockSizeX": 71,
-                            "BlockSizeY": 71,
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
                             "EnableFillBinaryVacancy": 0
                         }
                     ]
@@ -511,8 +523,8 @@
                     "BinarizationModes": [
                         {
                             "Mode": "BM_LOCAL_BLOCK",
-                            "BlockSizeX": 71,
-                            "BlockSizeY": 71,
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
                             "EnableFillBinaryVacancy": 0
                         }
                     ]

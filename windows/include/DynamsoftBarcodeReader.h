@@ -1,30 +1,24 @@
 #pragma once
 
 #if !defined(_WIN32) && !defined(_WIN64)
-
-#ifdef __EMSCRIPTEN__
-#define DBR_API __attribute__((used))
-#else
 #define DBR_API __attribute__((visibility("default")))
-#endif
-
-#ifdef __APPLE__
-#else
+#if !defined(__APPLE__)
 typedef signed char BOOL;
 #endif
 typedef void* HANDLE;
 #include <stddef.h>
-#else
-#ifdef DBR_EXPORTS
+#else //windows
+#if defined(DBR_EXPORTS)
 #define DBR_API __declspec(dllexport)
 #else
 #define DBR_API __declspec(dllimport)
 #endif
 #include <windows.h>
 #endif
+
 #include "DynamsoftCore.h"
 
-#define DBR_VERSION "11.0.10.3895"
+#define DBR_VERSION "11.2.50.6558"
 
 /**Enumeration section*/
 
@@ -44,7 +38,7 @@ enum BarcodeFormat : unsigned long long
 	/**Use the default barcode format settings*/
 	BF_DEFAULT = 0xFE3BFFFF,
 
-	/**Combined value of BF_CODABAR, BF_CODE_128, BF_CODE_39, BF_CODE_39_Extended, BF_CODE_93, BF_EAN_13, BF_EAN_8, INDUSTRIAL_25, BF_ITF, BF_UPC_A, BF_UPC_E, BF_MSI_CODE;  */
+	/**Combined value of BF_CODABAR, BF_CODE_128, BF_CODE_39, BF_CODE_39_Extended, BF_CODE_93, BF_EAN_13, BF_EAN_8, INDUSTRIAL_25, BF_ITF, BF_UPC_A, BF_UPC_E, BF_MSI_CODE, BF_CODE_11;  */
 	BF_ONED = 0x003007FF,
 
 	/**Combined value of BF_GS1_DATABAR_OMNIDIRECTIONAL, BF_GS1_DATABAR_TRUNCATED, BF_GS1_DATABAR_STACKED, BF_GS1_DATABAR_STACKED_OMNIDIRECTIONAL, BF_GS1_DATABAR_EXPANDED, BF_GS1_DATABAR_EXPANDED_STACKED, BF_GS1_DATABAR_LIMITED*/
@@ -162,7 +156,7 @@ enum BarcodeFormat : unsigned long long
 	 */
 	BF_TELEPEN_NUMERIC = 0x4000000000,
 
-	/**Combined value of BF2_USPSINTELLIGENTMAIL, BF2_POSTNET, BF2_PLANET, BF2_AUSTRALIANPOST, BF2_RM4SCC.*/
+	/**Combined value of BF_USPSINTELLIGENTMAIL, BF_POSTNET, BF_PLANET, BF_AUSTRALIANPOST, BF_RM4SCC, BF_KIX.*/
 	BF_POSTALCODE = 0x3F0000000000000,
 
 	/**Nonstandard barcode */
@@ -232,6 +226,9 @@ typedef enum LocalizationMode
 
 	/**Localizes 1D barcodes fast. Check @ref LM for available argument settings. */
 	LM_ONED_FAST_SCAN = 0x100,
+
+	/** Localizes barcodes by utilizing a neural network model. */
+	LM_NEURAL_NETWORK = 0X200,
 
 	/**Reserved setting for localization mode.*/
 #if defined(_WIN32) || defined(_WIN64)
@@ -1351,6 +1348,8 @@ namespace dynamsoft
 				 * @return Returns 0 if successful, otherwise returns a negative value.
 				 */
 				virtual int SetDecodedBarcode(const CDecodedBarcodeElement* element, const double matrixToOriginalImage[9] = IDENTITY_MATRIX) = 0;
+
+				virtual int RemoveDecodedBarcode(int index) = 0;
 			};
 		}
 

@@ -43,7 +43,7 @@ android {
     dependencies {
         testImplementation("junit:junit:4.13.2")
         testImplementation("org.mockito:mockito-core:5.0.0")
-        implementation 'com.dynamsoft:barcodereaderbundle:11.0.3000'
+        implementation 'com.dynamsoft:barcodereaderbundle:11.2.5000'
     }
 
     testOptions {
