@@ -2,24 +2,20 @@ PODS:
   - camera_avfoundation (0.0.1):
     - Flutter
   - DynamsoftBarcodeReaderBundle (11.2.5000):
-    - DynamsoftCaptureVisionBundle (= 3.0.3000)
-  - DynamsoftCaptureVisionBundle (3.0.3000)
+    - DynamsoftCaptureVisionBundle (= 3.2.5000)
+  - DynamsoftCaptureVisionBundle (3.2.5000)
   - Flutter (1.0.0)
   - flutter_barcode_sdk (3.0.0):
     - DynamsoftBarcodeReaderBundle (= 11.2.5000)
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - Flutter (from `Flutter`)
   - flutter_barcode_sdk (from `.symlinks/plugins/flutter_barcode_sdk/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -35,18 +31,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_barcode_sdk/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: be3be85408cd4126f250386828e9b1dfa40ab436
-  DynamsoftBarcodeReaderBundle: 578c27daeda029a5a5aeb0fdda63dddb3fc5fc29
-  DynamsoftCaptureVisionBundle: 1935e3efc70db1b7c6cab19dfe420c3e43dbe1a0
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_barcode_sdk: 82cec9bdb0d4e88b81c4ff1351a82dda6a9f9acb
-  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
+  DynamsoftBarcodeReaderBundle: fd9aa746e894aadd6be70b19041161fae0b90860
+  DynamsoftCaptureVisionBundle: 37e1afd359cd3ab25be6a58425cef5a9b17f4bf2
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_barcode_sdk: 8dfdc380d5dd67f5862e3ecd7eea809179346575
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: 4f1c12611da7338d21589c0b2ecd6bd20b109694
 
 COCOAPODS: 1.16.2

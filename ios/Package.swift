@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "flutter-barcode-sdk", targets: ["flutter_barcode_sdk"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Dynamsoft/barcode-reader-spm", from: "10.4.2000")
+        .package(url: "https://github.com/Dynamsoft/barcode-reader-spm", from: "11.2.5000")
     ],
     targets: [
         .target(

@@ -1,3 +1,6 @@
+## 4.0.0
+* Updated Dynamsoft Barcode SDK for all platforms.
+
 ## 3.1.1
 * Updated the JavaScript barcode SDK.
 
