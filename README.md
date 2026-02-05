@@ -90,7 +90,7 @@ Install `CMake` and `platform-specific C++ compiler`.
 In `index.html`, include:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-capture-vision-bundle@3.0.3001/dist/dcv.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle@11.2.4000/dist/dbr.bundle.js"></script>
 ```
 
 ## API Reference

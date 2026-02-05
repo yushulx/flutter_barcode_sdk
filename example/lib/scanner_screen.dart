@@ -58,9 +58,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
       }
     });
 
-    setState(() {
-      _selectedItem = _cameras![index].name;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedItem = _cameras![index].name;
+      });
+    }
   }
 
   Future<void> initCamera() async {
@@ -80,26 +82,32 @@ class _ScannerScreenState extends State<ScannerScreen> {
       print(e);
     }
 
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   Future<void> decodeFrames() async {
-    if (_controller == null || !_isCameraReady) return;
+    if (_controller == null || !_isCameraReady || !mounted) return;
 
     Future.delayed(const Duration(milliseconds: 20), () async {
-      if (_controller == null || !_isCameraReady) return;
+      if (_controller == null || !_isCameraReady || !mounted) return;
 
       if (!_isTakingPicture) {
         _isTakingPicture = true;
         XFile file = await _controller!.takePicture();
         _results = await _barcodeReader!.decodeFile(file.path);
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
         _isTakingPicture = false;
       }
 
-      decodeFrames();
+      if (mounted) {
+        decodeFrames();
+      }
     });
   }
 
@@ -112,13 +120,15 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
         // override the pop action
-        onWillPop: () async {
-          _controller!.dispose();
-          _controller = null;
-          _isCameraReady = false;
-          return true;
+        canPop: true,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            _controller?.dispose();
+            _controller = null;
+            _isCameraReady = false;
+          }
         },
         child: Scaffold(
           appBar: AppBar(

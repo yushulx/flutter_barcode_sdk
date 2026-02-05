@@ -5,15 +5,14 @@ homepage: https://www.dynamsoft.com/barcode-reader/overview/
 repository: https://github.com/yushulx/flutter_barcode_sdk
 
 environment:
-  sdk: ">=2.18.5 <4.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  js: ^0.7.2
 
 dev_dependencies:
   flutter_test:
