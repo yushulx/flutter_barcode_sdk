@@ -72,7 +72,7 @@ public class BarcodeManager {
     public int init(Context context) {
         if (mRouter == null) {
             try {
-                mRouter = new CaptureVisionRouter(context);
+                mRouter = new CaptureVisionRouter();
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
@@ -83,7 +83,7 @@ public class BarcodeManager {
     }
 
     public void setLicense(String license, final Result result, Context context) {
-        LicenseManager.initLicense(license, context, (isSuccess, error) -> {
+        LicenseManager.initLicense(license, (isSuccess, error) -> {
             if (!isSuccess) {
                 result.success(-1);
             }
