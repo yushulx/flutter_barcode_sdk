@@ -150,11 +150,11 @@ class FlutterBarcodeSdk {
   Future<int> init() async {
     int ret = await _channel.invokeMethod('init');
     if (kIsWeb) {
-      ret = await setParameters(template_web);
+      ret = await setParameters(template);
     } else if (Platform.isAndroid || Platform.isIOS) {
-      ret = await setParameters(template_mobile);
+      ret = await setParameters(template);
     } else {
-      ret = await setParameters(template_desktop);
+      ret = await setParameters(template);
     }
 
     return ret;

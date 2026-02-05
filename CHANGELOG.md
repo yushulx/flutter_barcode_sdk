@@ -1,3 +1,6 @@
+## 4.0.1
+* Updated the SDK template.
+
 ## 4.0.0
 * Updated Dynamsoft Barcode SDK for all platforms.
 
