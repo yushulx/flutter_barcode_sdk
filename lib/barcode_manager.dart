@@ -122,6 +122,10 @@ class BarcodeManager {
   /// Sets the barcode formats to be recognized.
   ///
   /// The [formats] parameter specifies the barcode types to detect.
+  /// Format values are automatically converted to JavaScript `BigInt` to
+  /// support the full 64-bit range, including formats like postal codes,
+  /// DotCode, and Pharmacode.
+  ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
     try {
@@ -129,7 +133,8 @@ class BarcodeManager {
           await _barcodeReader!.getSimplifiedSettings("").toDart;
       Map dartSettings = dartifyObject(rawSettings);
       Map obj = convertBigIntsToInts(dartSettings);
-      obj['barcodeSettings']['barcodeFormatIds'] = formats;
+      obj['barcodeSettings']['barcodeFormatIds'] =
+          BigInt.from(formats).toUnsigned(64);
       await _barcodeReader!.updateSettings("", jsifyObject(obj)).toDart;
     } catch (e) {
       print(e);

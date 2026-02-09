@@ -11,6 +11,10 @@ external void log(JSAny obj);
 @JS('alert')
 external void alert(JSAny obj);
 
+/// Creates a JavaScript `BigInt` from a string representation.
+@JS('BigInt')
+external JSAny _jsBigInt(JSString value);
+
 /// Converts a Dart object (Map, List, or primitive) to a JSObject.
 JSObject jsifyObject(Object dartObject) {
   return _jsifyValue(dartObject) as JSObject;
@@ -27,6 +31,8 @@ JSAny? _jsifyValue(dynamic value) {
     return value.toJS;
   } else if (value is String) {
     return value.toJS;
+  } else if (value is BigInt) {
+    return _jsBigInt(value.toString().toJS);
   } else if (value is Uint8List) {
     // Convert Uint8List to JSUint8Array for proper JS interop
     return value.toJS;

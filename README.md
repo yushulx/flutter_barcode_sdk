@@ -1,156 +1,204 @@
 # flutter_barcode_sdk
-![pub.dev](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)
 
-The **Flutter Barcode SDK** is a wrapper for the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). It supports multiple platforms, including **Android**, **iOS**, **Web**, **Windows**, and **Linux**, and can decode a wide range of barcode types such as **linear barcodes**, **QR Code**, **DataMatrix**, **MaxiCode**, **PDF417**, and more. This SDK encapsulates the low-level decoding capabilities of the Dynamsoft Barcode Reader, enabling barcode decoding from both **files and image buffers**. With this package, developers can effortlessly build robust **1D/2D barcode reader** and **scanner** apps. The project is actively maintained with contributions from the community.
+[![pub package](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)](https://pub.dev/packages/flutter_barcode_sdk)
+[![GitHub license](https://img.shields.io/github/license/yushulx/flutter_barcode_sdk)](https://github.com/yushulx/flutter_barcode_sdk/blob/main/LICENSE)
 
-> **Note:** For live camera scenarios, it is recommended to use the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter), which offers better performance than combining the [Flutter camera plugin](https://pub.dev/packages/camera) with the Flutter Barcode SDK.
+A cross-platform Flutter plugin for barcode reading and scanning, powered by the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). Supports **Android**, **iOS**, **Web**, **Windows**, and **Linux**.
 
-## **Table of Contents**
-1. [Getting a License Key](#getting-a-license-key)
-2. [Supported Platforms](#supported-platforms)
-3. [Supported Barcode Symbologies](#supported-barcode-symbologies)
-4. [Build Configuration](#build-configuration)
-5. [API Reference](#api-reference)
-6. [Examples](#try-barcode-decoding-example)
+Decode a wide range of 1D and 2D barcode symbologies from image files and raw pixel buffers. Build robust barcode reader and scanner applications with minimal effort.
 
-## **Getting a License Key**
-[![](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
+> **Tip:** For production-grade live camera scanning, consider using the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter) which offers optimized real-time performance.
 
-## **Supported Platforms**
-- ✅ **Android**
-- ✅ **iOS**
-- ✅ **Windows**
-- ✅ **Linux**
-- ✅ **Web**
 
-## **Supported Barcode Symbologies**
-### **Linear Barcodes (1D)**
-- Code 39 (including Code 39 Extended)
-- Code 93
-- Code 128
-- Codabar
-- Interleaved 2 of 5
-- EAN-8
-- EAN-13
-- UPC-A
-- UPC-E
-- Industrial 2 of 5
+## Table of Contents
 
-### **2D Barcodes**
-- QR Code (including Micro QR Code and Model 1)
-- Data Matrix
-- PDF417 (including Micro PDF417)
-- Aztec Code
-- MaxiCode (mode 2-5)
-- DotCode
+- [Getting Started](#getting-started)
+- [Supported Platforms](#supported-platforms)
+- [Supported Barcode Symbologies](#supported-barcode-symbologies)
+- [Platform Configuration](#platform-configuration)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Examples](#examples)
+- [License](#license)
 
-### **Others**
-- Patch Code
-- GS1 Composite Code
-- GS1 DataBar
-  - Omnidirectional,
-  - Truncated, Stacked, Stacked
-  - Omnidirectional, Limited,
-  - Expanded, Expanded Stacked
 
-- Postal Codes
-  - USPS Intelligent Mail
-  - Postnet
-  - Planet
-  - Australian Post
-  - UK Royal Mail
+## Getting Started
 
-## **Build Configuration**
-
-### Android
-Set the minimum SDK version in `android/app/build.gradle`.
+### 1. Install the Package
 
 ```yaml
+dependencies:
+  flutter_barcode_sdk: ^4.1.0
+```
+
+### 2. Obtain a License Key
+
+A valid license is required to activate barcode decoding functionality.
+
+[![Get Trial License](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
+
+### 3. Initialize the SDK
+
+```dart
+import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
+
+final barcodeReader = FlutterBarcodeSdk();
+await barcodeReader.setLicense('YOUR-LICENSE-KEY');
+await barcodeReader.init();
+```
+
+## Supported Platforms
+
+| Platform | Status |
+|----------|--------|
+| Android  | Supported      |
+| iOS      | Supported      |
+| Web      | Supported      |
+| Windows  | Supported      |
+| Linux    | Supported      |
+
+
+## Supported Barcode Symbologies
+
+### Linear Barcodes (1D)
+
+Code 39 (including Extended) | Code 93 | Code 128 | Code 11 | Code 32 | Codabar | Interleaved 2 of 5 | Industrial 2 of 5 | Matrix 2 of 5 | EAN-8 | EAN-13 | UPC-A | UPC-E | MSI Code | Telepen | Telepen Numeric
+
+### 2D Barcodes
+
+QR Code (including Micro QR) | Data Matrix | PDF417 (including Micro PDF417) | Aztec Code | MaxiCode (modes 2-5) | DotCode
+
+### GS1 DataBar
+
+Omnidirectional | Truncated | Stacked | Stacked Omnidirectional | Expanded | Expanded Stacked | Limited
+
+### Postal Codes
+
+USPS Intelligent Mail | Postnet | Planet | Australian Post | Royal Mail (RM4SCC) | KIX
+
+### Other
+
+Patch Code | GS1 Composite Code | Pharmacode (One-Track / Two-Track) | Non-standard Barcode
+
+
+## Platform Configuration
+
+### Android
+
+Set the minimum SDK version in `android/app/build.gradle`:
+
+```groovy
 minSdkVersion 21
 ```
 
 ### iOS
+
 Add camera usage descriptions to `ios/Runner/Info.plist`:
 
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>Can I use the camera please?</string>
+<string>Camera access is required for barcode scanning.</string>
 <key>NSMicrophoneUsageDescription</key>
-<string>Can I use the mic please?</string>
+<string>Microphone access is required by the camera plugin.</string>
 ```
 
-### Desktop
+### Windows and Linux
 
-**Windows & Linux**
-
-Install `CMake` and `platform-specific C++ compiler`.
-
+Ensure `CMake` and a platform-specific C++ compiler are installed.
 
 ### Web
-In `index.html`, include:
+
+Include the Dynamsoft JavaScript SDK in `web/index.html`:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle@11.2.4000/dist/dbr.bundle.js"></script>
 ```
 
+
+## Usage
+
+### Decode from an Image File
+
+```dart
+List<BarcodeResult> results = await barcodeReader.decodeFile('path/to/image.png');
+
+for (var result in results) {
+  print('${result.format}: ${result.text}');
+}
+```
+
+### Decode from a Camera Buffer
+
+```dart
+List<BarcodeResult> results = await barcodeReader.decodeImageBuffer(
+  bytes,      // Uint8List - raw pixel data
+  width,      // Image width
+  height,     // Image height
+  stride,     // Bytes per row
+  format,     // Pixel format index (e.g., ImagePixelFormat.IPF_NV21.index)
+  rotation,   // 0, 90, 180, or 270
+);
+```
+
+### Set Barcode Formats
+
+```dart
+await barcodeReader.setBarcodeFormats(
+  BarcodeFormat.QR_CODE | BarcodeFormat.CODE_128 | BarcodeFormat.EAN_13,
+);
+```
+
+### Configure Advanced Parameters
+
+```dart
+String params = await barcodeReader.getParameters();
+// Modify the JSON string as needed...
+await barcodeReader.setParameters(params);
+```
+
 ## API Reference
-| Method                                                                                                                        | Description                                                                             | Parameters                                                                                                                                                                                    | Return Type                   |
-| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `Future<int> setLicense(String license)`                                                                                      | Sets the Dynamsoft Barcode Reader license key.                                          | `license`: The license key string.                                                                                                                                                            | `Future<int>`                 |
-| `Future<int> init()`                                                                                                          | Initializes the barcode reader and applies default parameters for the current platform. | —                                                                                                                                                                                             | `Future<int>`                 |
-| `Future<List<BarcodeResult>> decodeFile(String filename)`                                                                     | Decodes barcodes from an image file.                                                    | `filename`: Path to the image file.                                                                                                                                                           | `Future<List<BarcodeResult>>` |
-| `Future<List<BarcodeResult>> decodeImageBuffer(Uint8List bytes, int width, int height, int stride, int format, int rotation)` | Decodes barcodes from a raw image buffer (for real-time or camera preview scanning).    | `bytes`: Image buffer (raw bytes)<br>`width`: Image width<br>`height`: Image height<br>`stride`: Bytes per row<br>`format`: Pixel format (see `ImagePixelFormat`)<br>`rotation`: 0/90/180/270 | `Future<List<BarcodeResult>>` |
-| `Future<int> setBarcodeFormats(int formats)`                                                                                  | Sets the barcode formats to be detected.                                                | `formats`: Bitwise combination of barcode formats (see `BarcodeFormat`).                                                                                                                      | `Future<int>`                 |
-| `Future<String> getParameters()`                                                                                              | Retrieves the current barcode detection settings as a JSON string.                      | —                                                                                                                                                                                             | `Future<String>`              |
-| `Future<int> setParameters(String params)`                                                                                    | Updates barcode detection parameters with a JSON string.                                | `params`: JSON string of detection parameters.                                                                                                                                                | `Future<int>`                 |
+
+| Method | Description | Return |
+|--------|-------------|--------|
+| `setLicense(String license)` | Activates the SDK with a license key. | `Future<int>` |
+| `init()` | Initializes the barcode reader with default parameters. | `Future<int>` |
+| `decodeFile(String filename)` | Decodes barcodes from an image file. | `Future<List<BarcodeResult>>` |
+| `decodeImageBuffer(...)` | Decodes barcodes from raw pixel data (camera preview, etc.). | `Future<List<BarcodeResult>>` |
+| `setBarcodeFormats(int formats)` | Sets which barcode formats to detect. | `Future<int>` |
+| `getParameters()` | Returns the current detection settings as JSON. | `Future<String>` |
+| `setParameters(String params)` | Updates detection settings from a JSON string. | `Future<int>` |
+
+See [`BarcodeFormat`](lib/dynamsoft_barcode.dart) for all available format constants and [`ImagePixelFormat`](lib/flutter_barcode_sdk.dart) for supported pixel formats.
 
 
+## Examples
 
-## Try Barcode Reader & Scanner Examples
-
-### Android/iOS
-The example demonstrates how to use the Flutter Barcode SDK to read barcodes from an image file and decode the barcode image buffer from the camera stream on Android and iOS.
-
-```
-cd example
-flutter run 
-```
-
-- **Barcode Scanner**
-
-    ![flutter barcode scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-scanner.jpg)
-
-- **Barcode Reader**
-
-    ![flutter barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg)
-
-
-### Windows & Linux 
-Run the desktop barcode reader and scanner application on Windows or Linux:
+### Mobile (Android / iOS)
 
 ```bash
 cd example
-# Windows
-flutter run -d windows
-
-# Linux
-flutter run -d linux
+flutter run
 ```
 
+| Barcode Scanner | Barcode Reader |
+|:-:|:-:|
+| ![Scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-scanner.jpg) | ![Reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg) |
 
-### Web Barcode Scanner
+### Desktop (Windows / Linux)
+
+```bash
+cd example
+flutter run -d windows   # or -d linux
+```
+
+### Web
 
 ```bash
 cd example
 flutter run -d chrome
 ```
 
-![flutter web barcode reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-web.png)
-
-
-
-
-
-
+![Web Scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-web.png)
 
 

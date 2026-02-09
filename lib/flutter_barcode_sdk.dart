@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
@@ -60,8 +58,18 @@ enum ImageRotation {
 
 /// A Flutter plugin for barcode scanning using the Dynamsoft Barcode Reader SDK.
 ///
-/// This class provides methods for setting up the SDK, configuring barcode formats,
-/// and decoding barcodes from images and raw pixel data.
+/// Provides methods for initializing the SDK, configuring barcode detection
+/// parameters, and decoding barcodes from image files and raw pixel buffers.
+///
+/// ### Quick Start
+/// ```dart
+/// final reader = FlutterBarcodeSdk();
+/// await reader.setLicense('YOUR-LICENSE-KEY');
+/// await reader.init();
+/// List<BarcodeResult> results = await reader.decodeFile('path/to/image.png');
+/// ```
+///
+/// Supported platforms: Android, iOS, Web, Windows, Linux.
 class FlutterBarcodeSdk {
   /// The communication channel between Flutter and the native platform.
   static const MethodChannel _channel = MethodChannel('flutter_barcode_sdk');
@@ -119,6 +127,8 @@ class FlutterBarcodeSdk {
   /// Sets the barcode formats to be detected.
   ///
   /// - [formats]: A bitwise combination of barcode formats (see [BarcodeFormat]).
+  ///   On web, values are automatically converted to JavaScript `BigInt` to
+  ///   support the full 64-bit range.
   ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {
@@ -142,21 +152,15 @@ class FlutterBarcodeSdk {
     return await _channel.invokeMethod('setParameters', {'params': params});
   }
 
-  /// Initializes the barcode reader.
+  /// Initializes the barcode reader and applies default detection parameters.
   ///
-  /// Must be called before performing barcode detection.
+  /// Must be called **after** [setLicense] and **before** performing any
+  /// barcode detection operations.
   ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> init() async {
     int ret = await _channel.invokeMethod('init');
-    if (kIsWeb) {
-      ret = await setParameters(template);
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      ret = await setParameters(template);
-    } else {
-      ret = await setParameters(template);
-    }
-
+    ret = await setParameters(template);
     return ret;
   }
 }
