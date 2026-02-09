@@ -66,6 +66,8 @@ class FlutterBarcodeSdkWeb {
   /// Sets the barcode formats to be detected.
   ///
   /// - [formats]: A bitwise OR combination of barcode format constants.
+  ///   Values are automatically converted to JavaScript `BigInt` to support
+  ///   all format ranges, including those exceeding 32-bit integers.
   ///
   /// Returns `0` on success, or an error code on failure.
   Future<int> setBarcodeFormats(int formats) async {

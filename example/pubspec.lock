@@ -180,7 +180,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "4.0.1"
+    version: "4.1.0"
   flutter_lite_camera:
     dependency: "direct main"
     description:
