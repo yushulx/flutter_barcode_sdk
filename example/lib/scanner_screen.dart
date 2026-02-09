@@ -183,7 +183,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                         ),
                                       ),
                                     ))
-                                : createOverlay(_results!),
+                                : (MediaQuery.of(context).orientation ==
+                                        Orientation.portrait
+                                    ? RotatedBox(
+                                        quarterTurns: 1,
+                                        child: createOverlay(_results!))
+                                    : createOverlay(_results!)),
                           ),
                         ],
                       ),

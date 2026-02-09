@@ -5,8 +5,6 @@
 * Organized barcode format constants into logical groups (1D, 2D, GS1, Postal, Pharmacode).
 * Improved documentation across all library files.
 * Simplified `init()` method by removing redundant platform branches.
-* Merged example platform-specific files (`desktop.dart`, `mobile.dart`, `web.dart`) into a unified `barcode_app.dart`.
-* Updated README with improved structure, usage examples, and professional formatting.
 
 ## 4.0.1
 * Updated the SDK template.
