@@ -152,10 +152,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
                               : SizedBox(
                                   width: _previewSize == null
                                       ? 640
-                                      : _previewSize!.width,
+                                      : (MediaQuery.of(context).orientation ==
+                                              Orientation.portrait
+                                          ? _previewSize!.height
+                                          : _previewSize!.width),
                                   height: _previewSize == null
                                       ? 480
-                                      : _previewSize!.height,
+                                      : (MediaQuery.of(context).orientation ==
+                                              Orientation.portrait
+                                          ? _previewSize!.width
+                                          : _previewSize!.height),
                                   child: CameraPreview(
                                     _controller!,
                                   )),
