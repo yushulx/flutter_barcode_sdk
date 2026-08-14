@@ -1,204 +1,73 @@
 # flutter_barcode_sdk
 
 [![pub package](https://img.shields.io/pub/v/flutter_barcode_sdk.svg)](https://pub.dev/packages/flutter_barcode_sdk)
-[![GitHub license](https://img.shields.io/github/license/yushulx/flutter_barcode_sdk)](https://github.com/yushulx/flutter_barcode_sdk/blob/main/LICENSE)
 
-A cross-platform Flutter plugin for barcode reading and scanning, powered by the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/). Supports **Android**, **iOS**, **Web**, **Windows**, and **Linux**.
+A cross-platform Flutter plugin for barcode reading and scanning, powered by
+the [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/).
+Supports **Android**, **iOS**, **Web**, **Windows**, and **Linux**.
 
-Decode a wide range of 1D and 2D barcode symbologies from image files and raw pixel buffers. Build robust barcode reader and scanner applications with minimal effort.
+## Repository Structure
 
-> **Tip:** For production-grade live camera scanning, consider using the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter) which offers optimized real-time performance.
+This is a **monorepo** for the `flutter_barcode_sdk` federated plugin,
+following the [Flutter camera package](https://github.com/flutter/packages/tree/main/packages/camera)
+pattern. All packages are siblings under [`packages/`](packages/) and are
+published to [pub.dev](https://pub.dev) independently:
 
+| Package | Description |
+|---------|-------------|
+| [`flutter_barcode_sdk`](packages/flutter_barcode_sdk) | App-facing package. Add this to your app. |
+| [`flutter_barcode_sdk_platform_interface`](packages/flutter_barcode_sdk_platform_interface) | Platform interface contract and shared data models. |
+| [`flutter_barcode_sdk_android`](packages/flutter_barcode_sdk_android) | Android implementation. |
+| [`flutter_barcode_sdk_macos`](packages/flutter_barcode_sdk_macos) | macOS implementation (universal-2). || [`flutter_barcode_sdk_ios`](packages/flutter_barcode_sdk_ios) | iOS implementation. |
+| [`flutter_barcode_sdk_windows`](packages/flutter_barcode_sdk_windows) | Windows implementation. |
+| [`flutter_barcode_sdk_linux`](packages/flutter_barcode_sdk_linux) | Linux implementation. |
+| [`flutter_barcode_sdk_web`](packages/flutter_barcode_sdk_web) | Web implementation. |
 
-## Table of Contents
+The platform packages are **endorsed** by the app-facing package, so app
+developers only need to depend on `flutter_barcode_sdk`.
 
-- [Getting Started](#getting-started)
-- [Supported Platforms](#supported-platforms)
-- [Supported Barcode Symbologies](#supported-barcode-symbologies)
-- [Platform Configuration](#platform-configuration)
-- [Usage](#usage)
-- [API Reference](#api-reference)
-- [Examples](#examples)
-- [License](#license)
+## Development
 
-
-## Getting Started
-
-### 1. Install the Package
-
-```yaml
-dependencies:
-  flutter_barcode_sdk: ^4.1.0
-```
-
-### 2. Obtain a License Key
-
-A valid license is required to activate barcode decoding functionality.
-
-[![Get Trial License](https://img.shields.io/badge/Get-30--day%20FREE%20Trial-blue)](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform)
-
-### 3. Initialize the SDK
-
-```dart
-import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
-import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
-
-final barcodeReader = FlutterBarcodeSdk();
-await barcodeReader.setLicense('YOUR-LICENSE-KEY');
-await barcodeReader.init();
-```
-
-## Supported Platforms
-
-| Platform | Status |
-|----------|--------|
-| Android  | Supported      |
-| iOS      | Supported      |
-| Web      | Supported      |
-| Windows  | Supported      |
-| Linux    | Supported      |
-
-
-## Supported Barcode Symbologies
-
-### Linear Barcodes (1D)
-
-Code 39 (including Extended) | Code 93 | Code 128 | Code 11 | Code 32 | Codabar | Interleaved 2 of 5 | Industrial 2 of 5 | Matrix 2 of 5 | EAN-8 | EAN-13 | UPC-A | UPC-E | MSI Code | Telepen | Telepen Numeric
-
-### 2D Barcodes
-
-QR Code (including Micro QR) | Data Matrix | PDF417 (including Micro PDF417) | Aztec Code | MaxiCode (modes 2-5) | DotCode
-
-### GS1 DataBar
-
-Omnidirectional | Truncated | Stacked | Stacked Omnidirectional | Expanded | Expanded Stacked | Limited
-
-### Postal Codes
-
-USPS Intelligent Mail | Postnet | Planet | Australian Post | Royal Mail (RM4SCC) | KIX
-
-### Other
-
-Patch Code | GS1 Composite Code | Pharmacode (One-Track / Two-Track) | Non-standard Barcode
-
-
-## Platform Configuration
-
-### Android
-
-Set the minimum SDK version in `android/app/build.gradle`:
-
-```groovy
-minSdkVersion 21
-```
-
-### iOS
-
-Add camera usage descriptions to `ios/Runner/Info.plist`:
-
-```xml
-<key>NSCameraUsageDescription</key>
-<string>Camera access is required for barcode scanning.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Microphone access is required by the camera plugin.</string>
-```
-
-### Windows and Linux
-
-Ensure `CMake` and a platform-specific C++ compiler are installed.
-
-### Web
-
-Include the Dynamsoft JavaScript SDK in `web/index.html`:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle@11.2.4000/dist/dbr.bundle.js"></script>
-```
-
-
-## Usage
-
-### Decode from an Image File
-
-```dart
-List<BarcodeResult> results = await barcodeReader.decodeFile('path/to/image.png');
-
-for (var result in results) {
-  print('${result.format}: ${result.text}');
-}
-```
-
-### Decode from a Camera Buffer
-
-```dart
-List<BarcodeResult> results = await barcodeReader.decodeImageBuffer(
-  bytes,      // Uint8List - raw pixel data
-  width,      // Image width
-  height,     // Image height
-  stride,     // Bytes per row
-  format,     // Pixel format index (e.g., ImagePixelFormat.IPF_NV21.index)
-  rotation,   // 0, 90, 180, or 270
-);
-```
-
-### Set Barcode Formats
-
-```dart
-await barcodeReader.setBarcodeFormats(
-  BarcodeFormat.QR_CODE | BarcodeFormat.CODE_128 | BarcodeFormat.EAN_13,
-);
-```
-
-### Configure Advanced Parameters
-
-```dart
-String params = await barcodeReader.getParameters();
-// Modify the JSON string as needed...
-await barcodeReader.setParameters(params);
-```
-
-## API Reference
-
-| Method | Description | Return |
-|--------|-------------|--------|
-| `setLicense(String license)` | Activates the SDK with a license key. | `Future<int>` |
-| `init()` | Initializes the barcode reader with default parameters. | `Future<int>` |
-| `decodeFile(String filename)` | Decodes barcodes from an image file. | `Future<List<BarcodeResult>>` |
-| `decodeImageBuffer(...)` | Decodes barcodes from raw pixel data (camera preview, etc.). | `Future<List<BarcodeResult>>` |
-| `setBarcodeFormats(int formats)` | Sets which barcode formats to detect. | `Future<int>` |
-| `getParameters()` | Returns the current detection settings as JSON. | `Future<String>` |
-| `setParameters(String params)` | Updates detection settings from a JSON string. | `Future<int>` |
-
-See [`BarcodeFormat`](lib/dynamsoft_barcode.dart) for all available format constants and [`ImagePixelFormat`](lib/flutter_barcode_sdk.dart) for supported pixel formats.
-
-
-## Examples
-
-### Mobile (Android / iOS)
+The repository uses a [pub workspace](https://dart.dev/tools/pub/workspaces) —
+run `flutter pub get` once at the repository root and all packages resolve
+local dependencies automatically.
 
 ```bash
-cd example
-flutter run
+flutter pub get        # once at the repo root
+flutter analyze        # per package: cd packages/<pkg> && flutter analyze
+flutter test
 ```
 
-| Barcode Scanner | Barcode Reader |
-|:-:|:-:|
-| ![Scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-scanner.jpg) | ![Reader](https://www.dynamsoft.com/codepool/img/2025/01/flutter-android-barcode-image-detection.jpg) |
-
-### Desktop (Windows / Linux)
+Each package has its own `example/` app for standalone testing:
 
 ```bash
-cd example
-flutter run -d windows   # or -d linux
+cd packages/flutter_barcode_sdk_windows/example
+flutter run -d windows
+
+# macOS (requires Xcode + CocoaPods, macOS 12+)
+cd packages/flutter_barcode_sdk_macos/example
+flutter run -d macos
 ```
 
-### Web
+## Publishing
+
+Each package is published independently from its own directory,
+with its own version:
 
 ```bash
-cd example
-flutter run -d chrome
+cd packages/flutter_barcode_sdk_web
+dart pub publish       # dry run: dart pub publish --dry-run
 ```
 
-![Web Scanner](https://www.dynamsoft.com/codepool/img/2025/01/flutter-barcode-scanner-web.png)
+The GitHub Actions workflow [`.github/workflows/publish.yml`](.github/workflows/publish.yml)
+publishes automatically when a tag of the form
+`<package-name>-v<version>` is pushed, e.g.
+`flutter_barcode_sdk_web-v1.2.3`, or manually via
+**Actions → Publish to pub.dev → Run workflow**.
 
+Because each platform package ships its own native binaries, each package
+gets the full 100 MB pub.dev size limit independently.
 
+## License
+
+See [LICENSE](LICENSE).

@@ -1,0 +1,24 @@
+name: flutter_barcode_sdk_linux_example
+resolution: workspace
+description: Example app for flutter_barcode_sdk_linux.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_barcode_sdk: ^5.0.0
+  flutter_lite_camera: ^0.0.1
+  file_selector: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

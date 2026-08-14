@@ -1,35 +1,26 @@
-name: flutter_barcode_sdk
-description: The only Flutter barcode SDK for Android, iOS, Web, Windows, Linux, macOS. Empower developers to build 1D/2D barcode reader and barcode scanner.
-version: 4.1.0
-homepage: https://www.dynamsoft.com/barcode-reader/overview/
-repository: https://github.com/yushulx/flutter_barcode_sdk
+name: flutter_barcode_sdk_monorepo
+description: Monorepo workspace for the flutter_barcode_sdk federated plugin.
+publish_to: none
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0"
 
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_web_plugins:
-    sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.dynamsoft.flutter_barcode_sdk
-        pluginClass: FlutterBarcodeSdkPlugin
-      ios:
-        pluginClass: FlutterBarcodeSdkPlugin
-      windows:
-        pluginClass: FlutterBarcodeSdkPlugin
-      linux:
-        pluginClass: FlutterBarcodeSdkPlugin
-      web:
-        pluginClass: FlutterBarcodeSdkWeb
-        fileName: flutter_barcode_sdk_web.dart
+# All packages (including example apps) in this repository are part of a
+# single pub workspace. Dependencies between packages use version
+# constraints; pub resolves them to the local packages during development.
+workspace:
+  - packages/flutter_barcode_sdk
+  - packages/flutter_barcode_sdk_platform_interface
+  - packages/flutter_barcode_sdk_android
+  - packages/flutter_barcode_sdk_macos
+  - packages/flutter_barcode_sdk_ios
+  - packages/flutter_barcode_sdk_windows
+  - packages/flutter_barcode_sdk_linux
+  - packages/flutter_barcode_sdk_web
+  - packages/flutter_barcode_sdk/example
+  - packages/flutter_barcode_sdk_android/example
+  - packages/flutter_barcode_sdk_macos/example
+  - packages/flutter_barcode_sdk_ios/example
+  - packages/flutter_barcode_sdk_windows/example
+  - packages/flutter_barcode_sdk_linux/example
+  - packages/flutter_barcode_sdk_web/example

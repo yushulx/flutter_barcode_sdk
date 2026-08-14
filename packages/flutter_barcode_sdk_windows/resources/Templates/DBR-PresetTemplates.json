@@ -1,0 +1,546 @@
+{
+    "CaptureVisionTemplates": [
+        {
+            "Name": "ReadBarcodes_Default",
+            "ImageROIProcessingNameArray": [
+                "roi-read-barcodes"
+            ]
+        },
+        {
+            "Name": "ReadBarcodes_ReadRateFirst",
+            "ImageROIProcessingNameArray": [
+                "roi-read-barcodes-read-rate"
+            ],
+            "Timeout": 100000
+        },
+        {
+            "Name": "ReadBarcodes_SpeedFirst",
+            "ImageROIProcessingNameArray": [
+                "roi-read-barcodes-speed-first"
+            ]
+        },
+        {
+            "Name": "ReadSingleBarcode",
+            "ImageROIProcessingNameArray": [
+                "roi-read-single-barcode"
+            ]
+        }
+    ],
+    "TargetROIDefOptions": [
+        {
+            "Name": "roi-read-barcodes",
+            "TaskSettingNameArray": [
+                "task-read-barcodes"
+            ]
+        },
+        {
+            "Name": "roi-read-barcodes-read-rate",
+            "TaskSettingNameArray": [
+                "task-read-barcodes-read-rate"
+            ]
+        },
+        {
+            "Name": "roi-read-barcodes-speed-first",
+            "TaskSettingNameArray": [
+                "task-read-barcodes-speed-first"
+            ]
+        },
+        {
+            "Name": "roi-read-single-barcode",
+            "TaskSettingNameArray": [
+                "task-read-single-barcode"
+            ]
+        }
+    ],
+    "BarcodeReaderTaskSettingOptions": [
+        {
+            "Name": "task-read-barcodes",
+            "ExpectedBarcodesCount": 0,
+            "BarcodeFormatIds": [
+                "BF_DEFAULT"
+            ],
+            "BarcodeFormatSpecificationNameArray": [
+                "bfs1",
+                "bfs2"
+            ],
+            "SectionArray": [
+                {
+                    "Section": "ST_REGION_PREDETECTION",
+                    "ImageParameterName": "ip-read-barcodes",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_PREDETECT_REGIONS"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_LOCALIZATION",
+                    "ImageParameterName": "ip-read-barcodes",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_LOCALIZE_CANDIDATE_BARCODES"
+                        },
+                        {
+                            "Stage": "SST_LOCALIZE_BARCODES"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_DECODING",
+                    "ImageParameterName": "ip-read-barcodes",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_RESIST_DEFORMATION"
+                        },
+                        {
+                            "Stage": "SST_COMPLEMENT_BARCODE"
+                        },
+                        {
+                            "Stage": "SST_SCALE_BARCODE_IMAGE"
+                        },
+                        {
+                            "Stage": "SST_DECODE_BARCODES"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "task-read-barcodes-read-rate",
+            "ExpectedBarcodesCount": 999,
+            "BarcodeFormatIds": [
+                "BF_DEFAULT"
+            ],
+            "BarcodeFormatSpecificationNameArray": [
+                "bfs1-read-rate-first",
+                "bfs2-read-rate-first"
+            ],
+            "SectionArray": [
+                {
+                    "Section": "ST_REGION_PREDETECTION",
+                    "ImageParameterName": "ip-read-barcodes-read-rate",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_PREDETECT_REGIONS"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_LOCALIZATION",
+                    "ImageParameterName": "ip-read-barcodes-read-rate",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_LOCALIZE_CANDIDATE_BARCODES",
+                            "LocalizationModes": [
+                                {
+                                    "Mode": "LM_CONNECTED_BLOCKS"
+                                },
+                                {
+                                    "Mode": "LM_LINES"
+                                },
+                                {
+                                    "Mode": "LM_STATISTICS"
+                                }
+                            ]
+                        },
+                        {
+                            "Stage": "SST_LOCALIZE_BARCODES"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_DECODING",
+                    "ImageParameterName": "ip-read-barcodes-read-rate",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_RESIST_DEFORMATION"
+                        },
+                        {
+                            "Stage": "SST_COMPLEMENT_BARCODE"
+                        },
+                        {
+                            "Stage": "SST_SCALE_BARCODE_IMAGE"
+                        },
+                        {
+                            "Stage": "SST_DECODE_BARCODES"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "task-read-barcodes-speed-first",
+            "ExpectedBarcodesCount": 0,
+            "BarcodeFormatIds": [
+                "BF_DEFAULT"
+            ],
+            "BarcodeFormatSpecificationNameArray": [
+                "bfs1-speed-first",
+                "bfs2-speed-first"
+            ],
+            "SectionArray": [
+                {
+                    "Section": "ST_REGION_PREDETECTION",
+                    "ImageParameterName": "ip-read-barcodes-speed-first",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_PREDETECT_REGIONS"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_LOCALIZATION",
+                    "ImageParameterName": "ip-read-barcodes-speed-first",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_LOCALIZE_CANDIDATE_BARCODES",
+                            "LocalizationModes": [
+                                {
+                                    "Mode": "LM_CONNECTED_BLOCKS"
+                                }
+                            ]
+                        },
+                        {
+                            "Stage": "SST_LOCALIZE_BARCODES"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_DECODING",
+                    "ImageParameterName": "ip-read-barcodes-speed-first",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_RESIST_DEFORMATION"
+                        },
+                        {
+                            "Stage": "SST_COMPLEMENT_BARCODE"
+                        },
+                        {
+                            "Stage": "SST_SCALE_BARCODE_IMAGE"
+                        },
+                        {
+                            "Stage": "SST_DECODE_BARCODES",
+                            "DeblurModes": [
+                                {
+                                    "Mode": "DM_BASED_ON_LOC_BIN"
+                                },
+                                {
+                                    "Mode": "DM_THRESHOLD_BINARIZATION"
+                                },
+                                {
+                                    "Mode": "DM_DIRECT_BINARIZATION"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "task-read-single-barcode",
+            "ExpectedBarcodesCount": 1,
+            "BarcodeFormatIds": [
+                "BF_DEFAULT"
+            ],
+            "BarcodeFormatSpecificationNameArray": [
+                "bfs1-single-barcode",
+                "bfs2-single-barcode"
+            ],
+            "SectionArray": [
+                {
+                    "Section": "ST_REGION_PREDETECTION",
+                    "ImageParameterName": "ip-read-single-barcode",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_PREDETECT_REGIONS"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_LOCALIZATION",
+                    "ImageParameterName": "ip-read-single-barcode",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_LOCALIZE_CANDIDATE_BARCODES",
+                            "LocalizationModes": [
+                                {
+                                    "Mode": "LM_SCAN_DIRECTLY"
+                                },
+                                {
+                                    "Mode": "LM_CONNECTED_BLOCKS"
+                                },
+                                {
+                                    "Mode": "LM_NEURAL_NETWORK"
+                                }
+                            ]
+                        },
+                        {
+                            "Stage": "SST_LOCALIZE_BARCODES"
+                        }
+                    ]
+                },
+                {
+                    "Section": "ST_BARCODE_DECODING",
+                    "ImageParameterName": "ip-read-single-barcode",
+                    "StageArray": [
+                        {
+                            "Stage": "SST_RESIST_DEFORMATION"
+                        },
+                        {
+                            "Stage": "SST_COMPLEMENT_BARCODE"
+                        },
+                        {
+                            "Stage": "SST_SCALE_BARCODE_IMAGE"
+                        },
+                        {
+                            "Stage": "SST_DECODE_BARCODES",
+                            "DeblurModes": [
+                                {
+                                    "Mode": "DM_BASED_ON_LOC_BIN"
+                                },
+                                {
+                                    "Mode": "DM_THRESHOLD_BINARIZATION"
+                                },
+                                {
+                                    "Mode": "DM_DIRECT_BINARIZATION"
+                                },
+                                {
+                                    "Mode": "DM_NEURAL_NETWORK"
+                                },
+                                {
+                                    "Mode": "DM_DEEP_ANALYSIS"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "BarcodeFormatSpecificationOptions": [
+        {
+            "Name": "bfs1",
+            "BarcodeFormatIds": [
+                "BF_PDF417",
+                "BF_QR_CODE",
+                "BF_DATAMATRIX",
+                "BF_AZTEC",
+                "BF_MICRO_QR",
+                "BF_MICRO_PDF417",
+                "BF_DOTCODE"
+            ],
+            "MirrorMode": "MM_BOTH"
+        },
+        {
+            "Name": "bfs2",
+            "BarcodeFormatIds": [
+                "BF_ALL"
+            ],
+            "MirrorMode": "MM_NORMAL"
+        },
+        {
+            "Name": "bfs1-read-rate-first",
+            "BarcodeFormatIds": [
+                "BF_PDF417",
+                "BF_QR_CODE",
+                "BF_DATAMATRIX",
+                "BF_AZTEC",
+                "BF_MICRO_QR",
+                "BF_MICRO_PDF417",
+                "BF_DOTCODE"
+            ],
+            "MirrorMode": "MM_BOTH"
+        },
+        {
+            "Name": "bfs2-read-rate-first",
+            "BarcodeFormatIds": [
+                "BF_ALL"
+            ],
+            "MirrorMode": "MM_NORMAL"
+        },
+        {
+            "Name": "bfs1-speed-first",
+            "BarcodeFormatIds": [
+                "BF_PDF417",
+                "BF_QR_CODE",
+                "BF_DATAMATRIX",
+                "BF_AZTEC",
+                "BF_MICRO_QR",
+                "BF_MICRO_PDF417",
+                "BF_DOTCODE"
+            ],
+            "MirrorMode": "MM_BOTH"
+        },
+        {
+            "Name": "bfs2-speed-first",
+            "BarcodeFormatIds": [
+                "BF_ALL"
+            ],
+            "MirrorMode": "MM_NORMAL"
+        },
+        {
+            "Name": "bfs1-single-barcode",
+            "BarcodeFormatIds": [
+                "BF_PDF417",
+                "BF_QR_CODE",
+                "BF_DATAMATRIX",
+                "BF_AZTEC",
+                "BF_MICRO_QR",
+                "BF_MICRO_PDF417",
+                "BF_DOTCODE"
+            ],
+            "MirrorMode": "MM_BOTH"
+        },
+        {
+            "Name": "bfs2-single-barcode",
+            "BarcodeFormatIds": [
+                "BF_ALL"
+            ],
+            "MirrorMode": "MM_NORMAL"
+        }
+    ],
+    "ImageParameterOptions": [
+        {
+            "Name": "ip-read-barcodes",
+            "ApplicableStages": [
+                {
+                    "Stage": "SST_DETECT_TEXT_ZONES",
+                    "TextDetectionMode": {
+                        "Mode": "TTDM_LINE",
+                        "Direction": "UNKNOWN",
+                        "Sensitivity": 3
+                    }
+                },
+                {
+                    "Stage": "SST_REMOVE_TEXT_ZONES_FROM_BINARY",
+                    "IfEraseTextZone": 1
+                }
+            ]
+        },
+        {
+            "Name": "ip-read-barcodes-read-rate",
+            "ApplicableStages": [
+                {
+                    "Stage": "SST_DETECT_TEXT_ZONES",
+                    "TextDetectionMode": {
+                        "Mode": "TTDM_LINE",
+                        "Direction": "UNKNOWN",
+                        "Sensitivity": 3
+                    }
+                },
+                {
+                    "Stage": "SST_REMOVE_TEXT_ZONES_FROM_BINARY",
+                    "IfEraseTextZone": 1
+                },
+                {
+                    "Stage": "SST_TRANSFORM_GRAYSCALE",
+                    "GrayscaleTransformationModes": [
+                        {
+                            "Mode": "GTM_ORIGINAL"
+                        },
+                        {
+                            "Mode": "GTM_INVERTED"
+                        }
+                    ]
+                },
+                {
+                    "Stage": "SST_SCALE_IMAGE",
+                    "ImageScaleSetting": {
+                        "ScaleType": "ST_SCALE_DOWN",
+                        "ReferenceEdge": "RE_SHORTER_EDGE",
+                        "EdgeLengthThreshold": 100000
+                    }
+                }
+            ]
+        },
+        {
+            "Name": "ip-read-barcodes-speed-first",
+            "ApplicableStages": [
+                {
+                    "Stage": "SST_DETECT_TEXT_ZONES",
+                    "TextDetectionMode": {
+                        "Mode": "TTDM_LINE",
+                        "Direction": "UNKNOWN",
+                        "Sensitivity": 3
+                    }
+                },
+                {
+                    "Stage": "SST_REMOVE_TEXT_ZONES_FROM_BINARY",
+                    "IfEraseTextZone": 1
+                },
+                {
+                    "Stage": "SST_BINARIZE_IMAGE",
+                    "BinarizationModes": [
+                        {
+                            "Mode": "BM_LOCAL_BLOCK",
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
+                            "EnableFillBinaryVacancy": 0
+                        }
+                    ]
+                },
+                {
+                    "Stage": "SST_BINARIZE_TEXTURE_REMOVED_GRAYSCALE",
+                    "BinarizationModes": [
+                        {
+                            "Mode": "BM_LOCAL_BLOCK",
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
+                            "EnableFillBinaryVacancy": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ip-read-single-barcode",
+            "ApplicableStages": [
+                {
+                    "Stage": "SST_DETECT_TEXT_ZONES",
+                    "TextDetectionMode": {
+                        "Mode": "TTDM_LINE",
+                        "Direction": "UNKNOWN",
+                        "Sensitivity": 3
+                    }
+                },
+                {
+                    "Stage": "SST_REMOVE_TEXT_ZONES_FROM_BINARY",
+                    "IfEraseTextZone": 1
+                },
+                {
+                    "Stage": "SST_BINARIZE_IMAGE",
+                    "BinarizationModes": [
+                        {
+                            "Mode": "BM_LOCAL_BLOCK",
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
+                            "EnableFillBinaryVacancy": 0
+                        }
+                    ]
+                },
+                {
+                    "Stage": "SST_BINARIZE_TEXTURE_REMOVED_GRAYSCALE",
+                    "BinarizationModes": [
+                        {
+                            "Mode": "BM_LOCAL_BLOCK",
+                            "BlockSizeX": 0,
+                            "BlockSizeY": 0,
+                            "EnableFillBinaryVacancy": 0
+                        }
+                    ]
+                },
+                {
+                    "Stage": "SST_TRANSFORM_GRAYSCALE",
+                    "GrayscaleTransformationModes": [
+                        {
+                            "Mode": "GTM_ORIGINAL"
+                        },
+                        {
+                            "Mode": "GTM_INVERTED"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

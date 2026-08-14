@@ -1,0 +1,24 @@
+name: flutter_barcode_sdk_macos
+resolution: workspace
+description: macOS platform implementation of flutter_barcode_sdk.
+version: 1.0.0
+repository: https://github.com/yushulx/flutter_barcode_sdk_macos
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    implements: flutter_barcode_sdk
+    platforms:
+      macos:
+        pluginClass: FlutterBarcodeSdkPlugin

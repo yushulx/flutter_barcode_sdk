@@ -1,0 +1,170 @@
+# .github/workflows/ci.yml
+# Continuous integration: analyze + test every package, and build each
+# platform's example on the matching runner (windows / ubuntu / macos).
+#
+# This catches native build issues (CMake linking, pod linking, Maven
+# resolution, dylib embedding) that Dart-only tests cannot.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # -----------------------------------------------------------------------
+  # Static analysis + Dart tests for every package (single runner is enough,
+  # Dart code is platform independent).
+  # -----------------------------------------------------------------------
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Analyze all packages
+        run: |
+          set -e
+          for pkg in packages/*/; do
+            echo "=== analyzing ${pkg} ==="
+            (cd "${pkg}" && flutter analyze)
+          done
+
+      - name: Test all packages
+        run: |
+          set -e
+          for pkg in packages/*/; do
+            echo "=== testing ${pkg} ==="
+            (cd "${pkg}" && flutter test)
+          done
+
+  # -----------------------------------------------------------------------
+  # Web build (verifies JS interop code compiles)
+  # -----------------------------------------------------------------------
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build web example
+        working-directory: packages/flutter_barcode_sdk_web/example
+        run: flutter build web --release
+
+  # -----------------------------------------------------------------------
+  # Windows build (verifies CMake compiles and links the bundled DLLs)
+  # -----------------------------------------------------------------------
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build Windows example
+        working-directory: packages/flutter_barcode_sdk_windows/example
+        run: flutter build windows --debug
+
+  # -----------------------------------------------------------------------
+  # Linux build (verifies CMake compiles and links the bundled .so files)
+  # -----------------------------------------------------------------------
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux desktop toolchain
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build Linux example
+        working-directory: packages/flutter_barcode_sdk_linux/example
+        run: flutter build linux --debug
+
+  # -----------------------------------------------------------------------
+  # macOS build (verifies podspec compiles, links and embeds the dylibs)
+  # -----------------------------------------------------------------------
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build macOS example
+        working-directory: packages/flutter_barcode_sdk_macos/example
+        run: flutter build macos --debug
+
+  # -----------------------------------------------------------------------
+  # Android build (verifies Maven resolution and native plugin compilation)
+  # -----------------------------------------------------------------------
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build Android example APK
+        working-directory: packages/flutter_barcode_sdk_android/example
+        run: flutter build apk --debug

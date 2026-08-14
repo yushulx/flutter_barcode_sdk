@@ -1,0 +1,28 @@
+name: flutter_barcode_sdk_web
+resolution: workspace
+description: Web platform implementation of flutter_barcode_sdk.
+version: 1.0.1
+repository: https://github.com/yushulx/flutter_barcode_sdk_web
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  flutter_barcode_sdk_platform_interface: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    implements: flutter_barcode_sdk
+    platforms:
+      web:
+        pluginClass: FlutterBarcodeSdkWeb
+        fileName: flutter_barcode_sdk_web.dart

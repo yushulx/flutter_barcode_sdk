@@ -1,0 +1,78 @@
+# .github/workflows/publish.yml
+# Publishes packages of the flutter_barcode_sdk monorepo to pub.dev.
+#
+# Trigger modes:
+#   1. Push a tag like `flutter_barcode_sdk_web-v1.2.3` (or any other
+#      package directory under packages/) to publish just that package.
+#   2. Manually run the workflow and type the package directory name.
+#
+# Package dependencies use version constraints (pub workspace), so no
+# pubspec rewriting is needed before publishing.
+#
+# Authentication: two options, pick one and configure pub.dev:
+#   - OIDC: make this job OIDC-enabled at https://pub.dev/settings
+#     (Recommended, no secrets needed)
+#   - Token: create a publish token at https://pub.dev/tokens and
+#     store it in the repository secret `PUB_PUBLISH_AUTH_TOKEN`.
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      # e.g. flutter_barcode_sdk-v5.0.0, flutter_barcode_sdk_web-v1.2.3
+      - 'flutter_barcode_sdk*-v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package directory under packages/ (e.g. flutter_barcode_sdk_web)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC publishing
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Resolve the package directory from a tag (flutter_barcode_sdk_web-v1.2.3
+      # -> flutter_barcode_sdk_web) or from the manual workflow input.
+      - name: Resolve package directory
+        id: package
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            PACKAGE="${GITHUB_REF_NAME%-v*}"
+          else
+            PACKAGE="${{ inputs.package }}"
+          fi
+          # Validate that the package exists.
+          if [ ! -d "packages/${PACKAGE}" ] && [ ! -f "packages/${PACKAGE}/pubspec.yaml" ]; then
+            echo "::error::Package '${PACKAGE}' not found under packages/"
+            exit 1
+          fi
+          echo "package=${PACKAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve dependencies
+        working-directory: packages/${{ steps.package.outputs.package }}
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: packages/${{ steps.package.outputs.package }}
+        run: flutter analyze
+
+      # Uses OIDC when the package is registered as an OIDC publisher on
+      # pub.dev, otherwise falls back to the PUB_PUBLISH_AUTH_TOKEN secret.
+      - name: Publish to pub.dev
+        working-directory: packages/${{ steps.package.outputs.package }}
+        env:
+          PUB_PUBLISH_AUTH_TOKEN: ${{ secrets.PUB_PUBLISH_AUTH_TOKEN }}
+        run: dart pub publish --force

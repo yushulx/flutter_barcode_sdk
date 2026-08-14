@@ -1,8 +1,0 @@
-.idea/
-.idea/**
-.dart_tool/
-.packages
-.pub/
-build/
-.DS_Store
-.cxx/
