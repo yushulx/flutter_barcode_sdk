@@ -39,6 +39,8 @@ app, make sure to configure the same settings:
 **`macos/Runner/Release.entitlements`**:
 
 ```xml
+<key>com.apple.security.app-sandbox</key>
+<false/>
 <key>com.apple.security.network.client</key>
 <true/>
 <key>com.apple.security.device.camera</key>
@@ -47,6 +49,11 @@ app, make sure to configure the same settings:
 <true/>
 ```
 
+- `app-sandbox` must be **disabled**. The Dynamsoft license module reads
+  hardware info via IOKit and writes a local license cache; the sandbox
+  denies both, so license activation fails with
+  `EC_LICENSE_BUFFER_FAILED (-20002)` ("Failed to read or write license
+  buffer").
 - `network.client` is **required** for Dynamsoft license activation.
 - `device.camera` is required for live camera barcode scanning.
 - `files.user-selected.read-write` is required to pick image files.

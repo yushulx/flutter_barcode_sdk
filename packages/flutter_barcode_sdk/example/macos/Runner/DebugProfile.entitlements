@@ -2,8 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- App sandbox must stay disabled: the Dynamsoft license module needs
+	     IOKit access (hardware fingerprint) and writes a license cache,
+	     both of which the sandbox denies (EC_LICENSE_BUFFER_FAILED -20002). -->
 	<key>com.apple.security.app-sandbox</key>
-	<true/>
+	<false/>
 	<key>com.apple.security.cs.allow-jit</key>
 	<true/>
 	<key>com.apple.security.network.server</key>

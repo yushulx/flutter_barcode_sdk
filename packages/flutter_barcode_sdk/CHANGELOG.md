@@ -1,3 +1,14 @@
+## 5.1.1
+
+* Requires `flutter_barcode_sdk_macos` ^1.0.1, which fixes broken dylib
+  install names that crashed macOS apps at launch.
+* Aligned all endorsed platform package constraints to ^1.0.1
+  (android / ios / windows / linux / web).
+* Example (macOS): fixed the corrupted `project.pbxproj` that excluded
+  `GeneratedPluginRegistrant.swift` from compilation; disabled the app
+  sandbox so Dynamsoft license activation works; skip `setParameters`
+  when `getParameters` returns an empty string.
+
 ## 5.1.0
 
 * Added **macOS** platform support via the new `flutter_barcode_sdk_macos`

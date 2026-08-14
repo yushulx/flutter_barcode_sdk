@@ -48,9 +48,12 @@ class _DesktopState extends State<Desktop> {
 
     // Get all current parameters.
     String params = await _barcodeReader.getParameters();
-    // Update the parameters.
-    int ret = await _barcodeReader.setParameters(params);
-    print('Parameter update: $ret');
+    // Update the parameters. Skipped when empty (e.g. license not active),
+    // otherwise InitSettings fails with -10030 (EC_JSON_PARSE_FAILED).
+    if (params.isNotEmpty) {
+      int ret = await _barcodeReader.setParameters(params);
+      print('Parameter update: $ret');
+    }
   }
 
   Widget getDefaultImageWithOverlay() {
