@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
   A flutter plugin for Dynamsoft Barcode Reader.
                        DESC
-  s.homepage         = 'https://github.com/yushulx/flutter_barcode_sdk_ios'
+  s.homepage         = 'https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk_ios'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'yushulx' => 'lingxiao1002@gmail.com' }
   s.source           = { :path => '.' }
