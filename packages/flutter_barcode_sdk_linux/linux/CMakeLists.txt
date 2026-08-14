@@ -32,13 +32,16 @@ set(flutter_barcode_sdk_linux_bundled_libraries
   PARENT_SCOPE
 )
 
-install(DIRECTORY 
-  "${PROJECT_SOURCE_DIR}/../linux/lib/"
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/"
+# Install the Dynamsoft shared libraries and resources into the app bundle.
+# Use relative DESTINATION paths so they resolve against the bundle prefix
+# set by the parent runner project (avoids writing to /usr/local).
+install(DIRECTORY
+  "${PROJECT_SOURCE_DIR}/lib/"
+  DESTINATION "lib/"
 )
 
-install(DIRECTORY 
+install(DIRECTORY
   "${PROJECT_SOURCE_DIR}/../resources/Templates"
   "${PROJECT_SOURCE_DIR}/../resources/Models"
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/"
+  DESTINATION "lib/"
 )

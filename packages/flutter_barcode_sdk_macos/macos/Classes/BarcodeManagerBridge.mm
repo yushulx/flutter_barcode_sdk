@@ -6,6 +6,7 @@
 
 using namespace dynamsoft::basic_structures;
 using namespace dynamsoft::cvr;
+using namespace dynamsoft::dbr;
 using namespace dynamsoft::license;
 
 @implementation BarcodeManagerBridge {
@@ -159,7 +160,7 @@ using namespace dynamsoft::license;
   NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
 
   if (barcodes != nullptr) {
-    int count = barcodes->GetCount();
+    int count = barcodes->GetItemsCount();
     for (int i = 0; i < count; i++) {
       const CBarcodeResultItem *item = barcodes->GetItem(i);
       if (item == nullptr) {
