@@ -1,3 +1,20 @@
+## 1.0.2
+
+* Fixed missing Dynamsoft `Templates/` and `Models/` resources in the
+  built app, which caused `InitSettings error -10030` ("Syntax error:
+  value, object or array expected") at startup — the SDK loads them from
+  the directory containing its dylibs, but they were buried in a
+  `.bundle` inside the plugin framework.
+  - Podspec: replaced the misused `resource_bundles` with
+    `preserve_paths` for the `Resources/` folder.
+  - Example: added a `Copy Dynamsoft Resources` build phase to the
+    Runner target that copies the folders into `Contents/Resources/` and
+    exposes them in `Contents/Frameworks/` via symlinks (placing data
+    files in `Frameworks/` directly breaks code signing).
+* README: documented the required resource setup for consumers, with a
+  ready-to-paste `post_install` snippet for `macos/Podfile` that injects
+  the build phase automatically on `pod install`.
+
 ## 1.0.1
 
 * Fixed broken install names of the bundled `libDynamicPdf.dylib` and

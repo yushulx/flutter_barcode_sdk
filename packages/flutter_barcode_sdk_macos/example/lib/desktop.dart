@@ -39,7 +39,8 @@ class _DesktopState extends State<Desktop> {
   Future<void> initBarcodeSDK() async {
     _barcodeReader = FlutterBarcodeSdk();
     // Get 30-day FREEE trial license from https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
-    await _barcodeReader.setLicense(LICENSE_KEY);
+    int licenseRet = await _barcodeReader.setLicense(LICENSE_KEY);
+    print('License activation returned: $licenseRet');
     await _barcodeReader.init();
     // await _barcodeReader.setBarcodeFormats(BarcodeFormat.CODE_39 |
     //     BarcodeFormat.CODABAR |
@@ -48,12 +49,9 @@ class _DesktopState extends State<Desktop> {
 
     // Get all current parameters.
     String params = await _barcodeReader.getParameters();
-    // Update the parameters. Skipped when empty (e.g. license not active),
-    // otherwise InitSettings fails with -10030 (EC_JSON_PARSE_FAILED).
-    if (params.isNotEmpty) {
-      int ret = await _barcodeReader.setParameters(params);
-      print('Parameter update: $ret');
-    }
+    // Update the parameters.
+    int ret = await _barcodeReader.setParameters(params);
+    print('Parameter update: $ret');
   }
 
   Widget getDefaultImageWithOverlay() {

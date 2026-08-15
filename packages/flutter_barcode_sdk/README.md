@@ -112,6 +112,14 @@ Ensure `CMake` and a platform-specific C++ compiler are installed.
 Requires macOS 12+, Xcode 14+, and CocoaPods. The first build runs
 `pod install` automatically.
 
+You must also bundle the Dynamsoft `Templates/` and `Models/` resource
+folders into your app, otherwise the SDK fails with
+`InitSettings error -10030`. A Flutter plugin cannot do this for you, so
+add the `Copy Dynamsoft Resources` build phase to your Runner target —
+the easiest way is pasting the ready-made `post_install` snippet from
+[flutter_barcode_sdk_macos/README.md](https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk_macos#dynamsoft-resources-in-your-own-app-required)
+into your `macos/Podfile` and running `pod install`.
+
 Grant these entitlements in your app's `macos/Runner/*.entitlements`
 (the bundled example already has them):
 

@@ -15,7 +15,15 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
   s.vendored_libraries = 'Libraries/*.dylib'
-  s.resource_bundles = { 'flutter_barcode_sdk_macos' => ['Resources/**/*'] }
+  # The Dynamsoft SDK locates its preset templates and models in Templates/
+  # and Models/ directories next to its dylibs (i.e. Contents/Frameworks in
+  # the built app). CocoaPods offers no way for a pod to inject files there,
+  # so the app target must copy them at build time — see the "Copy Dynamsoft
+  # Resources" build phase in the example's Runner target. preserve_paths
+  # keeps the Resources folder in the pod sandbox so that step always finds
+  # it. Do NOT use resource_bundles here: the files would end up buried in a
+  # .bundle inside the plugin framework where the SDK cannot find them.
+  s.preserve_paths = 'Resources'
   s.dependency 'FlutterMacOS'
   s.platform         = :osx, '12.0'
   s.pod_target_xcconfig = {

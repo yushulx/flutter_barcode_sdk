@@ -33,22 +33,24 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin {
       let res = bridge.decodeFile(args["filename"] as! String)
       result(res)
     case "decodeImageBuffer":
-      // Decode on a background queue to avoid blocking the UI thread.
-      DispatchQueue.global().async { [self] in
-        let args = call.arguments as! [String: Any]
-        let bytes = (args["bytes"] as! FlutterStandardTypedData).data
-        let width = args["width"] as! Int
-        let height = args["height"] as! Int
-        let stride = args["stride"] as! Int
-        let format = args["format"] as! Int
-        let rotation = args["rotation"] as! Int
-        let res = bridge.decodeImageBuffer(
-          bytes,
-          width: Int32(width),
-          height: Int32(height),
-          stride: Int32(stride),
-          format: Int32(format),
-          rotation: Int32(rotation))
+      // Decode asynchronously via StartCapturing callbacks (same approach
+      // as the Windows/Linux implementations). The bridge invokes the
+      // completion on the main queue, where the FlutterResult reply is safe.
+      let args = call.arguments as! [String: Any]
+      let bytes = (args["bytes"] as! FlutterStandardTypedData).data
+      let width = args["width"] as! Int
+      let height = args["height"] as! Int
+      let stride = args["stride"] as! Int
+      let format = args["format"] as! Int
+      let rotation = args["rotation"] as! Int
+      bridge.decodeImageBuffer(
+        bytes,
+        width: Int32(width),
+        height: Int32(height),
+        stride: Int32(stride),
+        format: Int32(format),
+        rotation: Int32(rotation)
+      ) { res in
         result(res)
       }
     case "setBarcodeFormats":

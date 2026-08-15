@@ -1,3 +1,11 @@
+## 5.1.2
+
+* Requires `flutter_barcode_sdk_macos` ^1.0.2, which correctly bundles the
+  Dynamsoft `Templates/` and `Models/` resources into macOS apps, fixing
+* README: the macOS section now points to the required
+  `Copy Dynamsoft Resources` build-phase setup (with an automatic
+  `post_install` snippet for `macos/Podfile`).
+
 ## 5.1.1
 
 * Requires `flutter_barcode_sdk_macos` ^1.0.1, which fixes broken dylib

@@ -1,7 +1,7 @@
 name: flutter_barcode_sdk
 resolution: workspace
 description: The only Flutter barcode SDK for Android, iOS, Web, Windows, Linux, macOS. Empower developers to build 1D/2D barcode reader and barcode scanner.
-version: 5.1.1
+version: 5.1.2
 homepage: https://www.dynamsoft.com/barcode-reader/overview/
 repository: https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk
 
@@ -18,7 +18,7 @@ dependencies:
 
   # Endorsed platform implementations
   flutter_barcode_sdk_android: ^1.0.1
-  flutter_barcode_sdk_macos: ^1.0.1
+  flutter_barcode_sdk_macos: ^1.0.2
   flutter_barcode_sdk_ios: ^1.0.1
   flutter_barcode_sdk_windows: ^1.0.1
   flutter_barcode_sdk_linux: ^1.0.1

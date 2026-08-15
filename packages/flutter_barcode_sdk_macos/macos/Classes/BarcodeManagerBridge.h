@@ -10,7 +10,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Foundation objects that Flutter can encode over the method channel.
 @interface BarcodeManagerBridge : NSObject
 
-/// Creates the CaptureVisionRouter instance.
+/// Creates the CaptureVisionRouter instance and wires up the async
+/// capture pipeline (file fetcher, result receiver, state listener).
 /// Returns 0 on success, a negative value on failure.
 - (int)initSdk;
 
@@ -23,14 +24,21 @@ NS_ASSUME_NONNULL_BEGIN
 /// format, text, x1..y4, angle, barcodeBytes, errorCode, errorMsg.
 - (NSArray<NSDictionary *> *)decodeFile:(NSString *)path;
 
-/// Decodes barcodes from a raw image buffer.
-/// Returns the same dictionary format as [decodeFile:].
-- (NSArray<NSDictionary *> *)decodeImageBuffer:(NSData *)bytes
-                                         width:(int)width
-                                        height:(int)height
-                                        stride:(int)stride
-                                        format:(int)format
-                                      rotation:(int)rotation;
+/// Decodes barcodes from a raw image buffer asynchronously.
+///
+/// Mirrors the Windows/Linux implementations: the buffer is fed to a
+/// CFileFetcher input source and CCaptureVisionRouter::StartCapturing is
+/// invoked. The completion block is invoked on the main queue once the
+/// SDK signals that the source is exhausted, with the same dictionary
+/// format as [decodeFile:]. This keeps the decode call non-blocking in
+/// video stream scenarios.
+- (void)decodeImageBuffer:(NSData *)bytes
+                    width:(int)width
+                   height:(int)height
+                   stride:(int)stride
+                   format:(int)format
+                 rotation:(int)rotation
+               completion:(void (^)(NSArray<NSDictionary *> *results))completion;
 
 /// Sets the barcode formats to be detected.
 /// Returns 0 on success, or an error code on failure.

@@ -25,7 +25,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
-  flutter_barcode_sdk_macos: 393c351a24c7b7bbb159e13f33a0b6838ffeaf2f
+  flutter_barcode_sdk_macos: cab45b0645dc89f34810460af1773e1899ec1a7e
   flutter_lite_camera: 0a91cbcebca420a0e62955fbcdd7d030cc5da322
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
 
