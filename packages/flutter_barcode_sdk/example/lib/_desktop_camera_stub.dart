@@ -9,6 +9,12 @@ class DesktopCameraHelper {
   /// Always returns `false` (camera cannot be opened on web).
   Future<bool> open(int index) async => false;
 
+  /// Returns `-1` (no texture available on web).
+  Future<int> startPreview() async => -1;
+
+  /// No-op on web.
+  Future<void> stopPreview() async {}
+
   /// Returns an empty map (no frame data on web).
   Future<Map<String, dynamic>> captureFrame() async => {};
 

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'frame_painter.dart';
 import 'license.dart';
 import 'overlay_painter.dart';
 import 'scanner_screen.dart';
@@ -50,7 +49,9 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
   // Desktop camera state
   DesktopCameraHelper? _desktopCamera;
   bool _isDesktopCameraActive = false;
-  ui.Image? _latestFrame;
+  int _textureId = -1;
+  int _width = 640;
+  int _height = 480;
   bool _isDecoding = false;
 
   @override
@@ -135,7 +136,7 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
       _imageBytes = bytes;
       _barcodeResultsList = results;
       _barcodeResults = getBarcodeResults(results);
-      _latestFrame = null;
+      _textureId = -1;
     });
   }
 
@@ -178,8 +179,12 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
 
       final opened = await _desktopCamera!.open(0);
       if (opened) {
+        // Start the native preview stream; the returned texture id is
+        // displayed with a [Texture] widget.
+        final textureId = await _desktopCamera!.startPreview();
         setState(() {
           _isDesktopCameraActive = true;
+          _textureId = textureId;
           _imageBytes = null;
           _barcodeResultsList = [];
           _barcodeResults = '';
@@ -196,11 +201,12 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
 
     _isDesktopCameraActive = false;
     _isDecoding = false;
+    await _desktopCamera?.stopPreview();
     await _desktopCamera?.release();
 
     if (mounted) {
       setState(() {
-        _latestFrame = null;
+        _textureId = -1;
         _barcodeResultsList = [];
       });
     }
@@ -215,11 +221,14 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
         final Uint8List rgb = frame['data'];
         final int width = frame['width'];
         final int height = frame['height'];
+        _width = width;
+        _height = height;
 
-        // Decode barcodes from the raw frame.
+        // Decode barcodes from the raw frame. This does not affect the
+        // preview stream.
         if (!_isDecoding) {
           _isDecoding = true;
-          _barcodeResultsList = await _barcodeReader!.decodeImageBuffer(
+          final results = await _barcodeReader!.decodeImageBuffer(
             rgb,
             width,
             height,
@@ -228,10 +237,12 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
             ImageRotation.rotation0.value,
           );
           _isDecoding = false;
+          if (mounted) {
+            setState(() {
+              _barcodeResultsList = results;
+            });
+          }
         }
-
-        // Convert the RGB buffer to a displayable image.
-        await _convertRgbToImage(rgb, width, height);
       }
     } catch (_) {
       // Ignore transient frame-capture errors.
@@ -240,24 +251,6 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
     if (_isDesktopCameraActive) {
       Future.delayed(const Duration(milliseconds: 30), _captureDesktopFrames);
     }
-  }
-
-  Future<void> _convertRgbToImage(
-      Uint8List rgbBuffer, int width, int height) async {
-    final pixels = Uint8List(width * height * 4);
-    for (int i = 0; i < width * height; i++) {
-      pixels[i * 4] = rgbBuffer[i * 3 + 2]; // B
-      pixels[i * 4 + 1] = rgbBuffer[i * 3 + 1]; // G
-      pixels[i * 4 + 2] = rgbBuffer[i * 3]; // R
-      pixels[i * 4 + 3] = 255; // A
-    }
-
-    final completer = Completer<ui.Image>();
-    ui.decodeImageFromPixels(
-        pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
-    final image = await completer.future;
-
-    if (mounted) setState(() => _latestFrame = image);
   }
 
   // ---------------------------------------------------------------------------
@@ -293,7 +286,7 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
           return Column(
             children: [
               Expanded(
-                child: _isDesktopCameraActive && _latestFrame != null
+                child: _isDesktopCameraActive && _textureId >= 0
                     ? _buildDesktopCameraPreview(constraints)
                     : _buildImagePreview(constraints),
               ),
@@ -369,14 +362,27 @@ class _BarcodeAppState extends State<BarcodeApp> with WidgetsBindingObserver {
     );
   }
 
-  /// Displays the live desktop camera feed with barcode overlay.
+  /// Displays the live desktop camera feed (native texture) with barcode
+  /// overlay.
   Widget _buildDesktopCameraPreview(BoxConstraints constraints) {
     return Center(
-      child: CustomPaint(
-        painter: FramePainter(_latestFrame!, _barcodeResultsList),
+      child: FittedBox(
+        fit: BoxFit.contain,
         child: SizedBox(
-          width: constraints.maxWidth,
-          height: constraints.maxHeight * 0.8,
+          width: _width.toDouble(),
+          height: _height.toDouble(),
+          child: Stack(
+            children: [
+              // The native layer renders the video feed into this texture;
+              // no frame data crosses into Dart for display purposes.
+              Texture(textureId: _textureId),
+              if (_barcodeResultsList.isNotEmpty)
+                // Fill the frame so the overlay painter has the full frame
+                // size (otherwise the CustomPaint is laid out 0x0 and the
+                // barcode text wraps vertically).
+                Positioned.fill(child: createOverlay(_barcodeResultsList)),
+            ],
+          ),
         ),
       ),
     );

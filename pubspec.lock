@@ -298,10 +298,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_lite_camera
-      sha256: "511531afa9cd82de77d6f46ca9ecfae062f1d1c25c7c4651eb6cf4879a93277a"
+      sha256: e01f90cff6ddbeedda89cbf8f5f1e4b4b6d44c2fc47a05df8a8dcd604d6efed5
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

@@ -7,7 +7,6 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_barcode_sdk_windows_example/utils.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:flutter_lite_camera/flutter_lite_camera.dart';
-import 'frame_painter.dart';
 import 'license.dart';
 import 'overlay_painter.dart';
 
@@ -27,7 +26,7 @@ class _DesktopState extends State<Desktop> {
   int _width = 640;
   int _height = 480;
   bool _shouldCapture = false;
-  ui.Image? _latestFrame;
+  int _textureId = -1;
   bool isDecoding = false;
 
   @override
@@ -135,7 +134,7 @@ class _DesktopState extends State<Desktop> {
     if (isDecoding) return;
 
     isDecoding = true;
-    _barcodeResultsList = await _barcodeReader.decodeImageBuffer(
+    final results = await _barcodeReader.decodeImageBuffer(
         rgb,
         width,
         height,
@@ -143,6 +142,11 @@ class _DesktopState extends State<Desktop> {
         ImagePixelFormat.IPF_RGB_888.index,
         ImageRotation.rotation0.value);
 
+    if (mounted) {
+      setState(() {
+        _barcodeResultsList = results;
+      });
+    }
     // _barcodeResults = getBarcodeResults(_barcodeResultsList);
 
     isDecoding = false;
@@ -156,8 +160,10 @@ class _DesktopState extends State<Desktop> {
           await _flutterLiteCameraPlugin.captureFrame();
       if (frame.containsKey('data')) {
         Uint8List rgbBuffer = frame['data'];
+        _width = frame['width'];
+        _height = frame['height'];
+        // Decode barcodes only; the preview stream is unaffected.
         _decodeFrame(rgbBuffer, frame['width'], frame['height']);
-        await _convertBufferToImage(rgbBuffer, frame['width'], frame['height']);
       }
     } catch (e) {
       // print("Error capturing frame: $e");
@@ -169,37 +175,6 @@ class _DesktopState extends State<Desktop> {
     }
   }
 
-  Future<void> _convertBufferToImage(
-      Uint8List rgbBuffer, int width, int height) async {
-    final pixels = Uint8List(width * height * 4); // RGBA buffer
-
-    for (int i = 0; i < width * height; i++) {
-      int r = rgbBuffer[i * 3];
-      int g = rgbBuffer[i * 3 + 1];
-      int b = rgbBuffer[i * 3 + 2];
-
-      // Populate RGBA buffer
-      pixels[i * 4] = b;
-      pixels[i * 4 + 1] = g;
-      pixels[i * 4 + 2] = r;
-      pixels[i * 4 + 3] = 255; // Alpha channel
-    }
-
-    final completer = Completer<ui.Image>();
-    ui.decodeImageFromPixels(
-      pixels,
-      width,
-      height,
-      ui.PixelFormat.rgba8888,
-      completer.complete,
-    );
-
-    final image = await completer.future;
-    setState(() {
-      _latestFrame = image;
-    });
-  }
-
   Future<void> _startCamera() async {
     try {
       List<String> devices = await _flutterLiteCameraPlugin.getDeviceList();
@@ -208,9 +183,15 @@ class _DesktopState extends State<Desktop> {
         print("Opening camera 0");
         bool opened = await _flutterLiteCameraPlugin.open(0);
         if (opened) {
-          _isCameraOpened = true;
-          _shouldCapture = true;
-          _isCapturing = true;
+          // Start the native preview stream; the returned texture id is
+          // displayed with a [Texture] widget.
+          int textureId = await _flutterLiteCameraPlugin.startPreview();
+          setState(() {
+            _textureId = textureId;
+            _isCameraOpened = true;
+            _shouldCapture = true;
+            _isCapturing = true;
+          });
           _captureFrames();
         } else {
           print("Failed to open the camera.");
@@ -225,9 +206,10 @@ class _DesktopState extends State<Desktop> {
     _shouldCapture = false;
 
     if (_isCameraOpened) {
+      await _flutterLiteCameraPlugin.stopPreview();
       await _flutterLiteCameraPlugin.release();
       _isCameraOpened = false;
-      _latestFrame = null;
+      _textureId = -1;
       isDecoding = false;
       Future.delayed(const Duration(milliseconds: 100), () {
         setState(() {
@@ -258,7 +240,7 @@ class _DesktopState extends State<Desktop> {
             children: [
               // Display camera stream or image
               Expanded(
-                child: _latestFrame != null
+                child: _textureId >= 0
                     ? _buildCameraStream(constraints)
                     : _buildImageWithOverlay(constraints),
               ),
@@ -319,54 +301,26 @@ class _DesktopState extends State<Desktop> {
   }
 
   Widget _buildCameraStream(BoxConstraints constraints) {
-    final screenWidth = constraints.maxWidth;
-    final screenHeight = constraints.maxHeight;
-    final imageAspectRatio = _width / _height;
-    final screenAspectRatio = screenWidth / screenHeight;
-
-    double drawWidth, drawHeight;
-    if (imageAspectRatio > screenAspectRatio) {
-      drawWidth = screenWidth;
-      drawHeight = screenWidth / imageAspectRatio;
-    } else {
-      drawHeight = screenHeight;
-      drawWidth = screenHeight * imageAspectRatio;
-    }
-
-    return Column(
-      children: [
-        // Constrain the camera stream height to avoid overflow
-        Container(
-          width: drawWidth,
-          height: drawHeight.clamp(
-              0.0, constraints.maxHeight * 0.8), // Use up to 80% of height
-          alignment: Alignment.center,
-          child: CustomPaint(
-            painter: FramePainter(_latestFrame!, _barcodeResultsList),
-            child: SizedBox(
-              width: drawWidth,
-              height: drawHeight,
-            ),
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: _width.toDouble(),
+          height: _height.toDouble(),
+          child: Stack(
+            children: [
+              // The native layer renders the video feed into this texture;
+              // no frame data crosses into Dart for display purposes.
+              Texture(textureId: _textureId),
+              if (_barcodeResultsList.isNotEmpty)
+                // Fill the frame so the overlay painter has the full frame
+                // size (otherwise the CustomPaint is laid out 0x0 and the
+                // barcode text wraps vertically).
+                Positioned.fill(child: createOverlay(_barcodeResultsList)),
+            ],
           ),
         ),
-
-        // Add spacing below the camera stream
-        SizedBox(height: 10),
-
-        // Display barcode results
-        // Expanded(
-        //   child: SingleChildScrollView(
-        //     child: SelectableText(
-        //       _barcodeResults.isEmpty ? 'No barcode detected' : _barcodeResults,
-        //       style: TextStyle(
-        //         fontSize: 20,
-        //         color: Colors.black,
-        //       ),
-        //       textAlign: TextAlign.center,
-        //     ),
-        //   ),
-        // ),
-      ],
+      ),
     );
   }
 
