@@ -5,7 +5,7 @@ PODS:
     - DynamsoftCaptureVisionBundle (= 3.6.1000)
   - DynamsoftCaptureVisionBundle (3.6.1000)
   - Flutter (1.0.0)
-  - flutter_barcode_sdk_ios (1.0.0):
+  - flutter_barcode_sdk_ios (1.0.2):
     - DynamsoftBarcodeReaderBundle (= 11.6.1000)
     - Flutter
   - image_picker_ios (0.0.1):
@@ -37,9 +37,9 @@ SPEC CHECKSUMS:
   DynamsoftBarcodeReaderBundle: 84c6dfb0d6b934f7a038c383463f8eb53537e946
   DynamsoftCaptureVisionBundle: 73079c45b424422fc4dca8110875037c0794da47
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_barcode_sdk_ios: 19248aebcd5f0e3e14bb8e21158dd48b0fb14bae
+  flutter_barcode_sdk_ios: 867a7edf3bd5a501cf51294847e9f6cfba9fe43d
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
 
-PODFILE CHECKSUM: 4f1c12611da7338d21589c0b2ecd6bd20b109694
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
 
 COCOAPODS: 1.16.2

@@ -45,6 +45,9 @@ class MobileState extends State<Mobile> with WidgetsBindingObserver {
     _controller = CameraController(
       widget.camera,
       ResolutionPreset.high,
+      // Barcode scanning does not need audio. Disabling it avoids the
+      // microphone permission requirement (NSMicrophoneUsageDescription).
+      enableAudio: false,
     );
 
     try {

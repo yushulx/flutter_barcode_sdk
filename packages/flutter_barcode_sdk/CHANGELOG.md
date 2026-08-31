@@ -1,3 +1,9 @@
+## 5.1.3
+
+* Requires `flutter_barcode_sdk_ios` ^1.0.2, which fixes the broken generated
+  Swift header import that prevented iOS builds after the monorepo
+  restructure.
+
 ## 5.1.2
 
 * Requires `flutter_barcode_sdk_macos` ^1.0.2, which correctly bundles the
