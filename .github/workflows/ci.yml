@@ -137,6 +137,15 @@ jobs:
       - name: Resolve workspace dependencies
         run: flutter pub get
 
+      # The macOS plugin ships vendored Dynamsoft dylibs. Swift Package
+      # Manager cannot link them (no -L for vendored dylibs, and Dynamsoft
+      # publishes no macOS xcframework/SPM artifacts), so CocoaPods remains
+      # the fully supported macOS integration path. SPM support on macOS is
+      # manifest-level only (see macos/flutter_barcode_sdk_macos/Package.swift);
+      # keep the flag off here so the CI build uses CocoaPods.
+      - name: Disable Swift Package Manager (macOS uses CocoaPods)
+        run: flutter config --no-enable-swift-package-manager
+
       - name: Build macOS example
         working-directory: packages/flutter_barcode_sdk_macos/example
         run: flutter build macos --debug

@@ -1,15 +1,53 @@
 #import "FlutterBarcodeSdkPlugin.h"
-#if __has_include(<flutter_barcode_sdk_macos/flutter_barcode_sdk_macos-Swift.h>)
-#import <flutter_barcode_sdk_macos/flutter_barcode_sdk_macos-Swift.h>
-#else
-// Support project import fallback if the generated compatibility header
-// is not copied when this plugin is created as a library.
-// https://forums.swift.org/t/swift-static-libraries-dont-copy-generated-objective-c-header/19816
-#import "flutter_barcode_sdk_macos-Swift.h"
-#endif
+
+#import "BarcodeManagerBridge.h"
+
+@interface FlutterBarcodeSdkPlugin ()
+@property(nonatomic, strong) BarcodeManagerBridge *bridge;
+@end
 
 @implementation FlutterBarcodeSdkPlugin
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftFlutterBarcodeSdkPlugin registerWithRegistrar:registrar];
+  FlutterMethodChannel *channel =
+      [FlutterMethodChannel methodChannelWithName:@"flutter_barcode_sdk"
+                                  binaryMessenger:registrar.messenger];
+  FlutterBarcodeSdkPlugin *instance = [[FlutterBarcodeSdkPlugin alloc] init];
+  instance.bridge = [[BarcodeManagerBridge alloc] init];
+  [registrar addMethodCallDelegate:instance channel:channel];
 }
+
+- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
+  NSDictionary *args = call.arguments;
+  if ([@"init" isEqualToString:call.method]) {
+    result(@([self.bridge initSdk]));
+  } else if ([@"setLicense" isEqualToString:call.method]) {
+    result(@([self.bridge setLicense:args[@"license"]]));
+  } else if ([@"decodeFile" isEqualToString:call.method]) {
+    result([self.bridge decodeFile:args[@"filename"]]);
+  } else if ([@"decodeImageBuffer" isEqualToString:call.method]) {
+    // Decode asynchronously via StartCapturing callbacks (same approach as
+    // the Windows/Linux implementations). The bridge invokes the completion
+    // on the main queue, where the FlutterResult reply is safe.
+    FlutterStandardTypedData *bytes = args[@"bytes"];
+    [self.bridge decodeImageBuffer:bytes.data
+                             width:[args[@"width"] intValue]
+                            height:[args[@"height"] intValue]
+                            stride:[args[@"stride"] intValue]
+                            format:[args[@"format"] intValue]
+                          rotation:[args[@"rotation"] intValue]
+                        completion:^(NSArray<NSDictionary *> *results) {
+                          result(results);
+                        }];
+  } else if ([@"setBarcodeFormats" isEqualToString:call.method]) {
+    result(@([self.bridge setBarcodeFormats:[args[@"formats"] unsignedLongLongValue]]));
+  } else if ([@"getParameters" isEqualToString:call.method]) {
+    result([self.bridge getParameters]);
+  } else if ([@"setParameters" isEqualToString:call.method]) {
+    result(@([self.bridge setParameters:args[@"params"]]));
+  } else {
+    result(FlutterMethodNotImplemented);
+  }
+}
+
 @end

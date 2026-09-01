@@ -21,4 +21,4 @@ flutter:
     implements: flutter_barcode_sdk
     platforms:
       ios:
-        pluginClass: FlutterBarcodeSdkPlugin
+        pluginClass: SwiftFlutterBarcodeSdkPlugin

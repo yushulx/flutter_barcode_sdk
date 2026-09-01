@@ -1,16 +1,12 @@
 ## 1.0.3
 
-* Added Swift Package Manager support: new
-  `macos/flutter_barcode_sdk_macos/Package.swift` and sources moved from
-  `macos/Classes` to
-  `macos/flutter_barcode_sdk_macos/Sources/flutter_barcode_sdk_macos`
-  following the official SPM plugin layout. The CocoaPods podspec was
-  updated to the new source paths.
-  Note: Dynamsoft does not ship macOS xcframeworks/SPM artifacts, so the
-  vendored dylibs at `macos/Libraries` cannot be linked by SwiftPM out of
-  the box. CocoaPods remains the fully supported integration path on
-  macOS; the manifest documents what an SPM consumer must provide.
-* Restores the missing 10 pub points on pub.dev (150 -> 160).
+* Added Swift Package Manager support
+  (`macos/flutter_barcode_sdk_macos/Package.swift`).
+* Converted the plugin to Objective-C++-only: the method channel logic moved
+  from `SwiftFlutterBarcodeSdkPlugin.swift` into `FlutterBarcodeSdkPlugin.m`
+  (SwiftPM does not support mixed-language targets).
+* Note: Dynamsoft ships no macOS SPM artifacts, so CocoaPods remains the
+  fully supported integration path on macOS.
 
 ## 1.0.2
 

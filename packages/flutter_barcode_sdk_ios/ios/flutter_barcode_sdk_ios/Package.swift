@@ -30,11 +30,6 @@ let package = Package(
                     name: "DynamsoftBarcodeReaderBundle",
                     package: "barcode-reader-spm"
                 ),
-            ],
-            // Public headers live in include/<module_name>/ so the generated
-            // plugin registrant can `#import <flutter_barcode_sdk_ios/FlutterBarcodeSdkPlugin.h>`.
-            cSettings: [
-                .headerSearchPath("include/flutter_barcode_sdk_ios")
             ]
         )
     ]

@@ -1,13 +1,10 @@
 ## 1.0.3
 
-* Added Swift Package Manager support: the plugin manifest now lives at
-  `ios/flutter_barcode_sdk_ios/Package.swift` (Flutter 3.44+ generates the
-  local `FlutterFramework` package it references) and sources moved from
-  `ios/Classes` to
-  `ios/flutter_barcode_sdk_ios/Sources/flutter_barcode_sdk_ios` following
-  the official SPM plugin layout. The CocoaPods podspec was updated to the
-  new source paths.
-* Restores the missing 10 pub points on pub.dev (150 -> 160).
+* Added Swift Package Manager support
+  (`ios/flutter_barcode_sdk_ios/Package.swift`).
+* Converted the plugin to Swift-only: removed the Objective-C forwarding
+  layer and switched the plugin class to `SwiftFlutterBarcodeSdkPlugin`
+  (SwiftPM does not support mixed-language targets).
 
 ## 1.0.2
 
