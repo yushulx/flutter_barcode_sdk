@@ -1,9 +1,9 @@
 PODS:
   - file_selector_macos (0.0.1):
     - FlutterMacOS
-  - flutter_barcode_sdk_macos (1.0.0):
+  - flutter_barcode_sdk_macos (1.0.3):
     - FlutterMacOS
-  - flutter_lite_camera (0.0.1):
+  - flutter_lite_camera (0.2.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
 
@@ -25,8 +25,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
-  flutter_barcode_sdk_macos: cab45b0645dc89f34810460af1773e1899ec1a7e
-  flutter_lite_camera: 0a91cbcebca420a0e62955fbcdd7d030cc5da322
+  flutter_barcode_sdk_macos: 63f35cafa92318bb5c0f7666aeffa124c6892a52
+  flutter_lite_camera: 8a5d9aa65ff548ae8f0fbc4b27678449d1a3712c
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
 
 PODFILE CHECKSUM: 1e95c36afbfd1cb6423ceca4de7a8e1b256fb6ac

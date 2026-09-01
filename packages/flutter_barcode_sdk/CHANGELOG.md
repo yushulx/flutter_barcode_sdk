@@ -1,3 +1,13 @@
+## 5.2.0
+
+* Unified example app: the example now uses `flutter_lite_camera` for the
+  camera preview and frame capture on all six platforms, replacing the
+  official `camera` plugin, and adds image file scanning (file loading +
+  decoding + annotated result view) via `file_selector`.
+* Requires `flutter_barcode_sdk_ios` ^1.0.3 and `flutter_barcode_sdk_macos`
+  ^1.0.3, which add Swift Package Manager support and restore the missing
+  10 pub points (150 -> 160).
+
 ## 5.1.3
 
 * Requires `flutter_barcode_sdk_ios` ^1.0.2, which fixes the broken generated

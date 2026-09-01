@@ -431,8 +431,8 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/Resources/Templates",
-				"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/Resources/Models",
+				"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/flutter_barcode_sdk_macos/Resources/Templates",
+				"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/flutter_barcode_sdk_macos/Resources/Models",
 			);
 			name = "Copy Dynamsoft Resources";
 			outputFileListPaths = (
@@ -445,7 +445,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# The Dynamsoft SDK loads Templates/ and Models/ from its dylibs' directory\n# (Contents/Frameworks). Data files placed there directly break code signing,\n# so copy the folders into Contents/Resources and expose them via symlinks.\nDYNAMSOFT_RESOURCES=\"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/Resources\"\nif [ -d \"$DYNAMSOFT_RESOURCES\" ]; then\n  rsync -a --delete \"$DYNAMSOFT_RESOURCES/Templates\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\n  rsync -a --delete \"$DYNAMSOFT_RESOURCES/Models\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\n  ln -sfn ../Resources/Templates \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Templates\"\n  ln -sfn ../Resources/Models \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Models\"\nfi\n";
+			shellScript = "# The Dynamsoft SDK loads Templates/ and Models/ from its dylibs' directory\n# (Contents/Frameworks). Data files placed there directly break code signing,\n# so copy the folders into Contents/Resources and expose them via symlinks.\nDYNAMSOFT_RESOURCES=\"${PODS_ROOT}/../Flutter/ephemeral/.symlinks/plugins/flutter_barcode_sdk_macos/macos/flutter_barcode_sdk_macos/Resources\"\nif [ -d \"$DYNAMSOFT_RESOURCES\" ]; then\n  rsync -a --delete \"$DYNAMSOFT_RESOURCES/Templates\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\n  rsync -a --delete \"$DYNAMSOFT_RESOURCES/Models\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\n  ln -sfn ../Resources/Templates \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Templates\"\n  ln -sfn ../Resources/Models \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Models\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

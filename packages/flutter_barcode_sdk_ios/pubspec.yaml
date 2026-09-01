@@ -1,7 +1,7 @@
 name: flutter_barcode_sdk_ios
 resolution: workspace
 description: iOS platform implementation of flutter_barcode_sdk.
-version: 1.0.2
+version: 1.0.3
 repository: https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk_ios
 
 environment:
