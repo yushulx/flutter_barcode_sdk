@@ -206,6 +206,11 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
         if (frame.containsKey('data')) {
           final int frameWidth = frame['width'];
           final int frameHeight = frame['height'];
+          // Keep the preview aspect ratio and the overlay in sync with the
+          // real frame size: the device may deliver frames at a different
+          // size than the one negotiated at open() time.
+          _width = frameWidth;
+          _height = frameHeight;
           Uint8List rgbBuffer = frame['data'];
 
           List<BarcodeResult> ret = await _barcodeReader!.decodeImageBuffer(

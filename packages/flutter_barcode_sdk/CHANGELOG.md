@@ -7,6 +7,11 @@
 * Requires `flutter_barcode_sdk_ios` ^1.0.3 and `flutter_barcode_sdk_macos`
   ^1.0.3, which add Swift Package Manager support and restore the missing
   10 pub points (150 -> 160).
+* Live scan: track the real camera frame size from every captured frame so
+  the preview aspect ratio and the annotation overlay stay aligned even when
+  the device delivers frames at a different size than the negotiated one
+  (previously the preview could look stretched and the overlay misplaced on
+  macOS/desktop).
 
 ## 5.1.3
 
