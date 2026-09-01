@@ -2,20 +2,20 @@ PODS:
   - DynamsoftBarcodeReaderBundle (11.6.1000):
     - DynamsoftCaptureVisionBundle (= 3.6.1000)
   - DynamsoftCaptureVisionBundle (3.6.1000)
-  - file_selector_ios (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
   - flutter_barcode_sdk_ios (1.0.3):
     - DynamsoftBarcodeReaderBundle (= 11.6.1000)
     - Flutter
   - flutter_lite_camera (0.2.1):
     - Flutter
+  - image_picker_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
-  - file_selector_ios (from `.symlinks/plugins/file_selector_ios/ios`)
   - Flutter (from `Flutter`)
   - flutter_barcode_sdk_ios (from `.symlinks/plugins/flutter_barcode_sdk_ios/ios`)
   - flutter_lite_camera (from `.symlinks/plugins/flutter_lite_camera/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -23,22 +23,22 @@ SPEC REPOS:
     - DynamsoftCaptureVisionBundle
 
 EXTERNAL SOURCES:
-  file_selector_ios:
-    :path: ".symlinks/plugins/file_selector_ios/ios"
   Flutter:
     :path: Flutter
   flutter_barcode_sdk_ios:
     :path: ".symlinks/plugins/flutter_barcode_sdk_ios/ios"
   flutter_lite_camera:
     :path: ".symlinks/plugins/flutter_lite_camera/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
 
 SPEC CHECKSUMS:
   DynamsoftBarcodeReaderBundle: 84c6dfb0d6b934f7a038c383463f8eb53537e946
   DynamsoftCaptureVisionBundle: 73079c45b424422fc4dca8110875037c0794da47
-  file_selector_ios: ec57ec07954363dd730b642e765e58f199bb621a
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_barcode_sdk_ios: 0b769633e3b65515a04f0cd8eb8602761aa070a4
   flutter_lite_camera: d20d3a2c311c374fb76884bc6d6ccd8c543b5ad5
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
 
 PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
 

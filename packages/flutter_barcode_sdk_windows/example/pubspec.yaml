@@ -13,7 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_barcode_sdk: ^5.0.0
   flutter_lite_camera: ^0.2.1
-  file_selector: ^1.0.3
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

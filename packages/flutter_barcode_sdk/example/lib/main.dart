@@ -12,12 +12,12 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_lite_camera/flutter_lite_camera.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const BarcodeScannerApp());
@@ -254,16 +254,14 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
     // client at a time.
     await _stopCamera();
 
-    const XTypeGroup typeGroup = XTypeGroup(
-      label: 'Images',
-      extensions: <String>['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp'],
-      mimeTypes: <String>['image/*'],
-    );
+    // image_picker opens the system photo library on iOS/Android (PHPicker /
+    // Photo Picker) and falls back to a file dialog on desktop and web.
+    final ImagePicker picker = ImagePicker();
 
     setState(() => _isPickingFile = true);
     try {
       final XFile? file =
-          await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+          await picker.pickImage(source: ImageSource.gallery);
       if (file == null) return; // The user canceled the dialog.
 
       List<BarcodeResult> results;
@@ -515,7 +513,12 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
+            // The image area keeps a fixed size regardless of how many
+            // results there are; the results list below scrolls instead of
+            // squeezing the image.
+            SizedBox(
+              width: double.infinity,
+              height: MediaQuery.sizeOf(context).height * 0.55,
               child: FutureBuilder<_LoadedImage>(
                 future: _loadFuture,
                 builder: (context, snapshot) {
@@ -553,13 +556,17 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                 },
               ),
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: Text(
-                _summary,
-                style: Theme.of(context).textTheme.bodyMedium,
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: SelectableText(
+                    _summary,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
               ),
             ),
           ],
