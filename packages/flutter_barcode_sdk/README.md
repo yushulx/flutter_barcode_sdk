@@ -7,7 +7,13 @@ A cross-platform Flutter plugin for barcode reading and scanning, powered by the
 
 Decode a wide range of 1D and 2D barcode symbologies from image files and raw pixel buffers. Build robust barcode reader and scanner applications with minimal effort.
 
-> **Tip:** For production-grade live camera scanning, consider using the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter) which offers optimized real-time performance.
+![Dynamsoft Barcode Reader Flutter example: QR Code, Code 128, and EAN-13 decoded from an image file with annotation overlay](example/screenshot.png)
+
+The plugin accepts image **files** or **raw pixel buffers**, so it composes with any camera plugin — for example [`flutter_lite_camera`](https://pub.dev/packages/flutter_lite_camera), which provides live camera preview and frame capture on the same six platforms. The bundled example app uses exactly this combination.
+
+> **Need more than barcodes?** [`flutter_capture_vision`](https://pub.dev/packages/flutter_capture_vision) is built on the same architecture and additionally supports MRZ (passport/ID) recognition and document boundary detection on Android, iOS, Web, Windows, Linux, and macOS.
+
+> **Tip:** If you only target **Android and iOS**, consider the official [Dynamsoft Capture Vision Flutter Edition](https://pub.dev/packages/dynamsoft_capture_vision_flutter) for production-grade live camera scanning with optimized real-time performance. Dynamsoft does not officially support that edition on Web, Windows, Linux, or macOS — for those platforms (or a single code base covering all six), use this package together with a camera plugin such as [`flutter_lite_camera`](https://pub.dev/packages/flutter_lite_camera).
 
 
 ## Table of Contents
@@ -28,7 +34,7 @@ Decode a wide range of 1D and 2D barcode symbologies from image files and raw pi
 
 ```yaml
 dependencies:
-  flutter_barcode_sdk: ^5.0.0
+  flutter_barcode_sdk: ^5.3.0
 ```
 
 ### 2. Obtain a License Key
@@ -138,11 +144,11 @@ And add the camera usage description to `macos/Runner/Info.plist`:
 
 ### Web
 
-Include the Dynamsoft JavaScript SDK in `web/index.html`:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle@11.6.2000/dist/dbr.bundle.js"></script>
-```
+No manual setup is required. The Dynamsoft JavaScript/WASM bundle is
+self-hosted as package assets of the endorsed `flutter_barcode_sdk_web`
+package and is loaded automatically at runtime — there is no CDN
+`<script>` tag to add to `index.html`. Just serve the app over HTTPS or
+`localhost`, as required for WASM.
 
 
 ## Usage
@@ -158,6 +164,10 @@ for (var result in results) {
 ```
 
 ### Decode from a Camera Buffer
+
+The plugin itself is camera-agnostic: feed it raw frames from any camera
+plugin. [`flutter_lite_camera`](https://pub.dev/packages/flutter_lite_camera)
+opens the preview and captures RGB frames on all six platforms:
 
 ```dart
 List<BarcodeResult> results = await barcodeReader.decodeImageBuffer(
@@ -215,7 +225,7 @@ automatically — there is no need to add them to your `pubspec.yaml`:
 | `flutter_barcode_sdk_ios` | iOS |
 | `flutter_barcode_sdk_windows` | Windows |
 | `flutter_barcode_sdk_linux` | Linux |
-| `flutter_barcode_sdk_web` | Web |
+| `flutter_barcode_sdk_web` | Web (self-hosted JS/WASM bundle) |
 
 Each platform package is versioned and published independently, so each
 platform can be updated without affecting the others.
@@ -244,6 +254,3 @@ flutter run -d windows   # or -d linux/macos
 cd example
 flutter run -d chrome
 ```
-
-
-

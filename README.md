@@ -21,10 +21,19 @@ published to [pub.dev](https://pub.dev) independently:
 | [`flutter_barcode_sdk_macos`](packages/flutter_barcode_sdk_macos) | macOS implementation (universal-2). || [`flutter_barcode_sdk_ios`](packages/flutter_barcode_sdk_ios) | iOS implementation. |
 | [`flutter_barcode_sdk_windows`](packages/flutter_barcode_sdk_windows) | Windows implementation. |
 | [`flutter_barcode_sdk_linux`](packages/flutter_barcode_sdk_linux) | Linux implementation. |
-| [`flutter_barcode_sdk_web`](packages/flutter_barcode_sdk_web) | Web implementation. |
+| [`flutter_barcode_sdk_web`](packages/flutter_barcode_sdk_web) | Web implementation with a self-hosted JS/WASM bundle — no CDN `<script>` tag needed. |
 
 The platform packages are **endorsed** by the app-facing package, so app
 developers only need to depend on `flutter_barcode_sdk`.
+
+## Related Packages
+
+- [`flutter_capture_vision`](https://pub.dev/packages/flutter_capture_vision) —
+  same six-platform architecture, plus MRZ (passport/ID) recognition and
+  document boundary detection.
+- [`flutter_lite_camera`](https://pub.dev/packages/flutter_lite_camera) —
+  lightweight camera preview and frame capture on all six platforms; the
+  bundled example apps use it as the frame source for live scanning.
 
 ## Development
 

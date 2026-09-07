@@ -1,3 +1,12 @@
+## 5.3.0
+
+* **Web**: the Dynamsoft Barcode Reader JS/WASM bundle is now self-hosted
+  as package assets and loaded automatically — no CDN `<script>` tag is
+  needed in `index.html`.
+* **Web**: `decodeImageBuffer()` now passes a copy of the pixel buffer to
+  the engine, preventing the worker from detaching the caller's buffer.
+* Requires `flutter_barcode_sdk_web` ^1.1.0.
+
 ## 5.2.0
 
 * Requires `flutter_barcode_sdk_ios` ^1.0.3 and `flutter_barcode_sdk_macos`
