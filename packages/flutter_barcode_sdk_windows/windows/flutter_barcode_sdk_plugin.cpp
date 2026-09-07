@@ -98,20 +98,23 @@ namespace
     }
     else if (method_call.method_name().compare("decodeFile") == 0)
     {
-      std::string filename;
-      EncodableList results;
-
-      if (arguments)
+      // Decoding runs on the worker thread; the pending result is consumed
+      // and replied there (see BarcodeManager::DecodeFileAsync).
+      if (!arguments)
       {
-        auto filename_it = arguments->find(EncodableValue("filename"));
-        if (filename_it != arguments->end())
-        {
-          filename = std::get<std::string>(filename_it->second);
-        }
-        results = manager->DecodeFile(filename.c_str());
+        result->Success(EncodableList());
+        return;
       }
 
-      result->Success(results);
+      auto filename_it = arguments->find(EncodableValue("filename"));
+      if (filename_it == arguments->end())
+      {
+        result->Success(EncodableList());
+        return;
+      }
+
+      const std::string filename = std::get<std::string>(filename_it->second);
+      manager->DecodeFileAsync(std::move(result), filename.c_str());
     }
     else if (method_call.method_name().compare("decodeFileBytes") == 0)
     {

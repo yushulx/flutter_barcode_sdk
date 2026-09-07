@@ -24,7 +24,13 @@
   } else if ([@"setLicense" isEqualToString:call.method]) {
     result(@([self.bridge setLicense:args[@"license"]]));
   } else if ([@"decodeFile" isEqualToString:call.method]) {
-    result([self.bridge decodeFile:args[@"filename"]]);
+    // Decode asynchronously via StartCapturing callbacks (same approach as
+    // decodeImageBuffer). The bridge invokes the completion on the main
+    // queue, where the FlutterResult reply is safe.
+    [self.bridge decodeFile:args[@"filename"]
+                 completion:^(NSArray<NSDictionary *> *results) {
+                   result(results);
+                 }];
   } else if ([@"decodeImageBuffer" isEqualToString:call.method]) {
     // Decode asynchronously via StartCapturing callbacks (same approach as
     // the Windows/Linux implementations). The bridge invokes the completion

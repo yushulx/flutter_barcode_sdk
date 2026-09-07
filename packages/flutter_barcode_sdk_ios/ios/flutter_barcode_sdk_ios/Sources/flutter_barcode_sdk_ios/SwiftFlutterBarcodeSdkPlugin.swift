@@ -5,6 +5,10 @@ import UIKit
 public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerificationListener {
     let cvr = CaptureVisionRouter()
     var completionHandlers: [FlutterResult] = []
+    /// Serial queue for decode operations: decoding runs off the main thread
+    /// while serializing concurrent decodeFile/decodeImageBuffer calls that
+    /// share one CaptureVisionRouter.
+    private let decodeQueue = DispatchQueue(label: "com.dynamsoft.flutter_barcode_sdk.decode")
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
@@ -34,12 +38,19 @@ public class SwiftFlutterBarcodeSdkPlugin: NSObject, FlutterPlugin, LicenseVerif
             let ret = self.setParameters(arg: call.arguments as! NSDictionary)
             result(ret)
         case "decodeFile":
-            let res = self.decodeFile(arg: call.arguments as! NSDictionary)
-            result(res)
+            decodeQueue.async {
+                let res = self.decodeFile(arg: call.arguments as! NSDictionary)
+                // FlutterResult must be invoked on the platform thread.
+                DispatchQueue.main.async {
+                    result(res)
+                }
+            }
         case "decodeImageBuffer":
-            DispatchQueue.global().async {
+            decodeQueue.async {
                 let res = self.decodeBuffer(arguments: call.arguments as! NSDictionary)
-                result(res)
+                DispatchQueue.main.async {
+                    result(res)
+                }
             }
         default:
             result(.none)

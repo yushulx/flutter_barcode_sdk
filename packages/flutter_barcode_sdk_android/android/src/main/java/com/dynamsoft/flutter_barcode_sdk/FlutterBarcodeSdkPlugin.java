@@ -63,8 +63,19 @@ public class FlutterBarcodeSdkPlugin implements FlutterPlugin, MethodCallHandler
             break;
             case "decodeFile": {
                 final String filename = call.argument("filename");
-                List<Map<String, Object>> results = mBarcodeManager.decodeFile(filename);
-                result.success(results);
+                final Result r = result;
+                mExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final List<Map<String, Object>> results = mBarcodeManager.decodeFile(filename);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                r.success(results);
+                            }
+                        });
+                    }
+                });
             }
             break;
             case "decodeFileBytes": {

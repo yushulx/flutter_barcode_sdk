@@ -31,6 +31,16 @@ inline void printf_to_cerr(const char *format, ...)
 
 #define printf printf_to_cerr
 
+/// Responds with a success response carrying [value] and releases the
+/// caller's reference to it.
+void RespondFlValue(FlMethodCall *method_call, FlValue *value)
+{
+    g_autoptr(FlMethodResponse) response =
+        FL_METHOD_RESPONSE(fl_method_success_response_new(value));
+    fl_method_call_respond(method_call, response, nullptr);
+    fl_value_unref(value);
+}
+
 FlValue *WrapError(int errorCode, const char *errorMsg)
 {
     FlValue *out = fl_value_new_list();
@@ -114,58 +124,74 @@ public:
 
     void OnImageSourceStateReceived(ImageSourceState state) override
     {
-        if (state == ISS_EXHAUSTED)
+        if (state != ISS_EXHAUSTED)
         {
-            m_router->StopCapturing();
+            return;
+        }
 
-            FlValue *out = fl_value_new_list();
+        m_router->StopCapturing();
 
-            for (auto *result : m_receiver->results)
+        FlValue *out = fl_value_new_list();
+        bool hasError = false;
+
+        for (auto *result : m_receiver->results)
+        {
+            if (!hasError && result->GetErrorCode())
             {
-                if (result->GetErrorCode())
+                fl_value_unref(out);
+                out = WrapError(result->GetErrorCode(), result->GetErrorString());
+                hasError = true;
+            }
+            else if (!hasError)
+            {
+                int barcodeResultItemCount = result->GetItemsCount();
+                for (int j = 0; j < barcodeResultItemCount; ++j)
                 {
-                    out = WrapError(result->GetErrorCode(), result->GetErrorString());
+                    const CBarcodeResultItem *barcodeResultItem = result->GetItem(j);
+                    fl_value_append_take(out, CreateBarcodeResultMap(barcodeResultItem));
                 }
-                else
-                {
-                    if (!result || result->GetItemsCount() == 0)
-                    {
-                        continue;
-                    }
-
-                    int barcodeResultItemCount = result->GetItemsCount();
-                    for (int j = 0; j < barcodeResultItemCount; ++j)
-                    {
-                        const CBarcodeResultItem *barcodeResultItem = result->GetItem(j);
-                        fl_value_append_take(out, CreateBarcodeResultMap(barcodeResultItem));
-                    }
-                }
-
-                result->Release();
             }
 
-            m_receiver->results.clear();
+            result->Release();
+        }
 
-            g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(out));
-            if (m_method_call)
-            {
-                fl_method_call_respond(m_method_call, response, nullptr);
-                g_object_unref(m_method_call); // Release the method call
-                m_method_call = nullptr;
-            }
+        m_receiver->results.clear();
+
+        g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(out));
+        if (m_method_call)
+        {
+            fl_method_call_respond(m_method_call, response, nullptr);
+            g_object_unref(m_method_call); // Release the method call
+            m_method_call = nullptr;
         }
     }
 
+    /// Stores the call that the next exhausted capture round answers. If a
+    /// previous call is still pending, it is released with an empty result so
+    /// its Dart future does not hang (mirrors the macOS implementation).
     void SetMethodCall(FlMethodCall *method_call)
     {
         if (m_method_call)
         {
+            RespondFlValue(m_method_call, fl_value_new_list());
             g_object_unref(m_method_call);
+            m_method_call = nullptr;
         }
-        m_method_call = method_call;
+        if (method_call)
+        {
+            m_method_call = method_call;
+            g_object_ref(m_method_call); // Retain the method call
+        }
+    }
+
+    /// Discards the pending call without responding; used when starting a
+    /// capture round failed and the error was already reported directly.
+    void ClearMethodCall()
+    {
         if (m_method_call)
         {
-            g_object_ref(m_method_call); // Retain the method call
+            g_object_unref(m_method_call);
+            m_method_call = nullptr;
         }
     }
 };
@@ -214,22 +240,32 @@ public:
         return ret;
     }
 
-    FlValue *DecodeFile(const char *filename)
+    void DecodeFile(FlMethodCall *method_call, const char *filename)
     {
-        FlValue *results;
-        if (!handler)
-            return fl_value_new_list();
+        if (!handler || !fileFetcher)
+        {
+            RespondFlValue(method_call, fl_value_new_list());
+            return;
+        }
 
-        CCapturedResult *capturedResult = handler->Capture(filename, "");
-        if (capturedResult->GetErrorCode())
+        // CFileFetcher reads and partitions the file (including multi-page
+        // images) on the SDK capture thread.
+        int ret = fileFetcher->SetFile(filename);
+        if (ret != 0)
         {
-            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+            RespondFlValue(method_call, WrapError(ret, "Failed to set file"));
+            return;
         }
-        else
+
+        listener->SetMethodCall(method_call);
+        char errorMsg[512] = {0};
+        int errorCode = handler->StartCapturing("", false, errorMsg, 512);
+        if (errorCode != 0)
         {
-            results = WrapResults(capturedResult);
+            printf("StartCapturing: %s\n", errorMsg);
+            RespondFlValue(method_call, WrapError(errorCode, errorMsg));
+            listener->ClearMethodCall();
         }
-        return results;
     }
 
     FlValue *DecodeFileBytes(const unsigned char *bytes, int size)
@@ -266,6 +302,8 @@ public:
         if (errorCode != 0)
         {
             printf("StartCapturing: %s\n", errorMsg);
+            RespondFlValue(method_call, WrapError(errorCode, errorMsg));
+            listener->ClearMethodCall();
         }
     }
 

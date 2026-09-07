@@ -143,13 +143,23 @@ private:
 
 #pragma mark - Decoding
 
-- (NSArray<NSDictionary *> *)decodeFile:(NSString *)path {
+- (void)decodeFile:(NSString *)path
+        completion:(void (^)(NSArray<NSDictionary *> *))completion {
   @synchronized(self) {
     if (_router == nullptr) {
-      return [self wrapError:-1 msg:@"SDK not initialized"];
+      [self respondAsync:[self wrapError:-1 msg:@"SDK not initialized"]
+              completion:completion];
+      return;
     }
-    CCapturedResult *captured = _router->Capture(path.UTF8String, "");
-    return [self wrapResult:captured];
+    // CFileFetcher reads and partitions the file (including multi-page
+    // images) on the SDK capture thread.
+    int ret = _fileFetcher->SetFile(path.UTF8String);
+    if (ret != 0) {
+      [self respondAsync:[self wrapError:ret msg:@"Failed to set file"]
+              completion:completion];
+      return;
+    }
+    [self startCapture:completion];
   }
 }
 
@@ -172,34 +182,42 @@ private:
       return;
     }
 
-    // If a previous frame is still being processed, release its caller with
-    // an empty result so the Dart future does not hang; only the latest
-    // frame matters in a video stream.
-    if (_pendingCompletion != nil) {
-      [self respondAsync:@[ ] completion:_pendingCompletion];
-      _pendingCompletion = nil;
-    }
-
     ImagePixelFormat pixelFormat = [self pixelFormatForIndex:format];
     CImageData imageData(bytes.length, (const unsigned char *)bytes.bytes,
                          width, height, stride, pixelFormat, rotation);
     // CFileFetcher copies the image data internally.
     _fileFetcher->SetFile(&imageData);
 
-    _pendingCompletion = [completion copy];
+    [self startCapture:completion];
+  }
+}
 
-    char errorMsgBuffer[512] = {0};
-    int errorCode =
-        _router->StartCapturing("", false, errorMsgBuffer, 512);
-    if (errorCode != 0) {
-      NSLog(@"StartCapturing error %d: %s", errorCode, errorMsgBuffer);
-      void (^pending)(NSArray<NSDictionary *> *) = _pendingCompletion;
-      _pendingCompletion = nil;
-      [self respondAsync:[self wrapError:errorCode
-                                     msg:[NSString stringWithUTF8String:
-                                                       errorMsgBuffer]]
-              completion:pending];
-    }
+/// Shared tail of decodeFile/decodeImageBuffer: the input source has been
+/// set on _fileFetcher while holding @synchronized. Releases any superseded
+/// pending completion with an empty result, starts the capture round and
+/// reports StartCapturing failures immediately.
+- (void)startCapture:(void (^)(NSArray<NSDictionary *> *))completion {
+  // If a previous capture round is still being processed, release its
+  // caller with an empty result so the Dart future does not hang; only the
+  // latest request matters in a video stream.
+  if (_pendingCompletion != nil) {
+    [self respondAsync:@[ ] completion:_pendingCompletion];
+    _pendingCompletion = nil;
+  }
+
+  _pendingCompletion = [completion copy];
+
+  char errorMsgBuffer[512] = {0};
+  int errorCode =
+      _router->StartCapturing("", false, errorMsgBuffer, 512);
+  if (errorCode != 0) {
+    NSLog(@"StartCapturing error %d: %s", errorCode, errorMsgBuffer);
+    void (^pending)(NSArray<NSDictionary *> *) = _pendingCompletion;
+    _pendingCompletion = nil;
+    [self respondAsync:[self wrapError:errorCode
+                                   msg:[NSString stringWithUTF8String:
+                                                     errorMsgBuffer]]
+            completion:pending];
   }
 }
 
@@ -307,40 +325,6 @@ private:
     }
     barcodes->Release();
   }
-  return results;
-}
-
-- (NSArray<NSDictionary *> *)wrapResult:(CCapturedResult *)captured {
-  if (captured == nullptr) {
-    return [self wrapError:-1 msg:@"No capture result"];
-  }
-
-  if (captured->GetErrorCode()) {
-    NSLog(@"Capture error %d: %s", captured->GetErrorCode(),
-          captured->GetErrorString());
-    NSArray<NSDictionary *> *result =
-        [self wrapError:captured->GetErrorCode()
-                    msg:[NSString stringWithUTF8String:captured->GetErrorString()
-                                                     ?: ""]];
-    captured->Release();
-    return result;
-  }
-
-  CDecodedBarcodesResult *barcodes = captured->GetDecodedBarcodesResult();
-  NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
-
-  if (barcodes != nullptr) {
-    int count = barcodes->GetItemsCount();
-    for (int i = 0; i < count; i++) {
-      NSDictionary *entry = [self wrapBarcodeItem:barcodes->GetItem(i)];
-      if (entry != nil) {
-        [results addObject:entry];
-      }
-    }
-    barcodes->Release();
-  }
-
-  captured->Release();
   return results;
 }
 

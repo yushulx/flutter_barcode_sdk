@@ -69,9 +69,11 @@ static void flutter_barcode_sdk_plugin_handle_method_call(
       return;
     }
 
+    // Decoding runs on the SDK capture thread; the method call is answered
+    // when the image source is exhausted (see BarcodeManager::DecodeFile).
     const char *filename = fl_value_get_string(value);
-    g_autoptr(FlValue) results = self->manager->DecodeFile(filename);
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(results));
+    isAsync = true;
+    self->manager->DecodeFile(method_call, filename);
   }
   else if (strcmp(method, "decodeFileBytes") == 0)
   {

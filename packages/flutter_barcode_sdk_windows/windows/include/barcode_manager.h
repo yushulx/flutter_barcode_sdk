@@ -43,7 +43,10 @@ class Task
 {
 public:
     std::function<void()> func;
-    unsigned char *buffer;
+    unsigned char *buffer = nullptr;
+    // Frame tasks may be dropped when a newer frame arrives; file decode
+    // tasks are always executed.
+    bool isFrame = false;
 };
 
 class WorkerThread
@@ -71,12 +74,20 @@ public:
 
     void clearTasks()
     {
-        if (worker->tasks.size() > 0)
+        // Drop queued frame tasks (superseded by a newer frame) and release
+        // their callers with an empty result so the Dart futures do not
+        // hang. File decode tasks are never cleared here.
+        while (!worker->tasks.empty())
         {
-            for (int i = 0; i < worker->tasks.size(); i++)
+            Task task = std::move(worker->tasks.front());
+            worker->tasks.pop();
+            if (task.buffer != nullptr)
             {
-                free(worker->tasks.front().buffer);
-                worker->tasks.pop();
+                free(task.buffer);
+            }
+            if (task.isFrame)
+            {
+                ReplyPending(EncodableList());
             }
         }
     }
@@ -133,6 +144,7 @@ public:
         CDecodedBarcodesResult *barcodeResult = result->GetDecodedBarcodesResult();
         if (!barcodeResult || barcodeResult->GetItemsCount() == 0)
         {
+            result->Release();
             return out;
         }
 
@@ -202,6 +214,7 @@ public:
         Task task;
         task.func = task_function;
         task.buffer = data;
+        task.isFrame = true;
         worker->tasks.push(task);
         worker->cv.notify_one();
         lk.unlock();
@@ -262,15 +275,14 @@ public:
         if (capturedResult->GetErrorCode())
         {
             results = self->WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+            capturedResult->Release();
         }
         else
         {
             results = self->WrapResults(capturedResult);
         }
 
-        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result = std::move(self->pendingResults.front());
-        self->pendingResults.erase(self->pendingResults.begin());
-        result->Success(results);
+        self->ReplyPending(results);
     }
 
     int Init()
@@ -294,25 +306,39 @@ public:
         return ret;
     }
 
-    EncodableList DecodeFile(const char *filename)
+    // Pops the oldest pending method-call reply and answers it with
+    // [results]. Tasks and pending replies are pushed 1:1 in FIFO order, so
+    // every queued task answers exactly one caller.
+    void ReplyPending(EncodableList results)
     {
-        EncodableList out;
-        if (handler == NULL)
-            return out;
+        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> pending;
+        {
+            std::lock_guard<std::mutex> lk(pendingMutex);
+            if (pendingResults.empty())
+                return;
+            pending = std::move(pendingResults.front());
+            pendingResults.erase(pendingResults.begin());
+        }
+        pending->Success(results);
+    }
 
-        CCapturedResult *capturedResult = handler->Capture(filename, "");
-
+    static void decodeFileTask(BarcodeManager *self, std::string filename)
+    {
         EncodableList results;
-        if (capturedResult->GetErrorCode())
+        if (self->handler != NULL)
         {
-            results = WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+            CCapturedResult *capturedResult = self->handler->Capture(filename.c_str(), "");
+            if (capturedResult->GetErrorCode())
+            {
+                results = self->WrapError(capturedResult->GetErrorCode(), capturedResult->GetErrorString());
+                capturedResult->Release();
+            }
+            else
+            {
+                results = self->WrapResults(capturedResult);
+            }
         }
-        else
-        {
-            results = WrapResults(capturedResult);
-        }
-
-        return results;
+        self->ReplyPending(results);
     }
 
     EncodableList DecodeFileBytes(const unsigned char *bytes, int size)
@@ -335,9 +361,40 @@ public:
         return results;
     }
 
+    void DecodeFileAsync(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> pendingResult, const char *filename)
+    {
+        if (handler == NULL || worker == NULL)
+        {
+            pendingResult->Success(EncodableList());
+            return;
+        }
+
+        {
+            std::lock_guard<std::mutex> lk(pendingMutex);
+            pendingResults.push_back(std::move(pendingResult));
+        }
+
+        std::unique_lock<std::mutex> lk(worker->m);
+        Task task;
+        task.func = std::bind(decodeFileTask, this, std::string(filename));
+        task.isFrame = false;
+        worker->tasks.push(task);
+        worker->cv.notify_one();
+        lk.unlock();
+    }
+
     void DecodeImageBuffer(std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> &pendingResult, const unsigned char *buffer, int width, int height, int stride, int format, int rotation)
     {
-        pendingResults.push_back(std::move(pendingResult));
+        if (handler == NULL || worker == NULL)
+        {
+            pendingResult->Success(EncodableList());
+            return;
+        }
+
+        {
+            std::lock_guard<std::mutex> lk(pendingMutex);
+            pendingResults.push_back(std::move(pendingResult));
+        }
         queueTask((unsigned char *)buffer, width, height, stride, format, stride * height, rotation);
     }
 
@@ -387,6 +444,9 @@ public:
 private:
     CCaptureVisionRouter *handler;
     WorkerThread *worker;
+    // Guards pendingResults: pushed on the platform thread, popped on the
+    // worker thread and in clearTasks.
+    std::mutex pendingMutex;
     vector<std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>> pendingResults = {};
 };
 

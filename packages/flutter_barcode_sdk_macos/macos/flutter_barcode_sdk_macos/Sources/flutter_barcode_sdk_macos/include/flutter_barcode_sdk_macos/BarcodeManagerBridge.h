@@ -19,10 +19,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns 0 on success, or an error code on failure.
 - (int)setLicense:(NSString *)license;
 
-/// Decodes barcodes from an image file.
-/// Returns an array of dictionaries with keys:
-/// format, text, x1..y4, angle, barcodeBytes, errorCode, errorMsg.
-- (NSArray<NSDictionary *> *)decodeFile:(NSString *)path;
+/// Decodes barcodes from an image file asynchronously.
+///
+/// Mirrors [decodeImageBuffer:width:height:stride:format:rotation:completion:]:
+/// the file path is fed to a CFileFetcher input source and
+/// CCaptureVisionRouter::StartCapturing is invoked. The completion block is
+/// invoked on the main queue once the SDK signals that the source is
+/// exhausted, with the same dictionary format.
+- (void)decodeFile:(NSString *)path
+        completion:(void (^)(NSArray<NSDictionary *> *results))completion;
 
 /// Decodes barcodes from a raw image buffer asynchronously.
 ///
