@@ -2,13 +2,18 @@
 
 Web platform implementation of [flutter_barcode_sdk](https://pub.dev/packages/flutter_barcode_sdk).
 
-This package provides barcode scanning on the web platform using the
-Dynamsoft Barcode Reader JS SDK loaded via a `<script>` tag in
-`index.html`:
+The Dynamsoft Barcode Reader JS/WASM bundle
+(`dynamsoft-barcode-reader-bundle@11.6.2000`) is **self-hosted** as package
+assets: the plugin injects the `<script>` tag automatically at runtime and
+points the engine's resource loader at the packaged files. Apps need no CDN
+`<script>` tag in `index.html` and no manual asset copying — the whole
+engine is served from the app itself.
 
-```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle@11.6.2000/dist/dbr.bundle.js"></script>
-```
+Apps that already load the JS SDK themselves (for example a CDN `<script>`
+tag in `index.html`) keep working: the automatic injection is skipped
+whenever `window.Dynamsoft` is already defined.
+
+Serve the app over HTTPS or `localhost`, as required for WASM.
 
 ## Usage
 

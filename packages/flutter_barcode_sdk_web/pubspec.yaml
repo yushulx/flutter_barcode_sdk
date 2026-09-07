@@ -1,7 +1,7 @@
 name: flutter_barcode_sdk_web
 resolution: workspace
-description: Web platform implementation of flutter_barcode_sdk.
-version: 1.0.1
+description: Web platform implementation of flutter_barcode_sdk with a self-hosted Dynamsoft Barcode Reader WASM bundle.
+version: 1.1.0
 repository: https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk_web
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   flutter_barcode_sdk_platform_interface: ^1.0.0
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +27,12 @@ flutter:
       web:
         pluginClass: FlutterBarcodeSdkWeb
         fileName: flutter_barcode_sdk_web.dart
+
+  assets:
+    # Flutter bundles only files directly inside each declared directory, so
+    # every directory the engine fetches from must be listed individually.
+    - assets/dbr/dynamsoft-barcode-reader-bundle@11.6.2000/dist/
+    - assets/dbr/dynamsoft-barcode-reader-bundle@11.6.2000/dist/models/
+    - assets/dbr/dynamsoft-barcode-reader-bundle@11.6.2000/dist/parser-resources/
+    - assets/dbr/dynamsoft-barcode-reader-bundle@11.6.2000/dist/templates/
+    - assets/dbr/dynamsoft-barcode-reader-bundle@11.6.2000/dist/ui/

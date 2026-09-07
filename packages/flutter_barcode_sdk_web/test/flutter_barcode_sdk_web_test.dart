@@ -5,8 +5,8 @@
 // To run browser tests:
 //   flutter test --platform chrome
 //
-// Ensure index.html includes:
-//   <script src="https://cdn.jsdelivr.net/npm/dynamsoft-barcode-reader-bundle/dist/dbr.bundle.js"></script>
+// The JS/WASM bundle is self-hosted as package assets and injected by the
+// plugin itself — no `<script>` tag is needed in `index.html`.
 
 import 'package:flutter_test/flutter_test.dart';
 
