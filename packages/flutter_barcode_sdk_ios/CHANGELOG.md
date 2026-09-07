@@ -1,3 +1,12 @@
+## 1.0.4
+
+* **Fixed**: `decodeFile()` runs on a background queue instead of the main
+  thread, so decoding no longer blocks the Dart UI.
+* **Fixed**: decode replies are now delivered on the main (platform)
+  thread, where `FlutterResult` must be invoked, and decode operations are
+  serialized on a dedicated queue to avoid concurrent captures on the
+  shared `CaptureVisionRouter`.
+
 ## 1.0.3
 
 * Added Swift Package Manager support

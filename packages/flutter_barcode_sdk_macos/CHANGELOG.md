@@ -1,3 +1,9 @@
+## 1.0.4
+
+* **Fixed**: `decodeFile()` now uses the same async
+  `CFileFetcher`/`StartCapturing` pipeline as `decodeImageBuffer()` instead
+  of blocking the main thread with a synchronous capture.
+
 ## 1.0.3
 
 * Added Swift Package Manager support

@@ -1,3 +1,12 @@
+## 5.3.1
+
+* **Fixed**: `decodeFile()` no longer blocks the Dart UI on Android, iOS,
+  macOS, Windows, and Linux — decoding now runs on a background thread on
+  every native platform instead of the platform main thread.
+* Requires `flutter_barcode_sdk_android` ^1.0.2, `flutter_barcode_sdk_ios`
+  ^1.0.4, `flutter_barcode_sdk_macos` ^1.0.4, `flutter_barcode_sdk_windows`
+  ^1.0.2, and `flutter_barcode_sdk_linux` ^1.0.2.
+
 ## 5.3.0
 
 * **Web**: the Dynamsoft Barcode Reader JS/WASM bundle is now self-hosted
