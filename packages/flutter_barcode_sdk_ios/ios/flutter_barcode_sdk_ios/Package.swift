@@ -18,7 +18,7 @@ let package = Package(
         // Dynamsoft Barcode Reader Bundle (xcframeworks) for iOS.
         .package(
             url: "https://github.com/Dynamsoft/barcode-reader-spm",
-            from: "11.6.1000"
+            from: "11.6.4000"
         ),
     ],
     targets: [

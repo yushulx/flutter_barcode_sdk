@@ -1,3 +1,8 @@
+## 1.0.5
+
+* Updated the bundled Dynamsoft Barcode Reader SDK from 11.6.1000 to 11.6.5000
+  (universal-2 dylibs, headers, models, and templates).
+
 ## 1.0.4
 
 * **Fixed**: `decodeFile()` now uses the same async

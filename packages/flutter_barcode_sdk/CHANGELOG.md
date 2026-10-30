@@ -1,3 +1,15 @@
+## 5.4.0
+
+* Updated the Dynamsoft Barcode Reader SDK on every platform:
+  - Android / iOS: 11.6.4000
+  - Windows / Linux / macOS: 11.6.5000 (binaries, headers, models, and templates)
+  - Web: 11.6.3200 (self-hosted JS/WASM bundle)
+* No API changes.
+* Requires `flutter_barcode_sdk_android` ^1.0.3, `flutter_barcode_sdk_ios`
+  ^1.0.6, `flutter_barcode_sdk_macos` ^1.0.5, `flutter_barcode_sdk_windows`
+  ^1.0.3, `flutter_barcode_sdk_linux` ^1.0.3, and `flutter_barcode_sdk_web`
+  ^1.1.1.
+
 ## 5.3.2
 
 * **Fixed (iOS)**: apps built with Swift Package Manager failed to build

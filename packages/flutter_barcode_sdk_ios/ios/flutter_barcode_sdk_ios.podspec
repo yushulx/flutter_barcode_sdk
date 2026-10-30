@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_barcode_sdk_ios'
-  s.version          = '1.0.5'
+  s.version          = '1.0.6'
   s.summary          = 'A flutter plugin for Dynamsoft Barcode Reader.'
   s.description      = <<-DESC
   A flutter plugin for Dynamsoft Barcode Reader.
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.source_files = 'flutter_barcode_sdk_ios/Sources/flutter_barcode_sdk_ios/**/*'
   s.dependency 'Flutter'
   s.platform = :ios, '13.0'
-  s.dependency 'DynamsoftBarcodeReaderBundle', '11.6.1000'
+  s.dependency 'DynamsoftBarcodeReaderBundle', '11.6.4000'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 end

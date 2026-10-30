@@ -1,3 +1,8 @@
+## 1.1.1
+
+* Updated the self-hosted `dynamsoft-barcode-reader-bundle` from 11.6.2000 to
+  11.6.3200.
+
 ## 1.1.0
 
 * Self-host the Dynamsoft Barcode Reader JS/WASM bundle as package assets:

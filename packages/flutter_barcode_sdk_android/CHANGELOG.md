@@ -1,3 +1,7 @@
+## 1.0.3
+
+* Updated the bundled Dynamsoft Barcode Reader SDK from 11.6.1000 to 11.6.4000.
+
 ## 1.0.2
 
 * **Fixed**: `decodeFile()` runs on a background executor instead of the

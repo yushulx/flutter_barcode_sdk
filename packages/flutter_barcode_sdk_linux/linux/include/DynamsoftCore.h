@@ -1,5 +1,5 @@
 #pragma once
-#define DYNAMSOFT_CORE_VERSION "4.6.10.8373"
+#define DYNAMSOFT_CORE_VERSION "4.6.50.9329"
 
 /**Enumeration section*/
 
@@ -186,7 +186,7 @@ typedef enum ErrorCode {
 	/**Failed to load the PDF library.*/
 	EC_PDF_LIBRARY_LOAD_FAILED = -10075,
 
-	/**The license is initialized successfully but detected invalid content in your key.*/
+	/**License initialized with warnings. The SDK can continue running, but some capabilities may be limited.*/
 	EC_LICENSE_WARNING = -10076,
 
 	/**One or more unsupported JSON keys were encountered and ignored from the template.*/
@@ -241,7 +241,7 @@ typedef enum ErrorCode {
 	/**The license is not valid for current version*/
 	EC_LICENSE_VERSION_NOT_MATCH = -20011,
 
-	/**Online license validation failed due to network issues.Using cached license information for validation.*/
+	/**Deprecated: this error code is no longer used.*/
 	EC_LICENSE_CACHE_USED = -20012,
 
 	/*License authentication failed: quota exceeded.*/
