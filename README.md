@@ -35,6 +35,13 @@ developers only need to depend on `flutter_barcode_sdk`.
   lightweight camera preview and frame capture on all six platforms; the
   bundled example apps use it as the frame source for live scanning.
 
+## Live demo
+
+[Flutter Barcode Scanner](https://www.dynamsoft.com/codepool/demos/flutter-barcode-sdk-scanner/) runs
+[`packages/flutter_barcode_sdk/example`](packages/flutter_barcode_sdk/example) as a Flutter web build:
+live camera scanning with an annotation overlay, runtime resolution switching, and
+scanning of image files.
+
 ## Development
 
 The repository uses a [pub workspace](https://dart.dev/tools/pub/workspaces) —

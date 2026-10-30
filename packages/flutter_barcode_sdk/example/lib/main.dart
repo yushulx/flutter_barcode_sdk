@@ -19,6 +19,8 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:flutter_lite_camera/flutter_lite_camera.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'demo_bridge.dart';
+
 void main() {
   runApp(const BarcodeScannerApp());
 }
@@ -46,11 +48,11 @@ class ScannerHomePage extends StatefulWidget {
 class _ScannerHomePageState extends State<ScannerHomePage> {
   final FlutterLiteCamera _camera = FlutterLiteCamera();
 
-  // To read barcodes, get a 30-day FREE trial license for Dynamsoft Barcode
-  // Reader:
+  // Resolved at runtime by demo_bridge.dart: the web page injects the key it
+  // wants to use, native builds keep the trial key compiled into the app.
+  // For anything beyond local experiments, get a 30-day free trial license:
   // https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform
-  static const String _licenseKey =
-      'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==';
+  final String _licenseKey = resolveDemoLicenseKey();
 
   FlutterBarcodeSdk? _barcodeReader;
   bool _isSdkReady = false;
@@ -71,11 +73,18 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
   bool _isDecoding = false;
   List<BarcodeResult> _results = [];
   bool _isPickingFile = false;
+  // Shown over the preview until the first result arrives: the browser has to
+  // initialise the barcode wasm module, which can take seconds.
+  String _status = 'Starting camera…';
 
   @override
   void initState() {
     super.initState();
     _initBarcodeSdk();
+    // The hosted demo appends ?autostart=1 so the camera opens on load.
+    if (Uri.base.queryParameters['autostart'] == '1') {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _startCamera());
+    }
   }
 
   @override
@@ -85,14 +94,34 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
   }
 
   Future<void> _initBarcodeSdk() async {
-    final reader = FlutterBarcodeSdk();
-    await reader.setLicense(_licenseKey);
-    await reader.init();
+    // Activation can fail when the page runs from a stale cache or the SDK
+    // bundle never loaded. Retry once instead of leaving the demo silent.
+    for (int attempt = 0; attempt < 2; attempt++) {
+      try {
+        final reader = FlutterBarcodeSdk();
+        final int licensed = await reader.setLicense(_licenseKey);
+        if (licensed != 0) {
+          throw StateError('setLicense returned $licensed');
+        }
+        await reader.init();
+        if (mounted) {
+          setState(() {
+            _barcodeReader = reader;
+            _isSdkReady = true;
+            if (_isCameraOpened) _status = 'Scanning for barcodes…';
+          });
+        }
+        return;
+      } catch (e) {
+        reportDemoAction(
+            'barcode_init_failed', {'attempt': attempt, 'error': '$e'});
+        debugPrint('Barcode SDK init failed (attempt $attempt): $e');
+        await Future<void>.delayed(const Duration(seconds: 2));
+      }
+    }
     if (mounted) {
-      setState(() {
-        _barcodeReader = reader;
-        _isSdkReady = true;
-      });
+      setState(() => _status =
+          'Barcode engine unavailable — hard-reload the page (Ctrl+F5).');
     }
   }
 
@@ -118,6 +147,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
 
       // The native layer renders the video feed into this texture; no
       // frame data crosses into Dart for display purposes.
+      setState(() => _status = 'Loading barcode engine…');
       int textureId = await _camera.startPreview();
       int rotation = 0;
       try {
@@ -140,6 +170,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
         }
         _rotation = rotation;
         _shouldDecode = true;
+        _status = 'Scanning for barcodes…';
       });
 
       // Start pulling frames for barcode decoding only. This does not
@@ -171,6 +202,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
           _isCameraOpened = false;
           _textureId = -1;
           _results = [];
+          _status = 'Starting camera…';
         });
       }
     }
@@ -213,14 +245,18 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
           _height = frameHeight;
           Uint8List rgbBuffer = frame['data'];
 
-          List<BarcodeResult> ret = await _barcodeReader!.decodeImageBuffer(
-            rgbBuffer,
-            frameWidth,
-            frameHeight,
-            frameWidth * 3,
-            ImagePixelFormat.IPF_RGB_888.index,
-            ImageRotation.rotation0.value,
-          );
+          // A stalled decode would leave _isDecoding true forever and stop
+          // the scanning loop, so give every call an upper bound.
+          List<BarcodeResult> ret = await _barcodeReader!
+              .decodeImageBuffer(
+                rgbBuffer,
+                frameWidth,
+                frameHeight,
+                frameWidth * 3,
+                ImagePixelFormat.IPF_RGB_888.index,
+                ImageRotation.rotation0.value,
+              )
+              .timeout(const Duration(seconds: 30));
 
           if (_shouldDecode && mounted) {
             setState(() {
@@ -364,6 +400,29 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
                           ),
                           child: Container(),
                         ),
+                        if (_isCameraOpened && _results.isEmpty)
+                          Positioned(
+                            left: 12,
+                            right: 12,
+                            top: 12,
+                            child: IgnorePointer(
+                              child: Center(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.55),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    _status,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 13),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
