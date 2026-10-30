@@ -1,40 +1,64 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  <!-- App entry point for the flutter_barcode_sdk example.
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
+       Served standalone by `flutter run -d chrome` and embedded as the iframe of
+       the hosted demo page on dynamsoft.com/codepool/demos/. The base href is
+       replaced by the value of `--base-href` passed to `flutter build`. -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Demonstrates how to use the flutter_barcode_sdk plugin.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Flutter barcode scanner demo: live camera preview, 1D/2D barcode decoding and image file scanning with Dynamsoft Barcode Reader.">
+  <meta name="robots" content="noindex">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="flutter_barcode_sdk_example">
+  <meta name="apple-mobile-web-app-title" content="Flutter Barcode Scanner">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
-  <title>flutter_barcode_sdk_example</title>
+
+  <!-- The web implementation of flutter_barcode_sdk ships its own copy of the
+       Dynamsoft Barcode Reader bundle (assets/packages/flutter_barcode_sdk_web),
+       so this page only has to decide which license key the app should use. -->
+  <!-- The page decides which key the app uses: the demo key when served from
+       dynamsoft.com, the SDK trial key anywhere else. The Flutter side reads it
+       through example/lib/demo_bridge.dart. -->
+  <script>
+    (function () {
+      var BOUND_HOSTS = ['dynamsoft.com'];
+      var CODEPOOL_LICENSE_KEY = 'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAwLTEwMTY0ODQ5MCIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21sdHMuZHluYW1zb2Z0LmNvbS8iLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMCIsInN0YW5kYnlTZXJ2ZXJVUkwiOiJodHRwczovL3NsdHMuZHluYW1zb2Z0LmNvbS8iLCJjaGVja0NvZGUiOjE0MDA4MDY1Mjl9';
+      var TRIAL_LICENSE_KEY = 'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==';
+
+      var host = window.location.hostname.toLowerCase();
+      var bound = BOUND_HOSTS.some(function (candidate) {
+        return host === candidate || host.endsWith('.' + candidate);
+      });
+
+      window.FLUTTER_LITE_CAMERA_LICENSE = bound ? CODEPOOL_LICENSE_KEY : TRIAL_LICENSE_KEY;
+
+      if (!bound) {
+        console.info('[demo] Using the SDK trial license: the demo license is bound to '
+          + BOUND_HOSTS.join(', ') + ' and cannot activate on "' + host + '".');
+        // The app runs in an iframe of the demo page, so the shared tracker
+        // lives on the parent. Both lookups are optional.
+        var analytics = (window.parent && window.parent.DemoAnalytics) || window.DemoAnalytics;
+        if (analytics && typeof analytics.action === 'function') {
+          analytics.action('license_fallback', { host: host });
+        }
+      }
+    })();
+  </script>
+
+  <title>Flutter Barcode Scanner</title>
   <link rel="manifest" href="manifest.json">
 </head>
-
 <body>
   <script src="flutter_bootstrap.js" async></script>
 </body>
-
 </html>
