@@ -45,7 +45,7 @@ class BarcodeManager {
   static const _assetRoot =
       'assets/packages/flutter_barcode_sdk_web/assets/dbr/';
   static const _bundleUrl =
-      '${_assetRoot}dynamsoft-barcode-reader-bundle@11.6.2000/dist/dbr.bundle.js';
+      '${_assetRoot}dynamsoft-barcode-reader-bundle@11.6.3200/dist/dbr.bundle.js';
 
   /// The `CaptureVisionRouter` instance, kept untyped: the bundle's
   /// namespaces are null-prototype objects that Dart interop type checks

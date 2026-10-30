@@ -27,7 +27,7 @@
 #include "DynamsoftCodeParser.h"
 #endif
 
-#define DCV_VERSION                  "3.6.10.8373"
+#define DCV_VERSION                  "3.6.50.9329"
 
 /**Enumeration section*/
 

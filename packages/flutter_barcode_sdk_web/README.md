@@ -3,7 +3,7 @@
 Web platform implementation of [flutter_barcode_sdk](https://pub.dev/packages/flutter_barcode_sdk).
 
 The Dynamsoft Barcode Reader JS/WASM bundle
-(`dynamsoft-barcode-reader-bundle@11.6.2000`) is **self-hosted** as package
+(`dynamsoft-barcode-reader-bundle@11.6.3200`) is **self-hosted** as package
 assets: the plugin injects the `<script>` tag automatically at runtime and
 points the engine's resource loader at the packaged files. Apps need no CDN
 `<script>` tag in `index.html` and no manual asset copying — the whole

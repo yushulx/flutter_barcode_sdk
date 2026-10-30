@@ -1,3 +1,8 @@
+## 1.0.6
+
+* Updated the Dynamsoft Barcode Reader SDK from 11.6.1000 to 11.6.4000 on both
+  integration paths (Swift Package Manager and CocoaPods).
+
 ## 1.0.5
 
 * **Fixed**: the Swift Package Manager manifest now depends on the
