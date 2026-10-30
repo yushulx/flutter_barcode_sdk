@@ -18,6 +18,7 @@ The plugin accepts image **files** or **raw pixel buffers**, so it composes with
 
 ## Table of Contents
 
+- [Live Demo](#live-demo)
 - [Getting Started](#getting-started)
 - [Supported Platforms](#supported-platforms)
 - [Supported Barcode Symbologies](#supported-barcode-symbologies)
@@ -26,6 +27,16 @@ The plugin accepts image **files** or **raw pixel buffers**, so it composes with
 - [API Reference](#api-reference)
 - [Examples](#examples)
 - [License](#license)
+
+
+## Live Demo
+
+[**Flutter Barcode Scanner**](https://www.dynamsoft.com/codepool/demos/flutter-barcode-sdk-scanner/)
+is this package's
+[example app](https://github.com/yushulx/flutter_barcode_sdk/tree/main/packages/flutter_barcode_sdk/example)
+compiled to web. It runs the same Dart code as the native builds — live camera
+scanning with an annotation overlay, runtime barcode-format switching, and
+scanning of image files. No installation required.
 
 
 ## Getting Started
