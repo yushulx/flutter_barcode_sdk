@@ -151,6 +151,35 @@ jobs:
         run: flutter build macos --debug
 
   # -----------------------------------------------------------------------
+  # iOS build (verifies the SPM manifest resolves and the Swift plugin
+  # compiles against Dynamsoft barcode-reader-spm)
+  # -----------------------------------------------------------------------
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Keep Swift Package Manager explicitly on: the iOS plugin is consumed
+      # through its Package.swift manifest, so a wrong product name or a
+      # broken manifest must fail here rather than in a user's app.
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Build iOS example for simulator
+        working-directory: packages/flutter_barcode_sdk_ios/example
+        run: flutter build ios --simulator
+
+  # -----------------------------------------------------------------------
   # Android build (verifies Maven resolution and native plugin compilation)
   # -----------------------------------------------------------------------
   build-android:
