@@ -1,3 +1,13 @@
+## 5.3.2
+
+* **Fixed (iOS)**: apps built with Swift Package Manager failed to build
+  because the iOS package referenced an SPM product that does not exist;
+  no API changes. See `flutter_barcode_sdk_ios` 1.0.5.
+* **CI**: added an iOS build job (`flutter build ios --simulator` with SPM
+  enabled) so a broken `Package.swift` fails on a pull request instead of in
+  a user's app.
+* Requires `flutter_barcode_sdk_ios` ^1.0.5.
+
 ## 5.3.1
 
 * **Fixed**: `decodeFile()` no longer blocks the Dart UI on Android, iOS,

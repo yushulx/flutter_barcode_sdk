@@ -1,3 +1,13 @@
+## 1.0.5
+
+* **Fixed**: the Swift Package Manager manifest now depends on the
+  `DynamsoftBarcodeReader` product of `barcode-reader-spm`.
+  `DynamsoftBarcodeReaderBundle` is the CocoaPods pod name — and only an
+  internal binary target inside the SPM package — so with Swift Package
+  Manager enabled Xcode failed to resolve the package and `flutter build ios`
+  aborted with `product 'DynamsoftBarcodeReaderBundle' ... not found in
+  package 'barcode-reader-spm'`. CocoaPods integration was unaffected.
+
 ## 1.0.4
 
 * **Fixed**: `decodeFile()` runs on a background queue instead of the main
