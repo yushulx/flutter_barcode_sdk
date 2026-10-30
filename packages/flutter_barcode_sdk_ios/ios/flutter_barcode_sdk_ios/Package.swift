@@ -27,7 +27,7 @@ let package = Package(
             dependencies: [
                 .product(name: "FlutterFramework", package: "FlutterFramework"),
                 .product(
-                    name: "DynamsoftBarcodeReaderBundle",
+                    name: "DynamsoftBarcodeReader",
                     package: "barcode-reader-spm"
                 ),
             ]
