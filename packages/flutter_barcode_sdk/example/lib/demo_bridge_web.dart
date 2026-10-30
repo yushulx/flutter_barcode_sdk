@@ -16,10 +16,31 @@ extension type _DemoAnalytics._(JSObject _) implements JSObject {
   external void action(String name, [JSObject? extra]);
 }
 
+/// Looks up `window.DemoAnalytics` in [scope], returning null when the scope
+/// does not expose it (or when the scope belongs to another origin).
+_DemoAnalytics? _fromScope(JSObject? scope) {
+  if (scope == null) return null;
+  try {
+    final JSObject? api =
+        scope.getProperty<JSObject?>('DemoAnalytics'.toJS);
+    return api == null ? null : _DemoAnalytics._(api);
+  } catch (_) {
+    return null;
+  }
+}
+
+/// The hosted demo renders the app in an iframe, so the shared analytics
+/// helper lives on the parent page. Fall back to it when this window has none.
 _DemoAnalytics? _analytics() {
-  final JSObject? api =
-      globalContext.getProperty<JSObject?>('DemoAnalytics'.toJS);
-  return api == null ? null : _DemoAnalytics._(api);
+  final local = _fromScope(globalContext);
+  if (local != null) return local;
+  JSObject? parent;
+  try {
+    parent = globalContext.getProperty<JSObject?>('parent'.toJS);
+  } catch (_) {
+    parent = null;
+  }
+  return _fromScope(parent);
 }
 
 /// Reads the key the hosting page computed in `web/index.html`.

@@ -73,6 +73,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
   bool _isDecoding = false;
   List<BarcodeResult> _results = [];
   bool _isPickingFile = false;
+  bool _reportedFirstScan = false;
   // Shown over the preview until the first result arrives: the browser has to
   // initialise the barcode wasm module, which can take seconds.
   String _status = 'Starting camera…';
@@ -94,6 +95,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
   }
 
   Future<void> _initBarcodeSdk() async {
+    final Stopwatch stopwatch = Stopwatch()..start();
     // Activation can fail when the page runs from a stale cache or the SDK
     // bundle never loaded. Retry once instead of leaving the demo silent.
     for (int attempt = 0; attempt < 2; attempt++) {
@@ -104,6 +106,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
           throw StateError('setLicense returned $licensed');
         }
         await reader.init();
+        reportDemoReady(stopwatch.elapsedMilliseconds);
         if (mounted) {
           setState(() {
             _barcodeReader = reader;
@@ -202,6 +205,7 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
           _isCameraOpened = false;
           _textureId = -1;
           _results = [];
+          _reportedFirstScan = false;
           _status = 'Starting camera…';
         });
       }
@@ -257,6 +261,11 @@ class _ScannerHomePageState extends State<ScannerHomePage> {
                 ImageRotation.rotation0.value,
               )
               .timeout(const Duration(seconds: 30));
+
+          if (ret.isNotEmpty && !_reportedFirstScan) {
+            _reportedFirstScan = true;
+            reportDemoScan('camera');
+          }
 
           if (_shouldDecode && mounted) {
             setState(() {
