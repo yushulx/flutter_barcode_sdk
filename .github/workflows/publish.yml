@@ -1,26 +1,25 @@
 # .github/workflows/publish.yml
-# Publishes packages of the flutter_barcode_sdk monorepo to pub.dev.
+# Manual, token-based publishing for the flutter_barcode_sdk monorepo.
 #
-# Trigger modes:
-#   1. Push a tag like `flutter_barcode_sdk_web-v1.2.3` (or any other
-#      package directory under packages/) to publish just that package.
-#   2. Manually run the workflow and type the package directory name.
+# Publishing normally happens from a developer machine:
 #
-# Package dependencies use version constraints (pub workspace), so no
-# pubspec rewriting is needed before publishing.
+#   cd packages/<package> && dart pub publish
 #
-# Authentication: two options, pick one and configure pub.dev:
-#   - OIDC: make this job OIDC-enabled at https://pub.dev/settings
-#     (Recommended, no secrets needed)
-#   - Token: create a publish token at https://pub.dev/tokens and
-#     store it in the repository secret `PUB_PUBLISH_AUTH_TOKEN`.
+# There is deliberately NO tag trigger. Tagging a release (e.g.
+# `flutter_barcode_sdk-v5.3.2`) used to start this workflow, but the pub
+# client never completes the OIDC exchange in this repository: it skips
+# OIDC entirely and falls back to an interactive Google login that a
+# headless runner can never finish, so every tag produced a run that hung
+# until it was cancelled. Do not re-add a `push: tags:` trigger until that
+# is fixed upstream.
+#
+# What remains is a manual escape hatch for when the repository secret
+# `PUB_PUBLISH_AUTH_TOKEN` (create one at https://pub.dev/tokens) exists.
+# Without that secret the job fails immediately with instructions instead
+# of hanging on the login prompt.
 name: Publish to pub.dev
 
 on:
-  push:
-    tags:
-      # e.g. flutter_barcode_sdk-v5.0.0, flutter_barcode_sdk_web-v1.2.3
-      - 'flutter_barcode_sdk*-v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
     inputs:
       package:
@@ -32,7 +31,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Required for OIDC publishing
+      id-token: write # Kept for OIDC, in case the client-side issue is fixed
       contents: read
     steps:
       - name: Checkout
@@ -44,18 +43,12 @@ jobs:
           channel: stable
           cache: true
 
-      # Resolve the package directory from a tag (flutter_barcode_sdk_web-v1.2.3
-      # -> flutter_barcode_sdk_web) or from the manual workflow input.
       - name: Resolve package directory
         id: package
         run: |
-          if [ "${{ github.event_name }}" == "push" ]; then
-            PACKAGE="${GITHUB_REF_NAME%-v*}"
-          else
-            PACKAGE="${{ inputs.package }}"
-          fi
+          PACKAGE="${{ inputs.package }}"
           # Validate that the package exists.
-          if [ ! -d "packages/${PACKAGE}" ] && [ ! -f "packages/${PACKAGE}/pubspec.yaml" ]; then
+          if [ ! -f "packages/${PACKAGE}/pubspec.yaml" ]; then
             echo "::error::Package '${PACKAGE}' not found under packages/"
             exit 1
           fi
@@ -69,8 +62,25 @@ jobs:
         working-directory: packages/${{ steps.package.outputs.package }}
         run: flutter analyze
 
-      # Uses OIDC when the package is registered as an OIDC publisher on
-      # pub.dev, otherwise falls back to the PUB_PUBLISH_AUTH_TOKEN secret.
+      # Fail fast instead of waiting forever on the interactive login prompt.
+      - name: Check publishing credentials
+        env:
+          PUB_PUBLISH_AUTH_TOKEN: ${{ secrets.PUB_PUBLISH_AUTH_TOKEN }}
+        run: |
+          if [ -z "${PUB_PUBLISH_AUTH_TOKEN}" ]; then
+            echo "::error::PUB_PUBLISH_AUTH_TOKEN is not configured."
+            echo "Publish from a developer machine instead:"
+            echo "  cd packages/${{ steps.package.outputs.package }} && dart pub publish"
+            exit 1
+          fi
+
+      # The pub client only reads a token from an environment variable after
+      # it has been registered under that name in its credentials store.
+      - name: Register the publish token
+        env:
+          PUB_PUBLISH_AUTH_TOKEN: ${{ secrets.PUB_PUBLISH_AUTH_TOKEN }}
+        run: dart pub token add https://pub.dev --env-var PUB_PUBLISH_AUTH_TOKEN
+
       - name: Publish to pub.dev
         working-directory: packages/${{ steps.package.outputs.package }}
         env:
