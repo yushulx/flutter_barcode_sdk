@@ -1,3 +1,12 @@
+## 5.4.1
+
+* Web: updated the self-hosted Dynamsoft Barcode Reader JS/WASM bundle from
+  11.6.3200 to 11.6.5000 (patch release: the license no longer expires on
+  long-lived pages, Camera Enhancer auto-flash and video-window resize fixes,
+  third-party security updates). No API changes.
+* Requires `flutter_barcode_sdk_web` ^1.1.2. The other platform packages are
+  unchanged from 5.4.0.
+
 ## 5.4.0
 
 * Updated the Dynamsoft Barcode Reader SDK on every platform:
