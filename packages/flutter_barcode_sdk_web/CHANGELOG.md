@@ -1,3 +1,9 @@
+## 1.1.2
+
+* Updated the self-hosted `dynamsoft-barcode-reader-bundle` from 11.6.3200 to
+  11.6.5000 (patch release: license no longer expires on long-lived pages,
+  Camera Enhancer auto-flash and video-window resize fixes, third-party
+  security updates; no API change).
 ## 1.1.1
 
 * Updated the self-hosted `dynamsoft-barcode-reader-bundle` from 11.6.2000 to
