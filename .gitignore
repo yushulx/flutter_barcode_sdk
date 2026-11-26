@@ -9,3 +9,6 @@ pubspec.lock
 build/
 .cxx
 .idea
+
+# WorkBuddy project data (local only)
+.workbuddy/
