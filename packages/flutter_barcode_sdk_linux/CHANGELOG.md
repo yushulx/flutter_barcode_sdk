@@ -1,3 +1,8 @@
+## 1.0.4
+
+* Updated the bundled Dynamsoft Barcode Reader SDK from 11.6.5000 to 11.6.6000
+  (shared libraries, headers, models, and templates).
+
 ## 1.0.3
 
 * Updated the bundled Dynamsoft Barcode Reader SDK from 11.6.1000 to 11.6.5000

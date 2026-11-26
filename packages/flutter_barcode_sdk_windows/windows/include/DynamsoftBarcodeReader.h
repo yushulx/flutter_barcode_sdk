@@ -18,7 +18,7 @@ typedef void* HANDLE;
 
 #include "DynamsoftCore.h"
 
-#define DBR_VERSION "11.6.50.9329"
+#define DBR_VERSION "11.6.60.9515"
 
 /**Enumeration section*/
 
@@ -895,6 +895,13 @@ namespace dynamsoft
 				 * @return A pointer to the CECISegment object, or NULL if the index is out of range.
 				 */
 				virtual const CECISegment* GetECISegment(int index) const = 0;
+
+				/**
+				 * Gets whether the decoded barcode has an inverted color pattern.
+				 *
+				 * @return true if the barcode is Inverted; false if the barcode is Normal.
+				 */
+				virtual bool IsInverted() const = 0;
 			};
 
 			/**
@@ -1538,6 +1545,13 @@ namespace dynamsoft
 			 * @return A pointer to the CECISegment object, or NULL if the index is out of range.
 			 */
 			virtual const CECISegment* GetECISegment(int index) const = 0;
+
+			/**
+			 * Gets whether the decoded barcode has an inverted color pattern.
+			 *
+			 * @return true if the barcode is Inverted; false if the barcode is Normal.
+			 */
+			virtual bool IsInverted() const = 0;
 
 		};
 

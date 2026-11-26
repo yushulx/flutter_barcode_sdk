@@ -1,3 +1,14 @@
+## 5.4.2
+
+* Updated the bundled Dynamsoft Barcode Reader SDK for desktop from 11.6.5000
+  to 11.6.6000: Windows, Linux, and macOS now ship the 11.6.60 binaries,
+  headers, models, and templates. The C++ API is unchanged — the release only
+  adds `IsInverted()` to the barcode result interfaces.
+* Web stays on the self-hosted 11.6.5000 JS/WASM bundle; `dbr` 11.6.6000 has
+  not been published to npm yet. Android (11.6.4000) and iOS are unchanged.
+* Requires `flutter_barcode_sdk_macos` ^1.0.6, `flutter_barcode_sdk_windows`
+  ^1.0.4, and `flutter_barcode_sdk_linux` ^1.0.4.
+
 ## 5.4.1
 
 * Web: updated the self-hosted Dynamsoft Barcode Reader JS/WASM bundle from

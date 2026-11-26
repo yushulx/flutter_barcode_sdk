@@ -14,7 +14,7 @@
 
 #include "DynamsoftCore.h"
 
-#define DLR_VERSION                  "4.6.50.9329"
+#define DLR_VERSION                  "4.6.60.9515"
 
 /**
 * @enum RawTextLineStatus
